@@ -1,6 +1,8 @@
+import 'package:class_leap/src/features/authentication/screens/profile_page.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:class_leap/src/user/firebase_auth_services.dart';
 import '../../../utils/theme/theme.dart';
 
@@ -13,16 +15,18 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _displayNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nimController = TextEditingController();
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _usernameController.dispose();
+    _displayNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _nimController.dispose();
     super.dispose();
   }
 
@@ -70,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       TextFormField(
-                        controller: _usernameController,
+                        controller: _nimController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your NIM';
@@ -132,6 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       TextFormField(
+                        controller: _displayNameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your name';
@@ -197,22 +202,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: agreePersonalData,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    agreePersonalData = value!;
-                                  });
-                                },
-                                activeColor: lightColorScheme.primary,
-                              ),
-                              const Text(
-                                'I agree to the processing of my',
-                                style: TextStyle(color: Colors.black45),
-                              ),
-                            ],
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: agreePersonalData,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      agreePersonalData = value!;
+                                    });
+                                  },
+                                  activeColor: lightColorScheme.primary,
+                                ),
+                                const Text(
+                                  'I agree to the processing of my',
+                                  style: TextStyle(color: Colors.black45),
+                                ),
+                              ],
+                            ),
                           ),
                           GestureDetector(
                             child: Text(
@@ -222,7 +229,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 color: lightColorScheme.primary,
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -242,6 +249,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     content: Text('Processing Data'),
                                   ),
                                 );
+                                _signUp();
                               }
                               else if (!agreePersonalData) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -333,27 +341,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   void _signUp() async {
-    String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
+    String displayName = _displayNameController.text;
+    String nim = _nimController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    if(user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign up success'),
-        ),
-      );
-      Navigator.push(context, MaterialPageRoute(
-          builder: (e) => const SignUpScreen()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign up failed'),
-        ),
-      );
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await user.updateDisplayName(displayName);
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+
+        if (user != null) {
+          // Store NIM in Firestore or Realtime Database
+          await FirebaseFirestore.instance.collection('users')
+              .doc(user.uid)
+              .set({
+            'displayName': displayName,
+            'nim': nim,
+            'email': email,
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Sign up success'),
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProfilePage(),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sign up failed'),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException: ${e.code}, ${e.message}');
+    } catch (e) {
+      print('Error: $e');
     }
   }
 }
