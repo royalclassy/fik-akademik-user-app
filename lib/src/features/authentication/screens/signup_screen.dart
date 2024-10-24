@@ -310,20 +310,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Don\'t have an account?',
+                            'Already have an account?',
                             style: TextStyle(
                               color: Colors.black45,
                             ),
                           ),
                           GestureDetector(
-                            onTap: (_signUp)
-                            // {
-                            //   Navigator.push(context, MaterialPageRoute(
-                            //       builder: (e) => const SignUpScreen()));
-                            // }
+                            onTap: ()
+                            {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (e) => const SignUpScreen()));
+                            }
                             ,
                             child: Text(
-                              'Sign up',
+                              'Sign in',
                               style: TextStyle(
                                 color: lightColorScheme.primary,
                               ),

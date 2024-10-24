@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
       home: const WelcomeScreen(),
       routes: {
         '/profile': (context) => const ProfilePage(),
+        '/welcome': (context) => const WelcomeScreen(),
       },
     );
   }
