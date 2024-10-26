@@ -1,5 +1,6 @@
 import 'package:class_leap/src/features/authentication/screens/signin_screen.dart';
-import 'package:class_leap/src/features/authentication/screens/signup_screen.dart';
+// import 'package:class_leap/src/features/authentication/screens/signup_screen.dart';
+import 'package:class_leap/src/features/authentication/screens/sign_up_screen_api.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:class_leap/src/utils/widgets/welcome_button.dart';
@@ -26,7 +27,7 @@ class WelcomeScreen extends StatelessWidget {
                   text: const TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Welcome to ClassLeap\n',
+                        text: 'Selamat datang di ClassLeap\n',
                         style: TextStyle(
                           fontSize: 45.0,
                           fontWeight: FontWeight.w600,
@@ -35,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                       TextSpan(
                         text:
-                            '\nYour one stop solution for Lab and Classroom management',
+                            '\nPeminjaman dan Pelaporan Ruangan FIK\n\n',
                         style: TextStyle(
                           fontSize: 20.0,
                           color: Colors.white,
@@ -56,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                 children: [
                   const Expanded(
                     child: WelcomeButton(
-                      buttonText: 'Sign in',
+                      buttonText: 'Masuk',
                       onTap: SignInScreen(),
                       color: Colors.transparent,
                       textColor: Colors.white,
@@ -64,7 +65,8 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: WelcomeButton(
-                      buttonText: 'Sign up',
+                      buttonText: 'Daftar',
+                      // onTap: const SignUpScreen(),
                       onTap: const SignUpScreen(),
                       color: Colors.white,
                       textColor: lightColorScheme.primary,

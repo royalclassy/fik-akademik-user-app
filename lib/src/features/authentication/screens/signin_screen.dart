@@ -568,7 +568,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Don\'t have an account?',
+                            'Belum punya akun? ',
                             style: TextStyle(
                               color: Colors.black45,
                             ),
@@ -582,9 +582,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               );
                             },
                             child: Text(
-                              'Sign up',
+                              'Daftar',
                               style: TextStyle(
                                 color: lightColorScheme.primary,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

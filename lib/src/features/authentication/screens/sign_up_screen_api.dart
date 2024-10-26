@@ -1,10 +1,10 @@
+import 'dart:convert';
 import 'package:class_leap/src/features/authentication/screens/profile_page.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:class_leap/src/user/firebase_auth_services.dart';
+import 'package:http/http.dart' as http;
 import '../../../utils/theme/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,7 +14,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final FirebaseAuthService _auth = FirebaseAuthService();
   TextEditingController _displayNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -22,7 +21,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _displayNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -55,7 +53,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   topRight: Radius.circular(40),
                 ),
               ),
-
               child: SingleChildScrollView(
                 child: Form(
                   key: _formSignUpKey,
@@ -145,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         decoration: InputDecoration(
                           label: const Text('Name'),
-                          hintText: 'Enter your email',
+                          hintText: 'Enter your name',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -238,29 +235,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  lightColorScheme.primary),),
-                            onPressed: () {
-                              if (_formSignUpKey.currentState!.validate() &&
-                                  agreePersonalData) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Processing Data'),
-                                  ),
-                                );
-                                _signUp();
-                              }
-                              else if (!agreePersonalData) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Please agree to the processing of your data'),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text('Sign up')),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                lightColorScheme.primary),
+                          ),
+                          onPressed: () {
+                            if (_formSignUpKey.currentState!.validate() &&
+                                agreePersonalData) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Processing Data'),
+                                ),
+                              );
+                              _signUp();
+                            } else if (!agreePersonalData) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Please agree to the processing of your data'),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Sign up'),
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -268,24 +266,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(child: Divider(
-                            thickness: 0.7,
-                            color: Colors.grey.withOpacity(0.5),
-                          ),),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10),
-                            child: Text('Sign up with',
+                                vertical: 0, horizontal: 10),
+                            child: Text(
+                              'Sign up with',
                               style: TextStyle(
                                 color: Colors.black45,
                               ),
                             ),
                           ),
-                          Expanded(child: Divider(
-                            thickness: 0.7,
-                            color: Colors.grey.withOpacity(0.5),
-                          ),),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -316,12 +318,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: ()
-                            {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (e) => const SignUpScreen()));
-                            }
-                            ,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (e) => const SignUpScreen()));
+                            },
                             child: Text(
                               'Sign in',
                               style: TextStyle(
@@ -343,59 +345,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _signUp() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String displayName = _displayNameController.text;
-    String nim = _nimController.text;
+void _signUp() async {
+  String email = _emailController.text;
+  String password = _passwordController.text;
+  String displayName = _displayNameController.text;
+  String nim = _nimController.text;
 
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+  try {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.64:8000/api/sign_up'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'nama': displayName,
+        'nim': nim,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      final userId = responseData['user_id'];
+
+      // Store user_id in shared_preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_id', userId);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sign up success'),
+        ),
       );
-
-      User? user = userCredential.user;
-
-      if (user != null) {
-        await user.updateDisplayName(displayName);
-        await user.reload();
-        user = FirebaseAuth.instance.currentUser;
-
-        if (user != null) {
-          // Store NIM in Firestore or Realtime Database
-          await FirebaseFirestore.instance.collection('users')
-              .doc(user.uid)
-              .set({
-            'displayName': displayName,
-            'nim': nim,
-            'email': email,
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sign up success'),
-            ),
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ProfilePage(),
-            ),
-          );
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sign up failed'),
-          ),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException: ${e.code}, ${e.message}');
-    } catch (e) {
-      print('Error: $e');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfilePage(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sign up failed: ${response.body}'),
+        ),
+      );
     }
+  } catch (e) {
+    print('Error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sign up failed: $e'),
+      ),
+    );
+  }
   }
 }
