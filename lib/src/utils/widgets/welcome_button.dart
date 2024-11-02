@@ -1,4 +1,4 @@
-import 'package:class_leap/src/features/authentication/screens/signup_screen.dart';
+import 'package:class_leap/src/screens/welcome/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeButton extends StatelessWidget {

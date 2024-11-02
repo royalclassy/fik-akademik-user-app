@@ -1,10 +1,12 @@
-import 'package:class_leap/src/features/authentication/screens/profile_page.dart';
+import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
+import 'package:class_leap/src/screens/profile/profile_page.dart';
+import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:class_leap/src/user/firebase_auth_services.dart';
-import '../../../utils/theme/theme.dart';
+import 'package:class_leap/src/utils/theme/theme.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -63,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Get Started',
+                        'Mulai dengan mendaftar',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
@@ -77,13 +79,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _nimController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your NIM';
+                            return 'Masukkan NRP/NIM anda';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('NIM'),
-                          hintText: 'Enter your NIM',
+                          label: const Text('NRP/NIM'),
+                          hintText: 'Masukkan NRP/NIM anda',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -108,13 +110,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return 'Masukkan email anda';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
                           label: const Text('Email'),
-                          hintText: 'Enter your email',
+                          hintText: 'Masukkan email anda',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -139,13 +141,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _displayNameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your name';
+                            return 'Masukkan nama anda';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Name'),
-                          hintText: 'Enter your email',
+                          label: const Text('Nama'),
+                          hintText: 'Masukkan nama anda',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -172,13 +174,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return 'Buat kata sandi anda';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('Password'),
-                          hintText: 'Enter your password',
+                          label: const Text('Kata Sandi'),
+                          hintText: 'Buat kata sandi anda',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -214,20 +216,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   },
                                   activeColor: lightColorScheme.primary,
                                 ),
-                                const Text(
-                                  'I agree to the processing of my',
-                                  style: TextStyle(color: Colors.black45),
+                                const Flexible(
+                                  child: Text(
+                                    'Saya setuju menggunakan data pribadi saya',
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
                                 ),
                               ],
-                            ),
-                          ),
-                          GestureDetector(
-                            child: Text(
-                              'Personal Data',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: lightColorScheme.primary,
-                              ),
                             ),
                           ),
                         ],
@@ -255,12 +250,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'Please agree to the processing of your data'),
+                                        'Tolong setujui penggunaan data pribadi'),
                                   ),
                                 );
                               }
                             },
-                            child: const Text('Sign up')),
+                          child: Text(
+                            'Daftar',
+                            style: TextStyle(
+                              color: lightColorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -268,69 +270,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(child: Divider(
-                            thickness: 0.7,
-                            color: Colors.grey.withOpacity(0.5),
-                          ),),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10),
-                            child: Text('Sign up with',
+                                vertical: 0, horizontal: 10),
+                            child: Text(
+                              'Sudah punya akun?',
                               style: TextStyle(
                                 color: Colors.black45,
                               ),
                             ),
                           ),
-                          Expanded(child: Divider(
-                            thickness: 0.7,
-                            color: Colors.grey.withOpacity(0.5),
-                          ),),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.facebook,
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Sudah punya akun? ',
-                            style: TextStyle(
-                              color: Colors.black45,
-                            ),
-                          ),
                           GestureDetector(
-                            onTap: ()
-                            {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (e) => const SignUpScreen()));
-                            }
-                            ,
-                            child: Text(
-                              'Sign in',
-                              style: TextStyle(
-                                color: lightColorScheme.primary,
-                                fontWeight: FontWeight.bold,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (e) => const SignInScreen()),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10.0), // Add padding to the right
+                              child: Text(
+                                'Masuk',
+                                style: TextStyle(
+                                  color: lightColorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.7,
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
                         ],
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                     ],
                   ),
@@ -342,7 +326,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
   void _signUp() async {
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -381,7 +364,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const ProfilePage(),
+              builder: (context) => const JadwalPage(),
             ),
           );
         }

@@ -1,6 +1,6 @@
-import 'package:class_leap/src/features/authentication/screens/signin_screen.dart';
-// import 'package:class_leap/src/features/authentication/screens/signup_screen.dart';
-import 'package:class_leap/src/features/authentication/screens/sign_up_screen_api.dart';
+import 'package:class_leap/src/screens/welcome/signin_screen.dart';
+import 'package:class_leap/src/screens/welcome/signup_screen.dart';
+// import 'package:class_leap/src/features/authentication/screens/sign_up_screen_api.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:class_leap/src/utils/widgets/welcome_button.dart';
