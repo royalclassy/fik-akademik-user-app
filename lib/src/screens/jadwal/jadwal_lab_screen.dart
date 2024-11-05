@@ -3,12 +3,14 @@ import 'package:class_leap/src/screens/pelaporan/form_pelaporan_kelas.dart';
 import 'package:class_leap/src/screens/pelaporan/form_pelaporan_lab.dart';
 import 'package:class_leap/src/screens/peminjaman/form_peminjaman_kelas.dart';
 import 'package:class_leap/src/screens/peminjaman/form_peminjaman_lab.dart';
+import 'package:class_leap/src/screens/welcome/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 import 'package:class_leap/src/custom_style/custom_button_two.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_kelas_screen.dart';
 import 'package:class_leap/src/custom_style/card_confirmed.dart';
 import 'package:class_leap/src/screens/jadwal/kode_dosen_mk_screen.dart';
+import 'package:class_leap/src/screens/welcome/notification_screen.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
 import 'package:flutter_sales_graph/flutter_sales_graph.dart';
 
@@ -36,7 +38,12 @@ class _JadwallabPageState extends State<JadwallabPage> {
         backgroundColor: Color(0xFFFF5833),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
+              );
+            },
             icon: const Icon(Icons.notifications, color: Colors.white),
           ),
         ],
@@ -62,14 +69,14 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   children: [
                     Expanded(
                       child: CustomButton(
-                        label: 'Lihat Jadwal Ruang Lab',
+                        label: 'Jadwal Ruang Lab',
                         onPressed: () {},
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
                       child: CustomButton(
-                        label: 'Lihat Jadwal Ruang Kelas',
+                        label: 'Jadwal Ruang Kelas',
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -86,49 +93,11 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   children: [
                     Expanded(
                       child: CustomButtonTwo(
-                        label: 'Lihat Jadwal KRSku',
+                        label: 'Jadwal KRSku',
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => KodedosenmkPage()),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
-                Text(
-                  'Peminjaman Ruang Lab dan Kelas',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        label: 'Ajukan Peminjaman Ruang Lab',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PinjamLab()),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomButton(
-                        label: 'Ajukan Peminjaman Ruang Kelas',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PinjamKelas()),
                           );
                         },
                       ),
@@ -180,7 +149,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   inputDate: DummyData.bookDate,
                   time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
                   ruangan: DummyData.ruangan,
-                  groupSize: "${DummyData.jumlahPengguna} Orang",
+                  groupSize: "${DummyData.jumlahPengguna} orang",
                   isAccepted: true,
                   bookDate: '',
                   jamMulai: '',
@@ -195,7 +164,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   inputDate: DummyData.bookDate,
                   time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
                   ruangan: DummyData.ruangan,
-                  groupSize: "${DummyData.jumlahPengguna} Orang",
+                  groupSize: "${DummyData.jumlahPengguna} orang",
                   isAccepted: true,
                   bookDate: '',
                   jamMulai: '',

@@ -21,10 +21,10 @@ class BarChart extends StatelessWidget {
         child: Center(
           child: FlutterSalesGraph(
             salesData: [100, 200, 150, 300, 250, 350],
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            labels: ['Sen', 'Sel', 'Rabu', 'Kam', 'Jum', 'Sab'],
             maxBarHeight: 250.0,
-            barWidth: 45.0,
-            colors: [Color(0xFFFFBE33), Color(0xFF3374FF), Color(0xFFFF3374)],
+            barWidth: 36.0,
+            colors: [Color(0xff3e537e), Color(0xff735596), Color(0xffb54a91)],
             dateLineHeight: 20.0,
           ),
         ),

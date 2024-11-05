@@ -1,3 +1,4 @@
+import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,23 +9,92 @@ class PinjamLab extends StatefulWidget {
 
 class _PinjamLabState extends State<PinjamLab> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _roomController = TextEditingController();
+  TextEditingController _userController = TextEditingController();
+  TextEditingController _dateController = TextEditingController();
+  TextEditingController _startTimeController = TextEditingController();
+  TextEditingController _endTimeController = TextEditingController();
+  TextEditingController _participantsController = TextEditingController();
+  TextEditingController _purposeController = TextEditingController();
+  List<Map<String, String>> ruanganList = [];
   String? _selectedRoom;
   DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
+  TimeOfDay? _startTime;
+  TimeOfDay? _endTime;
   int? _numberOfParticipants;
   String? _purpose;
+  String? message;
+  bool? isAvailable;
+
+  @override
+  void dispose() {
+    _roomController.dispose();
+    _userController.dispose();
+    _dateController.dispose();
+    _startTimeController.dispose();
+    _endTimeController.dispose();
+    _participantsController.dispose();
+    _purposeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getRuangan();
+  }
+
+  Future<void> getRuangan() async {
+    var data = await getRuang();
+    setState(() {
+      ruanganList = List<Map<String, String>>.from(data.map((item) => {
+        'id_ruangan': item['id_ruangan'].toString(),
+        'nama_ruangan': item['nama_ruangan'].toString(),
+      }));
+    });
+  }
+
+  Future<int> _submitForm() async {
+    int response = await addPeminjaman(
+      _userController.text,
+      _selectedRoom!,
+      _dateController.text,
+      _startTimeController.text,
+      _endTimeController.text,
+      _purposeController.text,
+      _participantsController.text,
+    );
+    return response;
+  }
+
+  Future<bool> _testAvailability() async {
+    bool availability = await getAvailablity(
+      _dateController.text,
+      _startTimeController.text,
+      _endTimeController.text,
+      _selectedRoom!,
+    );
+    if(availability) {
+      _submitForm();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Peminjaman Lab',
-        style: TextStyle(
-        color: Color(0xFFFFFFFF),
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),
-      ),
+        title: Text(
+          'Form Peminjaman Lab',
+          style: TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Color(0xFFFF5833),
       ),
       body: LayoutBuilder(
@@ -39,20 +109,17 @@ class _PinjamLabState extends State<PinjamLab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ruangan'),
+                      Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           hintText: 'Pilih ruangan',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         value: _selectedRoom,
-                        items: [
-                          'KHD 201', 'KHS 202', 'KHS 203', 'DS 201', 'DS 202', 'DS 203',
-                          'DS 301', 'DS 302', 'DS 303', 'DS 401', 'DS 402', 'DS 403'
-                        ].map((room) {
+                        items: ruanganList.map((room) {
                           return DropdownMenuItem(
-                            value: room,
-                            child: Text(room),
+                            value: room['id_ruangan'],
+                            child: Text(room['nama_ruangan']!),
                           );
                         }).toList(),
                         onChanged: (value) {
@@ -68,14 +135,15 @@ class _PinjamLabState extends State<PinjamLab> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Tanggal Peminjaman'),
+                      Text('Tanggal Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
+                        controller: _dateController,
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _selectedDate == null
                               ? 'Pilih tanggal'
                               : DateFormat('yyyy-MM-dd').format(_selectedDate!),
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -87,6 +155,7 @@ class _PinjamLabState extends State<PinjamLab> {
                           if (pickedDate != null) {
                             setState(() {
                               _selectedDate = pickedDate;
+                              _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
                             });
                           }
                         },
@@ -98,14 +167,15 @@ class _PinjamLabState extends State<PinjamLab> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Waktu Peminjaman'),
+                      Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
+                        controller: _startTimeController,
                         readOnly: true,
                         decoration: InputDecoration(
-                          hintText: _selectedTime == null
-                              ? 'Pilih waktu'
-                              : _selectedTime!.format(context),
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintText: _startTime == null
+                              ? 'Pilih waktu mulai'
+                              : _startTime!.format(context),
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           TimeOfDay? pickedTime = await showTimePicker(
@@ -114,24 +184,56 @@ class _PinjamLabState extends State<PinjamLab> {
                           );
                           if (pickedTime != null) {
                             setState(() {
-                              _selectedTime = pickedTime;
+                              _startTime = pickedTime;
+                              _startTimeController.text = pickedTime.format(context);
                             });
                           }
                         },
                         validator: (value) {
-                          if (_selectedTime == null) {
-                            return 'Waktu peminjaman tidak boleh kosong';
+                          if (_startTime == null) {
+                            return 'Waktu mulai tidak boleh kosong';
                           }
                           return null;
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Jumlah Peserta'),
+                      Text('Waktu Selesai', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
+                        controller: _endTimeController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: _endTime == null
+                              ? 'Pilih waktu selesai'
+                              : _endTime!.format(context),
+                          hintStyle: TextStyle(fontSize: 14),
+                        ),
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (pickedTime != null) {
+                            setState(() {
+                              _endTime = pickedTime;
+                              _endTimeController.text = pickedTime.format(context);
+                            });
+                          }
+                        },
+                        validator: (value) {
+                          if (_endTime == null) {
+                            return 'Waktu selesai tidak boleh kosong';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      Text('Jumlah Peserta', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextFormField(
+                        controller: _participantsController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'Masukkan jumlah peserta',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onChanged: (value) {
                           _numberOfParticipants = int.tryParse(value);
@@ -147,11 +249,12 @@ class _PinjamLabState extends State<PinjamLab> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Tujuan Peminjaman'),
+                      Text('Tujuan Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
+                        controller: _purposeController,
                         decoration: InputDecoration(
                           hintText: 'Masukkan tujuan peminjaman',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onChanged: (value) {
                           _purpose = value;
@@ -169,9 +272,23 @@ class _PinjamLabState extends State<PinjamLab> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                // Process the form submission
-                              }
+                                _testAvailability().then((value) {
+                                  if(value) {
+                                    setState(() {
+                                      message = 'Peminjaman berhasil';
+                                    });
+                                  }
+                                  else {
+                                    setState(() {
+                                      message = 'Ruangan tidak tersedia';
+                                    });
+                                  }
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(message ?? ''),
+                                  ),
+                                );
                             },
                             child: Text(
                               'Kirim',
@@ -179,8 +296,8 @@ class _PinjamLabState extends State<PinjamLab> {
                             ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor: Color(0xFF2F4858), // Set the button color here
+                              foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -196,7 +313,6 @@ class _PinjamLabState extends State<PinjamLab> {
           );
         },
       ),
-
     );
   }
 }

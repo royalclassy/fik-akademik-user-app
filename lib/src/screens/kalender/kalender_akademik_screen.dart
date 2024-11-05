@@ -8,21 +8,32 @@ class AcademicCalendarPage extends StatefulWidget {
   _AcademicCalendarPageState createState() => _AcademicCalendarPageState();
 }
 
-class _AcademicCalendarPageState extends State<AcademicCalendarPage> {
+class _AcademicCalendarPageState extends State<AcademicCalendarPage> with SingleTickerProviderStateMixin {
+  TabController? _tabController;
   String? localPath;
 
   @override
   void initState() {
     super.initState();
-    _loadPdf();
+    _tabController = TabController(length: 2, vsync: this);
+    _loadPdf('Universitas');
+    _tabController!.addListener(() {
+      if (_tabController!.indexIsChanging) {
+        _loadPdf(_tabController!.index == 0 ? 'Universitas' : 'Fakultas Ilmu Komputer');
+      }
+    });
   }
 
-  Future<void> _loadPdf() async {
+  Future<void> _loadPdf(String category) async {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/academic_calendar.pdf');
 
-    // Assuming you have the PDF file in your assets
-    final data = await DefaultAssetBundle.of(context).load('assets/academic_calendar.pdf');
+    // Load the appropriate PDF based on the selected category
+    final pdfAsset = category == 'Universitas'
+        ? 'assets/files/kalender_universitas.pdf'
+        : 'assets/files/kalender_fik.pdf';
+
+    final data = await DefaultAssetBundle.of(context).load(pdfAsset);
     await file.writeAsBytes(data.buffer.asUint8List());
 
     setState(() {
@@ -34,14 +45,40 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Academic Calendar'),
+        title: Text(
+          'Kalender Akademik',
+          style: TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Color(0xFFFF5833),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: 'Universitas'),
+            Tab(text: 'Fakultas Ilmu Komputer'),
+          ],
+        ),
       ),
-      body: localPath != null
-          ? PDFView(
-              filePath: localPath!,
-            )
-          : Center(child: CircularProgressIndicator()),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          localPath != null
+              ? PDFView(filePath: localPath!)
+              : Center(child: CircularProgressIndicator()),
+          localPath != null
+              ? PDFView(filePath: localPath!)
+              : Center(child: CircularProgressIndicator()),
+        ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 }

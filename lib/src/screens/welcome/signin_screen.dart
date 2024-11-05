@@ -661,6 +661,8 @@ import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:class_leap/src/screens/profile/profile_page.dart'; // Import ProfilePage
+import 'package:class_leap/src/utils/data/api_data.dart';
+import 'package:class_leap/main.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -670,7 +672,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final FirebaseAuthService _auth = FirebaseAuthService();
+  // final FirebaseAuthService _auth = FirebaseAuthService();
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -683,6 +685,24 @@ class _SignInScreenState extends State<SignInScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (_formSignInKey.currentState!.validate()) {
+      // Debug prints to check the values
+
+      int statusCode = await login(_emailController.text, _passwordController.text);
+      if (statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login success')),
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed')),
+        );
+      }
+    }
   }
 
   @override
@@ -830,17 +850,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                 lightColorScheme.primary),
                           ),
                           onPressed: () {
-                            if (_formSignInKey.currentState!.validate() &&
-                                rememberPassword) {
-                              _signIn();
-                            } else if (!rememberPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Tolong setujui pemrosesan data anda'),
-                                ),
-                              );
-                            }
+                            // if (_formSignInKey.currentState!.validate() &&
+                            //     rememberPassword) {
+                            //   _signIn();
+                            // } else if (!rememberPassword) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     const SnackBar(
+                            //       content: Text(
+                            //           'Tolong setujui pemrosesan data anda'),
+                            //     ),
+                            //   );
+                            // }
+                            _handleLogin();
                           },
                           child: Text(
                             'Masuk',

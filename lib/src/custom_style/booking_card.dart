@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/button_accept.dart';
-import 'package:class_leap/src/custom_style/button_reject.dart';
+import 'package:class_leap/src/custom_style/status_accept.dart';
+import 'package:class_leap/src/custom_style/status_reject.dart';
+import 'package:class_leap/src/custom_style/status_pending.dart';
 import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
 
@@ -12,6 +13,7 @@ class BookingCard extends StatelessWidget {
   final String groupSize;
   final Function onAccept;
   final Function onReject;
+  final String status;
 
   const BookingCard({
     Key? key,
@@ -22,6 +24,7 @@ class BookingCard extends StatelessWidget {
     required this.groupSize,
     required this.onAccept,
     required this.onReject,
+    required this.status,
   }) : super(key: key);
 
   @override
@@ -41,7 +44,8 @@ class BookingCard extends StatelessWidget {
               jamSelesai: DummyData.jamSelesai,
               jumlahPengguna: DummyData.jumlahPengguna,
               keterangan: DummyData.keterangan,
-              isAccepted: false,
+              status: status,
+              alasan: DummyData.alasan,
             ),
           ),
         );
@@ -61,14 +65,16 @@ class BookingCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    studentName,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      studentName,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  Text(inputDate),
+                  Text(inputDate, style: TextStyle(fontSize: 14),),
                 ],
               ),
               SizedBox(height: 10),
@@ -81,43 +87,44 @@ class BookingCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.access_time),
+                          Icon(Icons.access_time, size: 18,),
                           SizedBox(width: 12),
-                          Text(time),
+                          Text(time, style: TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.location_pin),
+                          Icon(Icons.location_pin, size: 18,),
                           SizedBox(width: 12),
-                          Text(ruangan),
+                          Text(ruangan, style: TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.group),
+                          Icon(Icons.group, size: 18,),
                           SizedBox(width: 12),
-                          Text(groupSize),
+                          Text(groupSize, style: TextStyle(fontSize: 14),),
                         ],
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ButtonAccept(
-                        label: 'Terima',
-                        onPressed: () => onAccept(),
-                      ),
-                      SizedBox(height: 12),
-                      ButtonReject(
-                        label: 'Tolak',
-                        onPressed: () => onReject(),
-                      ),
-                    ],
-                  ),
+                  if (status == 'Diterima')
+                    ButtonAccept(
+                      label: 'Diterima',
+                      onPressed: () => onAccept(),
+                    ),
+                  if (status == 'Ditolak')
+                    ButtonReject(
+                      label: 'Ditolak',
+                      onPressed: () => onReject(),
+                    ),
+                  if (status == 'Menunggu')
+                    ButtonPending(
+                      label: 'Menunggu',
+                      onPressed: () {},
+                    ),
                 ],
               ),
             ],

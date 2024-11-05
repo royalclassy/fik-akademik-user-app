@@ -41,14 +41,13 @@ class _LaporKelasState extends State<LaporKelas> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ruangan'),
+                      Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           hintText: 'Pilih ruangan',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
                         value: _selectedRoom,
-                        //style: TextStyle(fontSize: 14),
                         items: [
                           'KHD 201', 'KHS 202', 'KHS 203', 'DS 201', 'DS 202', 'DS 203',
                           'DS 301', 'DS 302', 'DS 303', 'DS 401', 'DS 402', 'DS 403'
@@ -71,14 +70,13 @@ class _LaporKelasState extends State<LaporKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Jenis Kendala'),
+                      Text('Jenis Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           hintText: 'Pilih jenis kendala',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
                         value: _selectedIssueType,
-                        //style: TextStyle(fontSize: 14),
                         items: [
                           'Hardware', 'Software', 'Jaringan', 'Lainnya'
                         ].map((issue) {
@@ -100,7 +98,7 @@ class _LaporKelasState extends State<LaporKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Waktu Peminjaman'),
+                      Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
@@ -128,7 +126,7 @@ class _LaporKelasState extends State<LaporKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Kode Perangkat'),
+                      Text('Kode Perangkat', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -149,7 +147,7 @@ class _LaporKelasState extends State<LaporKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Bentuk Kerusakan/Kendala'),
+                      Text('Bentuk Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Masukkan bentuk kerusakan atau kendala',
@@ -166,7 +164,7 @@ class _LaporKelasState extends State<LaporKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Deskripsi Kerusakan/Kendala'),
+                      Text('Deskripsi Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Masukkan deskripsi dengan lengkap',
@@ -198,8 +196,8 @@ class _LaporKelasState extends State<LaporKelas> {
                             ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor: Color(0xFF2F4858), // Set the button color here
+                              foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),

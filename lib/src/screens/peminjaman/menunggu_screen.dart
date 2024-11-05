@@ -34,6 +34,7 @@ class MenungguPage extends StatelessWidget {
               onReject: () {
                 // Aksi saat tombol 'Tolak' ditekan
               },
+              status: 'Menunggu', // Add status parameter
             ),
             SizedBox(height: 16),
             BookingCard(
@@ -48,6 +49,7 @@ class MenungguPage extends StatelessWidget {
               onReject: () {
                 // Aksi saat tombol 'Tolak' ditekan
               },
+              status: 'Menunggu', // Add status parameter
             ),
             SizedBox(height: 16),
             BookingCard(
@@ -62,6 +64,7 @@ class MenungguPage extends StatelessWidget {
               onReject: () {
                 // Aksi saat tombol 'Tolak' ditekan
               },
+              status: 'Menunggu', // Add status parameter
             ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:class_leap/src/utils/data/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
 
@@ -48,7 +49,8 @@ class CardConfirmed extends StatelessWidget {
               jamSelesai: jamSelesai,
               jumlahPengguna: jumlahPengguna,
               keterangan: keterangan,
-              isAccepted: isAccepted,
+              status: isAccepted? 'Diterima' : 'Ditolak',
+              alasan: '',
             ),
           ),
         );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/button_accept.dart';
-import 'package:class_leap/src/custom_style/button_reject.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart'; // Ganti dengan path yang sesuai
+import 'package:class_leap/src/custom_style/status_accept.dart';
+import 'package:class_leap/src/custom_style/status_reject.dart';
+import 'package:class_leap/src/custom_style/status_pending.dart';
+import 'package:class_leap/src/utils/data/dummy_data.dart';
 
 class DetailpeminjamanPage extends StatelessWidget {
   final String studentName;
@@ -13,6 +14,8 @@ class DetailpeminjamanPage extends StatelessWidget {
   final String jamSelesai;
   final String jumlahPengguna;
   final String keterangan;
+  final String status;
+  final String alasan;
 
   DetailpeminjamanPage({
     Key? key,
@@ -25,77 +28,51 @@ class DetailpeminjamanPage extends StatelessWidget {
     required this.jamSelesai,
     required this.jumlahPengguna,
     required this.keterangan,
-    required bool isAccepted,
+    required this.status,
+    required this.alasan,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController reasonController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Detail Peminjaman",
           style: TextStyle(
             color: Colors.white,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            buildRowWithDivider('Status', status),
             buildRowWithDivider('Nama', studentName),
             buildRowWithDivider('NIM', studentNim),
             buildRowWithDivider('Tgl Input', inputDate),
             buildRowWithDivider('Ruangan', ruangan),
-            buildRowWithDivider('Tgl Peminjaman', bookDate),
+            buildRowWithDivider('Tgl Pinjam', bookDate),
             buildRowWithDivider('Jam Mulai', jamMulai),
             buildRowWithDivider('Jam Selesai', jamSelesai),
             buildRowWithDivider('Jml Pengguna', jumlahPengguna),
             buildRowWithDivider('Keterangan', keterangan),
-            SizedBox(height: 16),
-            Text(
-              'Alasan Ditolak:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: reasonController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x99FF5833)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x99FF5833)),
-                ),
-                hintText: 'Masukkan alasan ditolak',
+            if (status == 'Ditolak') ...[
+              SizedBox(height: 8),
+              Text(
+                'Alasan Ditolak:',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              maxLines: 3,
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ButtonAccept(
-                  label: 'Terima',
-                  onPressed: () {
-                    print("Diterima");
-                  },
-                ),
-                SizedBox(width: 40),
-                ButtonReject(
-                  label: 'Tolak',
-                  onPressed: () {
-                    print("Ditolak dengan alasan: ${reasonController.text}");
-                  },
-                ),
-              ],
-            ),
+              SizedBox(height: 4),
+              Text(
+                alasan,
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
           ],
         ),
       ),
@@ -109,11 +86,11 @@ class DetailpeminjamanPage extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 160,
+              width: 140,
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -122,14 +99,14 @@ class DetailpeminjamanPage extends StatelessWidget {
               child: Text(
                 value,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
               ),
             ),
           ],
         ),
-        Divider(color: Color(0x99FF5833)),
+        Divider(color: Color(0xffede9d0)),
       ],
     );
   }

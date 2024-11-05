@@ -1,12 +1,14 @@
 import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
 import 'package:class_leap/src/screens/profile/profile_page.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
+import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:class_leap/src/user/firebase_auth_services.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,19 +23,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nimController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+
+
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _displayNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _nimController.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleSignUp() async {
+    if (_formSignUpKey.currentState!.validate()) {
+      // Debug prints to check the values
+      // print('NIM: ${_nimController.text}');
+      // print('Email: ${_emailController.text}');
+      // print('Password: ${_passwordController.text}');
+      // print('Display Name: ${_displayNameController.text}');
+      // print('Phone: ${_phoneController.text}');
+      // print('Role: $_selectedRoleInt');
+      // print('Program: $_selectedProgramInt');
+
+      String nim = await signUp(
+        _displayNameController.text,
+        _nimController.text,
+        _emailController.text,
+        _phoneController.text,
+        _passwordController.text,
+        _selectedRoleInt!,
+        _selectedProgramInt!,
+      );
+
+      // print('NIM: $nim');
+      if (nim != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login success')),
+        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_id', nim);
+
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed')),
+        );
+      }
+    }
   }
 
   final _formSignUpKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
+
+  // List of program options
+  final List<String> _programs = [
+    'S1 Informatika',
+    'S1 Sistem Informasi',
+    'D3 Sistem Informasi',
+    'S1 Data Sains',
+    'Lainnya'
+  ];
+
+  final List<String> _roles = [
+    'Dosen',
+    'Mahasiswa',
+    'Tenaga Didik'
+  ];
+
+  // List of integers corresponding to the program options
+  final List<int> _programsInt = [0, 1, 2, 3, 4];
+  final List<int> _rolesInt = [1, 2, 3];
+
+  // Variable to hold the selected program
+  String? _selectedProgram;
+  int? _selectedProgramInt;
+  String? _selectedRole;
+  int? _selectedRoleInt;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +125,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   topRight: Radius.circular(40),
                 ),
               ),
-
               child: SingleChildScrollView(
                 child: Form(
                   key: _formSignUpKey,
@@ -169,6 +236,115 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       TextFormField(
+                        controller: _phoneController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukkan nomor telepon anda';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('Nomor Telepon'),
+                          hintText: 'Masukkan nomor telepon anda',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: _selectedRole,
+                        hint: const Text('Pilih Peran'),
+                        items: _roles.map((String role) {
+                          return DropdownMenuItem<String>(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedRole = newValue;
+                            _selectedRoleInt = _roles.indexOf(newValue!);
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Pilih Peran anda';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: _selectedProgram,
+                        hint: const Text('Pilih Program Studi'),
+                        items: _programs.map((String program) {
+                          return DropdownMenuItem<String>(
+                            value: program,
+                            child: Text(program),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedProgram = newValue;
+                            _selectedProgramInt = _programs.indexOf(newValue!);
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Pilih Program Studi anda';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
@@ -233,28 +409,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  lightColorScheme.primary),),
-                            onPressed: () {
-                              if (_formSignUpKey.currentState!.validate() &&
-                                  agreePersonalData) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Processing Data'),
-                                  ),
-                                );
-                                _signUp();
-                              }
-                              else if (!agreePersonalData) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Tolong setujui penggunaan data pribadi'),
-                                  ),
-                                );
-                              }
-                            },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                lightColorScheme.primary),
+                          ),
+                          onPressed: () {
+                            _handleSignUp();
+                          },
                           child: Text(
                             'Daftar',
                             style: TextStyle(
@@ -326,6 +487,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   void _signUp() async {
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -347,13 +509,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         user = FirebaseAuth.instance.currentUser;
 
         if (user != null) {
-          // Store NIM in Firestore or Realtime Database
+          // Store NIM and selected program in Firestore or Realtime Database
           await FirebaseFirestore.instance.collection('users')
               .doc(user.uid)
               .set({
             'displayName': displayName,
             'nim': nim,
             'email': email,
+            'program': _selectedProgramInt, // Store the selected program as an integer
           });
 
           ScaffoldMessenger.of(context).showSnackBar(

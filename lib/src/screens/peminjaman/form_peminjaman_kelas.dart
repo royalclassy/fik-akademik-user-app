@@ -10,7 +10,8 @@ class _PinjamKelasState extends State<PinjamKelas> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedRoom;
   DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
+  TimeOfDay? _startTime;
+  TimeOfDay? _endTime;
   int? _numberOfParticipants;
   String? _purpose;
 
@@ -18,7 +19,8 @@ class _PinjamKelasState extends State<PinjamKelas> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Peminjaman Kelas',
+        title: Text(
+          'Form Peminjaman Kelas',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
             fontSize: 16,
@@ -39,11 +41,11 @@ class _PinjamKelasState extends State<PinjamKelas> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ruangan'),
+                      Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           hintText: 'Pilih ruangan',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         value: _selectedRoom,
                         items: [
@@ -68,14 +70,14 @@ class _PinjamKelasState extends State<PinjamKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Tanggal Peminjaman'),
+                      Text('Tanggal Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _selectedDate == null
                               ? 'Pilih tanggal'
                               : DateFormat('yyyy-MM-dd').format(_selectedDate!),
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -92,20 +94,20 @@ class _PinjamKelasState extends State<PinjamKelas> {
                         },
                         validator: (value) {
                           if (_selectedDate == null) {
-                            return 'Tanggal Peminjaman tidak boleh kosong';
+                            return 'Tanggal peminjaman tidak boleh kosong';
                           }
                           return null;
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Waktu Peminjaman'),
+                      Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
-                          hintText: _selectedTime == null
-                              ? 'Pilih waktu'
-                              : _selectedTime!.format(context),
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintText: _startTime == null
+                              ? 'Pilih waktu mulai'
+                              : _startTime!.format(context),
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           TimeOfDay? pickedTime = await showTimePicker(
@@ -114,24 +116,52 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           );
                           if (pickedTime != null) {
                             setState(() {
-                              _selectedTime = pickedTime;
+                              _startTime = pickedTime;
                             });
                           }
                         },
                         validator: (value) {
-                          if (_selectedTime == null) {
-                            return 'Waktu peminjaman tidak boleh kosong';
+                          if (_startTime == null) {
+                            return 'Waktu mulai tidak boleh kosong';
                           }
                           return null;
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Jumlah Peserta'),
+                      Text('Waktu Selesai', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextFormField(
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: _endTime == null
+                              ? 'Pilih waktu selesai'
+                              : _endTime!.format(context),
+                          hintStyle: TextStyle(fontSize: 14),
+                        ),
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (pickedTime != null) {
+                            setState(() {
+                              _endTime = pickedTime;
+                            });
+                          }
+                        },
+                        validator: (value) {
+                          if (_endTime == null) {
+                            return 'Waktu selesai tidak boleh kosong';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      Text('Jumlah Peserta', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'Masukkan jumlah peserta',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onChanged: (value) {
                           _numberOfParticipants = int.tryParse(value);
@@ -147,11 +177,11 @@ class _PinjamKelasState extends State<PinjamKelas> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Text('Tujuan Peminjaman'),
+                      Text('Tujuan Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: 'Masukkan tujuan peminjaman',
-                          hintStyle: TextStyle(fontSize: 14), // Smaller hint text
+                          hintStyle: TextStyle(fontSize: 14),
                         ),
                         onChanged: (value) {
                           _purpose = value;
@@ -179,8 +209,8 @@ class _PinjamKelasState extends State<PinjamKelas> {
                             ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor: Color(0xFF2F4858), // Set the button color here
+                              foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -196,7 +226,6 @@ class _PinjamKelasState extends State<PinjamKelas> {
           );
         },
       ),
-
     );
   }
 }

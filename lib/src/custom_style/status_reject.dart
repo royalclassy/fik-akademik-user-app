@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class ButtonReject extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final Color color;
 
-  CustomButton({
+  const ButtonReject({
     required this.label,
     required this.onPressed,
-    this.color = const Color(0xff2f4858),
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 180,
-      height: 60,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0), // Adjusted padding
+          backgroundColor: Colors.red[500], // Background color fallback to primary
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
           style: Theme.of(context).elevatedButtonTheme.style?.textStyle?.resolve({}) ??
-              const TextStyle( // Fallback text style if not defined in theme
-                fontSize: 12, // Smaller font size
+              const TextStyle( // Fallback text style jika tidak ada di tema
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),

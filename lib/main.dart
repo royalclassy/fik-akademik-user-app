@@ -1,4 +1,6 @@
 import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
+import 'package:class_leap/src/screens/welcome/sign_up_screen_api.dart';
+import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,8 +9,7 @@ import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/peminjaman_screen.dart';
 import 'package:class_leap/src/screens/pelaporan/pelaporan_screen.dart';
-import 'package:class_leap/src/screens/welcome/signin_screen.dart';
-import 'package:class_leap/src/screens/welcome/signup_screen.dart';
+import 'package:class_leap/src/screens/kalender/kalender_akademik_screen.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _pages = [
     JadwallabPage(),
     PeminjamanPage(),
+    AcademicCalendarPage(),
     PelaporanPage(),
     ProfilePage(),
   ];
@@ -66,14 +68,10 @@ class _MyAppState extends State<MyApp> {
           tertiary: Color(0xFFFF3374), // Tertiary color
         ),
       ),
-      home: AuthCheck(
-        selectedIndex: _selectedIndex,
-        pages: _pages,
-        onItemTapped: _onItemTapped,
-      ), // Use AuthCheck to determine the initial screen
+      home: const WelcomeScreen(),
       routes: {
         '/signin': (context) => const SignInScreen(),
-        '/signup': (context) => const SignUpScreen(),
+        '/signup': (context) => const SignUpScreen(), // Ensure this route is defined
         '/home': (context) => Scaffold(
           body: _pages[_selectedIndex], // Menampilkan halaman berdasarkan indeks
           bottomNavigationBar: Container(
@@ -99,11 +97,15 @@ class _MyAppState extends State<MyApp> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.bookmarks_outlined),
-                  label: 'Peminjaman',
+                  label: 'Pinjam',
                 ),
                 BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_today_rounded),
+                    label: 'Kalender',
+                  ),
+                BottomNavigationBarItem(
                   icon: Icon(Icons.warning_amber_rounded),
-                  label: 'Pelaporan',
+                  label: 'Lapor',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle_rounded),
@@ -113,73 +115,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-      },
-    );
-  }
-}
-
-class AuthCheck extends StatelessWidget {
-  final int selectedIndex;
-  final List<Widget> pages;
-  final Function(int) onItemTapped;
-
-  const AuthCheck({
-    Key? key,
-    required this.selectedIndex,
-    required this.pages,
-    required this.onItemTapped,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasData) {
-          return Scaffold(
-            body: pages[selectedIndex], // Show home page
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Color(0xFFFF5833), // Color of the top border
-                    width: 2.0, // Width of the top border
-                  ),
-                ),
-              ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Color(0xFFFFFFFF),
-                selectedItemColor: Color(0xFFFF5833), // Selected icon and text color
-                unselectedItemColor: Color(0x66FF5833), // Unselected icon and text color
-                currentIndex: selectedIndex, // Active index
-                onTap: onItemTapped, // Change index on tap
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_month_rounded),
-                    label: 'Jadwal',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.bookmarks_outlined),
-                    label: 'Peminjaman',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.warning_amber_rounded),
-                    label: 'Pelaporan',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.account_circle_rounded),
-                    label: 'Profil',
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return const WelcomeScreen();
-        }
       },
     );
   }
