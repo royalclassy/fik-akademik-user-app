@@ -92,8 +92,8 @@ class _MyAppState extends State<MyApp> {
               onTap: _onItemTapped, // Mengubah indeks saat diklik
               items: const [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_rounded),
-                  label: 'Jadwal',
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Beranda',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.bookmarks_outlined),

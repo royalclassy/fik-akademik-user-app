@@ -6,17 +6,22 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-final String base_url = 'https://7861-125-162-165-72.ngrok-free.app/api/';
+final String base_url = 'https://429b-180-252-160-189.ngrok-free.app/api/';
 late String endpoint;
 
 Future<int> login(String email, String password) async {
-  endpoint = 'login';
-  var url = Uri.parse(base_url + endpoint);
-  var response = await http.post(url, body: {
-    'email': email,
-    'password': password,
-  });
-  return response.statusCode;
+  // endpoint = 'login';
+  // var url = Uri.parse(base_url + endpoint);
+  // var response = await http.post(url, body: {
+  //   'email': email,
+  //   'password': password,
+  // });
+  // return response.statusCode;
+
+  //INI BUAT KALO RAISHA GANYALAIN NGROK
+  await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+  return 200; // Simulate a successful login response
+
 }
 
 Future<String> signUp(String nama, String nim, String email, String no_tlp, String password, int role, int prodi)  async {

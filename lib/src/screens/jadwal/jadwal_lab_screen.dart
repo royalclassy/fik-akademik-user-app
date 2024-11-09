@@ -1,18 +1,13 @@
-import 'package:class_leap/src/custom_style/bar_chart.dart';
-import 'package:class_leap/src/screens/pelaporan/form_pelaporan_kelas.dart';
-import 'package:class_leap/src/screens/pelaporan/form_pelaporan_lab.dart';
-import 'package:class_leap/src/screens/peminjaman/form_peminjaman_kelas.dart';
-import 'package:class_leap/src/screens/peminjaman/form_peminjaman_lab.dart';
+import 'package:class_leap/src/screens/jadwal/jadwal_kelas_screen.dart';
+import 'package:class_leap/src/screens/jadwal/kode_dosen_mk_screen.dart';
+import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
 import 'package:class_leap/src/screens/welcome/notification_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:class_leap/src/custom_style/home_card.dart';
+import 'package:class_leap/src/screens/welcome/lab_detail_screen.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 import 'package:class_leap/src/custom_style/custom_button_two.dart';
-import 'package:class_leap/src/screens/jadwal/jadwal_kelas_screen.dart';
-import 'package:class_leap/src/custom_style/card_confirmed.dart';
-import 'package:class_leap/src/screens/jadwal/kode_dosen_mk_screen.dart';
-import 'package:class_leap/src/screens/welcome/notification_screen.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
-import 'package:flutter_sales_graph/flutter_sales_graph.dart';
 
 class JadwallabPage extends StatefulWidget {
   const JadwallabPage({Key? key}) : super(key: key);
@@ -22,16 +17,48 @@ class JadwallabPage extends StatefulWidget {
 }
 
 class _JadwallabPageState extends State<JadwallabPage> {
+  final List<Map<String, String>> labData = [
+    {
+      'imageUrl': 'assets/images/lab_ai.png',
+      'title': 'Laboratorium AI',
+      'description': 'Description for AI Lab',
+      'floor': '1st Floor',
+      'building': 'Building A',
+    },
+    {
+      'imageUrl': 'assets/images/lab_ai.png',
+      'title': 'Laboratorium TES',
+      'description': 'Description for AI Lab',
+      'floor': '1st Floor',
+      'building': 'Building B',
+    },
+    // Add more lab data as needed
+  ];
+
+  final List<Map<String, String>> kelasData = [
+    {
+      'imageUrl': 'assets/images/kelas.png',
+      'title': 'Ruang Kelas 101',
+      'description': 'Description for Classroom 101',
+      'floor': '1st Floor',
+      'building': 'Building C',
+    },
+    // Add more classroom data as needed
+  ];
+
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Home',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
-            fontSize: 24,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -50,6 +77,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -59,8 +87,62 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   'Pemakaian Ruang Lab dan Kelas FIK UPNVJ',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Container(
+                    height: 200,
+                    child: CarouselSlider(
+                      items: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LabDetailPage(labData: labData),
+                              ),
+                            );
+                          },
+                          child: HomeCard(
+                            imageUrl: 'assets/images/lab_ai.png',
+                            title: 'Laboratorium FIK',
+                            // fontSize: _currentIndex == 0 ? 14 : 14,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => KelasDetailPage(kelasData: kelasData),
+                              ),
+                            );
+                          },
+                          child: HomeCard(
+                            imageUrl: 'assets/images/kelas.png',
+                            title: 'Ruang Kelas FIK',
+                            // fontSize: _currentIndex == 1 ? 14 : 14,
+                          ),
+                        ),
+                      ],
+                      options: CarouselOptions(
+                        height: 240,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 10),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        // onPageChanged: (index, reason) {
+                        //   setState(() {
+                        //     _currentIndex = index;
+                        //   });
+                        // },
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -103,74 +185,6 @@ class _JadwallabPageState extends State<JadwallabPage> {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(height: 30),
-                Text(
-                  'Pelaporan Kendala Lab dan Kelas FIK',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        label: 'Ajukan Kendala Lab',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LaporLab()),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomButton(
-                        label: 'Ajukan Kendala Kelas',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LaporKelas()),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
-                CardConfirmed(
-                  studentName: DummyData.studentName,
-                  studentNim: DummyData.studentNim,
-                  inputDate: DummyData.bookDate,
-                  time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
-                  ruangan: DummyData.ruangan,
-                  groupSize: "${DummyData.jumlahPengguna} orang",
-                  isAccepted: true,
-                  bookDate: '',
-                  jamMulai: '',
-                  jamSelesai: '',
-                  jumlahPengguna: '',
-                  keterangan: '',
-                ),
-                SizedBox(height: 20),
-                CardConfirmed(
-                  studentName: DummyData.studentName,
-                  studentNim: DummyData.studentNim,
-                  inputDate: DummyData.bookDate,
-                  time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
-                  ruangan: DummyData.ruangan,
-                  groupSize: "${DummyData.jumlahPengguna} orang",
-                  isAccepted: true,
-                  bookDate: '',
-                  jamMulai: '',
-                  jamSelesai: '',
-                  jumlahPengguna: '',
-                  keterangan: '',
                 ),
               ],
             ),
