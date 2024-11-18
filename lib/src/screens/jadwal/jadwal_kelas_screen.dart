@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/jam_card.dart';
 import 'package:class_leap/src/custom_style/jadwal_card.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 class JadwalkelasPage extends StatefulWidget {
   @override
@@ -9,51 +10,19 @@ class JadwalkelasPage extends StatefulWidget {
 }
 
 class _JadwalkelasPageState extends State<JadwalkelasPage> {
+  late Future<List<Map<String, dynamic>>> _jadwalFuture;
   String? selectedRoom;
 
-  // Dummy data list untuk dosen dan mata kuliah
-  final List<Map<String, String>> jadwalmkList = [
-    {
-      'ruangan': 'KHD Kelas 201',
-      'hari': 'Senin',
-      'jamMulai': '07:00',
-      'jamSelesai': '09:00',
-      'namaMatkul': 'Kalkulus',
-      'kodeMatkul': 'SSI123456789',
-      'namaDosen': 'John Doe',
-      'kodeDosen': 'SSI987654321',
-    },
-    {
-      'ruangan': 'KHD Kelas 301',
-      'hari': 'Senin',
-      'jamMulai': '09:30',
-      'jamSelesai': '12:00',
-      'namaMatkul': 'Pemrograman',
-      'kodeMatkul': 'INF123456780',
-      'namaDosen': 'Jane Smith',
-      'kodeDosen': 'IF987654322',
-    },
-    {
-      'ruangan': 'DS Kelas 401',
-      'hari': 'Selasa',
-      'jamMulai': '07:00',
-      'jamSelesai': '09:00',
-      'namaMatkul': 'Sistem Operasi',
-      'kodeMatkul': 'DSI123456781',
-      'namaDosen': 'Michael Johnson',
-      'kodeDosen': 'DSI987654323',
-    },
-    {
-      'ruangan': 'DS Kelas 402',
-      'hari': 'Selasa',
-      'jamMulai': '09:30',
-      'jamSelesai': '12:00',
-      'namaMatkul': 'Jaringan Komputer',
-      'kodeMatkul': 'SSD123456782',
-      'namaDosen': 'Emily Davis',
-      'kodeDosen': 'SSD987654324',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _jadwalFuture = fetchJadwal();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchJadwal() async {
+    List<Map<String, dynamic>> allJadwal = await api_data.getAllJadwal();
+    return allJadwal;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +30,10 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Jadwal Penggunaan Ruang Kelas',
+          'Penggunaan Ruang Lab',
           style: TextStyle(
             color: Colors.white,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -77,82 +47,66 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //use easy date timeline
                   EasyDateTimeLine(initialDate: DateTime.now()),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // SizedBox(width: 8),
-                      Text("Ruang Kelas: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      // SizedBox(width: 20),
-                      Container(
-                        // width: 200,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Color(0x99FF5833),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButton<String>(
-                          value: selectedRoom,
-                          hint: Text("Pilih", style: TextStyle(color: Colors.white)),
-                          items: [
-                            DropdownMenuItem(
-                              value: "KHD 201",
-                              child: Text("KHD 201", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "KHD 202",
-                              child: Text("KHD 202", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "KHD 203",
-                              child: Text("KHD 203", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 201",
-                              child: Text("DS 201", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 202",
-                              child: Text("DS 202", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 203",
-                              child: Text("DS 203", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 301",
-                              child: Text("DS 301", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 302",
-                              child: Text("DS 302", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 303",
-                              child: Text("DS 303", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 401",
-                              child: Text("DS 401", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 402",
-                              child: Text("DS 402", style: TextStyle(color: Colors.white)),
-                            ),
-                            DropdownMenuItem(
-                              value: "DS 403",
-                              child: Text("DS 403", style: TextStyle(color: Colors.white)),
-                            ),
-                          ],
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedRoom = newValue;
-                            });
+                      Text("Ruang Lab: ", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Color(0x99FF5833),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: DropdownButton<String>(
+                                value: selectedRoom,
+                                hint: Text("Pilih", style: TextStyle(color: Colors.white)),
+                                items: [
+                                  DropdownMenuItem(
+                                    value: "KHD 301",
+                                    child: Text("KHD 301 Lab Programming", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 302",
+                                    child: Text("KHD 302 Lab Cybersecurity", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 303",
+                                    child: Text("KHD 303 Lab Data Mining dan Data Science", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 304",
+                                    child: Text("KHD 304 Lab Artificial Intelligence", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 401",
+                                    child: Text("KHD 401 Lab Business Intelligence", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 402",
+                                    child: Text("KHD 402 Lab Database", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "KHD 403",
+                                    child: Text("KH3 402 Lab Internet of Things", style: TextStyle(color: Colors.white)),
+                                  ),
+                                ],
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedRoom = newValue;
+                                  });
+                                },
+                                dropdownColor: Color(0xFFFFBE33),
+                                underline: SizedBox(),
+                                style: TextStyle(color: Colors.white),
+                                isExpanded: true,
+                              ),
+                            );
                           },
-                          dropdownColor: Color(0xFFFFBE33),
-                          underline: SizedBox(),
                         ),
                       ),
                     ],
@@ -167,29 +121,43 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: jadwalmkList.length,
-                itemBuilder: (context, index) {
-                  final data = jadwalmkList[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      children: [
-                        JamCard(
-                          jamMulai: data['jamMulai']!,
-                          jamSelesai: data['jamSelesai']!,
-                        ),
-                        SizedBox(width: 10),
-                        JadwalCard(
-                          namaMatkul: data['namaMatkul']!,
-                          kodeMatkul: data['kodeMatkul']!,
-                          namaDosen: data['namaDosen']!,
-                          kodeDosen: data['kodeDosen']!,
-                          ruangan: data['ruangan']!,
-                        ),
-                      ],
-                    ),
-                  );
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _jadwalFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No data available'));
+                  } else {
+                    List<Map<String, dynamic>> jadwalList = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: jadwalList.length,
+                      itemBuilder: (context, index) {
+                        var jadwal = jadwalList[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          child: Row(
+                            children: [
+                              JamCard(
+                                jamMulai: jadwal['jamMulai']!,
+                                jamSelesai: jadwal['jamSelesai']!,
+                              ),
+                              SizedBox(width: 10),
+                              JadwalCard(
+                                namaMatkul: jadwal['namaMatkul']!,
+                                kodeMatkul: jadwal['kodeMatkul']!,
+                                namaDosen: jadwal['namaDosen']!,
+                                kodeDosen: jadwal['kodeDosen']!,
+                                ruangan: jadwal['ruangan']!,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),

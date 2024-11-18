@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
 
   // Daftar halaman yang ditampilkan berdasarkan indeks
   final List<Widget> _pages = [
-    JadwallabPage(),
+    JadwalPage(),
     PeminjamanPage(),
     AcademicCalendarPage(),
     PelaporanPage(),

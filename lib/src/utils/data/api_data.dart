@@ -6,27 +6,49 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-final String base_url = 'https://429b-180-252-160-189.ngrok-free.app/api/';
+final String base_url = 'https://dfca-180-252-162-159.ngrok-free.app/api/';
 late String endpoint;
 
+Map<String, String> _getHeaders() {
+  if (base_url.contains('ngrok')) {
+    return {
+      'ngrok-skip-browser-warning': '69420',
+    };
+  }
+  return {};
+}
+
 Future<int> login(String email, String password) async {
-  // endpoint = 'login';
-  // var url = Uri.parse(base_url + endpoint);
-  // var response = await http.post(url, body: {
-  //   'email': email,
-  //   'password': password,
-  // });
-  // return response.statusCode;
+  endpoint = 'login';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(url, body: {
+    'email': email,
+    'password': password,
+  }, headers: _getHeaders());
+  return response.statusCode;
 
   //INI BUAT KALO RAISHA GANYALAIN NGROK
-  await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-  return 200; // Simulate a successful login response
+  // await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+  // return 200; // Simulate a successful login response
 
+}
+
+Future<List<Map<String, dynamic>>> getAllJadwal() async {
+  endpoint = 'admin/jadwal';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: _getHeaders());
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to load data');
+  }
 }
 
 Future<String> signUp(String nama, String nim, String email, String no_tlp, String password, int role, int prodi)  async {
   endpoint= 'sign_up';
   var url = Uri.parse(base_url + endpoint);
+  print('request body: $nama, $nim, $email, $no_tlp, $password, $role, $prodi');
   var response = await http.post(url, body: {
     'nama': nama,
     'nim': nim,
@@ -35,7 +57,8 @@ Future<String> signUp(String nama, String nim, String email, String no_tlp, Stri
     'password': password,
     'id_peran': role.toString(),
     'prodi': prodi.toString(),
-  });
+  }, headers: _getHeaders());
+  print(response.body);
   //get user_id from response
   var responseBody = json.decode(response.body);
   return responseBody['user_id'].toString();
@@ -79,7 +102,7 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
     'jam_mulai': formattedStartTime,
     'jam_selesai': formattedEndTime,
     'id_ruang': idRuang,
-  });
+  }, headers: _getHeaders());
 
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
@@ -103,8 +126,7 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
         'jam_selesai': jamSelesai,
           'keterangan': keterangan,
           'jumlah_orang': jumlahOrang,
-      }
-    );
+        }, headers: _getHeaders());
     return response.statusCode;
   }
 

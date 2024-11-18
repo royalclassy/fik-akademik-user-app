@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (userId != null) {
       try {
         final response = await http.get(
-          Uri.parse('http://192.168.1.64:8000/api/user/$userId'),
+          Uri.parse('https://dfca-180-252-162-159.ngrok-free.app/api/user/$userId'),
         );
 
         if (response.statusCode == 200) {

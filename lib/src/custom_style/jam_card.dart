@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
+import 'package:intl/intl.dart';
 
 class JamCard extends StatelessWidget {
   final String jamMulai;
@@ -13,20 +13,26 @@ class JamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final timeFormat = DateFormat('HH:mm'); // Format without seconds
+    final inputFormat = DateFormat('HH:mm:ss'); // Format with seconds
+
+    DateTime jamMulaiDateTime = inputFormat.parse(jamMulai);
+    DateTime jamSelesaiDateTime = inputFormat.parse(jamSelesai);
+
     return Expanded(
       flex: 1, // Lebih kecil dibandingkan kolom mata kuliah
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            jamMulai,
+            timeFormat.format(jamMulaiDateTime),
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 16,
             ),
           ),
           Text(
-            jamSelesai,
+            timeFormat.format(jamSelesaiDateTime),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,

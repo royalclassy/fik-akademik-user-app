@@ -21,7 +21,7 @@ class LabDetailPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final lab = labData[index];
           return Padding(
-            padding: const EdgeInsets.all(8.0), // Add padding here
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Add padding here
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -46,15 +46,17 @@ class LabDetailPage extends StatelessWidget {
                         Text(
                           lab['title']!,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 5),
-                        Text(lab['description']!),
+                        Text(lab['description']!, style: TextStyle(
+                            fontSize: 14),),
                         SizedBox(height: 5),
-                        Text('Floor: ${lab['floor']}'),
-                        Text('Building: ${lab['building']}'),
+                        Text('Lantai: ${lab['floor']}'),
+                        Text('Ruangan: ${lab['room']}'),
+                        Text('Gedung: ${lab['building']}'),
                       ],
                     ),
                   ),

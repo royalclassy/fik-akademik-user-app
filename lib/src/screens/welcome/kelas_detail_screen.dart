@@ -9,50 +9,59 @@ class KelasDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ruang Kelas FIK'),
+        title: Text('Ruang Kelas FIK', style: TextStyle(
+          color: Color(0xFFFFFFFF),
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),),
         backgroundColor: Color(0xFFFF5833),
       ),
       body: ListView.builder(
         itemCount: kelasData.length,
         itemBuilder: (context, index) {
-          final kelas = kelasData[index];
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
-                  child: Image.asset(
-                    kelas['imageUrl']!,
-                    height: 150,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+          final lab = kelasData[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Add padding here
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+                    child: Image.asset(
+                      lab['imageUrl']!,
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        kelas['title']!,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          lab['title']!,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(kelas['description']!),
-                      SizedBox(height: 5),
-                      Text('Floor: ${kelas['floor']}'),
-                      Text('Building: ${kelas['building']}'),
-                    ],
+                        SizedBox(height: 5),
+                        Text(lab['description']!, style: TextStyle(
+                          fontSize: 14),),
+                        SizedBox(height: 5),
+                        Text('Lantai: ${lab['floor']}'),
+                        Text('Ruangan: ${lab['room']}'),
+                        Text('Gedung: ${lab['building']}'),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

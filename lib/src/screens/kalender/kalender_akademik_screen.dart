@@ -56,22 +56,33 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
         backgroundColor: Color(0xFFFF5833),
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          labelStyle: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.bold,
+          ),
+          unselectedLabelStyle: TextStyle(
+            fontFamily: 'Poppins',
+          ),
           tabs: [
             Tab(text: 'Universitas'),
             Tab(text: 'Fakultas Ilmu Komputer'),
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          localPath != null
-              ? PDFView(filePath: localPath!)
-              : Center(child: CircularProgressIndicator()),
-          localPath != null
-              ? PDFView(filePath: localPath!)
-              : Center(child: CircularProgressIndicator()),
-        ],
+      body: Expanded(
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            localPath != null
+                ? PDFView(filePath: localPath!)
+                : Center(child: CircularProgressIndicator()),
+            localPath != null
+                ? PDFView(filePath: localPath!)
+                : Center(child: CircularProgressIndicator()),
+          ],
+        ),
       ),
     );
   }

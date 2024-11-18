@@ -95,7 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // List of integers corresponding to the program options
   final List<int> _programsInt = [0, 1, 2, 3, 4];
-  final List<int> _rolesInt = [1, 2, 3];
+  final List<int> _rolesInt = [6, 7, 8];
 
   // Variable to hold the selected program
   String? _selectedProgram;
