@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
-import 'package:class_leap/src/utils/data/dummy_report.dart';
 import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
+import 'package:class_leap/src/utils/data/dummy_data.dart';
+import 'package:class_leap/src/custom_style/status_accept.dart';
+import 'package:class_leap/src/custom_style/status_pending.dart';
+import 'package:class_leap/src/custom_style/status_reject.dart';
 
 class ReportCard extends StatelessWidget {
   final String studentName;
+  final String studentNim;
   final String inputDate;
   final String ruangan;
   final String jenis;
-  final String status; // Mengganti bool menjadi string untuk status
+  final String bentuk;
+  final String deskripsi;
+  final String status;
 
   const ReportCard({
     Key? key,
     required this.studentName,
+    required this.studentNim,
     required this.inputDate,
     required this.ruangan,
     required this.jenis,
-    required this.status, // Mengambil status sebagai string
+    required this.bentuk,
+    required this.deskripsi,
+    required this.status,
   }) : super(key: key);
 
   @override
@@ -26,18 +34,18 @@ class ReportCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                DetailkendalaPage(
-                  // labName: DummyReport.labName,
-                  studentName: DummyReport.studentName,
-                  studentNim: DummyReport.studentNim,
-                  inputDate: DummyReport.inputDate,
-                  ruangan: DummyReport.ruangan,
-                  jenis: DummyReport.jenis,
-                  bentuk: DummyReport.bentuk,
-                  deskripsi: DummyReport.deskripsi,
-                ),
-          ),);
+            builder: (context) => DetailkendalaPage(
+              studentName: studentName,
+              studentNim: studentNim,
+              inputDate: inputDate,
+              ruangan: ruangan,
+              jenis: jenis,
+              bentuk: bentuk,
+              deskripsi: deskripsi,
+              status: status, // Pass the status parameter here
+            ),
+          ),
+        );
       },
       child: Card(
         elevation: 4,
@@ -52,16 +60,18 @@ class ReportCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(studentName,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,)
-                  ),
-                  SizedBox(width: 150),
                   Expanded(
-                    child: Text(inputDate),
+                    child: Text(
+                      studentName,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
+                  Text(inputDate, style: TextStyle(fontSize: 14),),
                 ],
               ),
               SizedBox(height: 10),
@@ -74,36 +84,44 @@ class ReportCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.location_pin),
+                          Icon(Icons.access_time, size: 18,),
                           SizedBox(width: 12),
-                          Text(ruangan),
+                          Text(jenis, style: TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.error_outline_rounded),
+                          Icon(Icons.location_pin, size: 18,),
                           SizedBox(width: 12),
-                          Text(jenis),
+                          Text(ruangan, style: TextStyle(fontSize: 14),),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.description, size: 18,),
+                          SizedBox(width: 12),
+                          Text(bentuk, style: TextStyle(fontSize: 14),),
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(), // Function to get status color
-                      borderRadius: BorderRadius.circular(8),
+                  if (status == 'Selesai')
+                    ButtonAccept(
+                      label: 'Selesai',
+                      onPressed: () {},
                     ),
-                    child: Text(
-                      status, // Display status
-                      style: TextStyle(
-                        color: Colors.white, // White text color
-                        fontWeight: FontWeight.bold,
-                      ),
+                  if (status == 'Dibatalkan')
+                    ButtonReject(
+                      label: 'Dibatalkan',
+                      onPressed: () {},
                     ),
-                  ),
+                  if (status == 'Diproses')
+                    ButtonPending(
+                      label: 'Diproses',
+                      onPressed: () {},
+                    ),
                 ],
               ),
             ],
@@ -111,32 +129,5 @@ class ReportCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  // Fungsi untuk menentukan warna berdasarkan status
-  Color _getStatusColor() {
-    switch (status) {
-      case 'Baru':
-        return Colors.green[500]!;
-      case 'Pengerjaan':
-        return Colors.yellow[500]!;
-      case 'Selesai':
-        return Colors.red[500]!;
-      default:
-        return Colors.grey; // Jika status tidak dikenali
-    }
-  }
-
-  String _mapStatus(String status) {
-    switch (status) {
-      case 'Belum Dikerjakan':
-        return 'Baru';
-      case 'Sedang Dikerjakan':
-        return 'Pengerjaan';
-      case 'Selesai':
-        return 'Selesai';
-      default:
-        return 'Unknown';
-    }
   }
 }

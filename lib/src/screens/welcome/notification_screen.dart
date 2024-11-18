@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/notification_card.dart'; // Import the NotificationCard widget
-import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart'; // Import the NotificationCard widget
-import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart'; // Import the NotificationCard widget
+import 'package:class_leap/src/custom_style/notification_card.dart';
+import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
+import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
 
 class NotificationPage extends StatelessWidget {
   @override
@@ -9,9 +9,10 @@ class NotificationPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Notifications',
+          'Notifikasi',
           style: TextStyle(
             color: Colors.white,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -23,10 +24,9 @@ class NotificationPage extends StatelessWidget {
         child: ListView(
           children: [
             NotificationCard(
-              title: 'Peminjaman Labmu Diterima',
+              title: 'Peminjaman Labmu Diterima!',
               description: 'Lab KHD 201 telah diterima untuk peminjaman.',
               onTap: () {
-                // Navigate to the detail page
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -51,7 +51,6 @@ class NotificationPage extends StatelessWidget {
               title: 'Peminjaman Labmu Ditolak',
               description: 'Lab KHD 201 ditolak untuk peminjaman.',
               onTap: () {
-                // Navigate to the detail page
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -76,13 +75,13 @@ class NotificationPage extends StatelessWidget {
               title: 'Kendala Labmu Sedang Diproses',
               description: 'Kendala di Lab KHD 201 sedang diproses.',
               onTap: () {
-                // Navigate to the detail page
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailkendalaPage(
                       studentName: 'John Doe',
                       studentNim: '123456789',
+                      status: 'Diproses',
                       inputDate: '2023-10-01',
                       ruangan: 'KHD 201',
                       jenis: 'Hardware',

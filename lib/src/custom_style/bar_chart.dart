@@ -11,7 +11,7 @@ class BarChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white, // Background color
         border: Border.all(
-          color: Color(0xFFFFBE33), // Border color
+          color: Color(0xff2f4858), // Border color
           width: 2.0, // Border width
         ),
         borderRadius: BorderRadius.circular(12), // Optional: Rounded corners

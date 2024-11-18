@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/status_dropdown.dart';
-import 'package:class_leap/src/utils/data/dummy_report.dart'; // Ganti dengan path yang sesuai
+import 'package:class_leap/src/utils/data/dummy_report.dart';
 
-class DetailkendalaPage extends StatefulWidget {
+class DetailkendalaPage extends StatelessWidget {
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -10,6 +9,7 @@ class DetailkendalaPage extends StatefulWidget {
   final String jenis;
   final String bentuk;
   final String deskripsi;
+  final String status;
 
   DetailkendalaPage({
     Key? key,
@@ -20,85 +20,35 @@ class DetailkendalaPage extends StatefulWidget {
     required this.jenis,
     required this.bentuk,
     required this.deskripsi,
+    required this.status,
   }) : super(key: key);
-
-  @override
-  _DetailkendalaPageState createState() => _DetailkendalaPageState();
-}
-
-class _DetailkendalaPageState extends State<DetailkendalaPage> {
-  String? _lastSavedStatus;
-  late TextEditingController reasonController;
-  late String _deskripsi;
-
-  @override
-  void initState() {
-    super.initState();
-    reasonController = TextEditingController(text: widget.deskripsi);
-    _deskripsi = widget.deskripsi;
-  }
-
-  void _handleSave(String status) {
-    setState(() {
-      _lastSavedStatus = status;
-      _deskripsi = reasonController.text;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detail Laporan Kendala",
+        title: Text(
+          "Detail Laporan Kendala",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833), // Warna biru untuk AppBar
+        backgroundColor: Color(0xFFFF5833),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildRowWithDivider('Nama', widget.studentName),
-            buildRowWithDivider('NIM', widget.studentNim),
-            buildRowWithDivider('Tgl Input', widget.inputDate),
-            buildRowWithDivider('Ruangan', widget.ruangan),
-            buildRowWithDivider('Jenis Kendala', widget.jenis),
-            buildRowWithDivider('Bentuk Kendala', widget.bentuk),
-            buildRowWithDivider('Deskripsi', _deskripsi),
-            SizedBox(height: 16),
-            Text(
-              'Keterangan Pengerjaan:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: reasonController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x99FF5833)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x99FF5833)),
-                ),
-                hintText: 'Masukkan keterangan penanganan kendala',
-              ),
-              maxLines: 3, // Untuk menampung beberapa baris
-            ),
-            SizedBox(height: 20),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StatusDropdown(onSave: _handleSave),
-                  // SizedBox(height: 20),
-                  // if (_lastSavedStatus != null)
-                  //   Text('Status Terakhir: $_lastSavedStatus'),
-                ]
-            )
+            buildRowWithDivider('Status', status),
+            buildRowWithDivider('Nama', studentName),
+            buildRowWithDivider('NIM', studentNim),
+            buildRowWithDivider('Tgl Input', inputDate),
+            buildRowWithDivider('Ruangan', ruangan),
+            buildRowWithDivider('Jenis Kendala', jenis),
+            buildRowWithDivider('Bentuk Kendala', bentuk),
+            buildRowWithDivider('Deskripsi', deskripsi),
           ],
         ),
       ),
@@ -112,11 +62,11 @@ class _DetailkendalaPageState extends State<DetailkendalaPage> {
         Row(
           children: [
             Container(
-              width: 160,
+              width: 140,
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -125,14 +75,14 @@ class _DetailkendalaPageState extends State<DetailkendalaPage> {
               child: Text(
                 value,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
               ),
             ),
           ],
         ),
-        Divider(color: Color(0x99FF5833)),
+        Divider(color: Color(0xffede9d0)),
       ],
     );
   }

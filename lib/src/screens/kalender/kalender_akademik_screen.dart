@@ -19,7 +19,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
     _loadPdf('Universitas');
     _tabController!.addListener(() {
       if (_tabController!.indexIsChanging) {
-        _loadPdf(_tabController!.index == 0 ? 'Universitas' : 'Fakultas Ilmu Komputer');
+        _loadPdf(_tabController!.index == 0 ? 'Universitas' : 'Fakultas');
       }
     });
   }
@@ -67,7 +67,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
           ),
           tabs: [
             Tab(text: 'Universitas'),
-            Tab(text: 'Fakultas Ilmu Komputer'),
+            Tab(text: 'Fakultas'),
           ],
         ),
       ),

@@ -5,7 +5,7 @@ import 'package:class_leap/src/custom_style/custom_button_one.dart';
 import 'package:class_leap/src/custom_style/custom_button_two.dart';
 import 'package:class_leap/src/screens/peminjaman/menunggu_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/terkonfirmasi_screen.dart';
-import 'package:class_leap/src/screens/peminjaman/semua_daftar_screen.dart';
+import 'package:class_leap/src/screens/peminjaman/semua_pinjam_screen.dart';
 import 'package:class_leap/src/custom_style/card_confirmed.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
 import 'package:class_leap/src/screens/peminjaman/form_peminjaman_lab.dart';
@@ -102,24 +102,24 @@ class PeminjamanPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     BarChart(),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: CardConfirmed(
-                        studentName: DummyData.studentName,
-                        studentNim: DummyData.studentNim,
-                        inputDate: DummyData.bookDate,
-                        time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
-                        ruangan: DummyData.ruangan,
-                        groupSize: "${DummyData.jumlahPengguna} Orang",
-                        isAccepted: true,
-                        bookDate: '',
-                        jamMulai: '',
-                        jamSelesai: '',
-                        jumlahPengguna: '',
-                        keterangan: '',
-                      ),
-                    ),
+                    // SizedBox(height: 20),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    //   child: CardConfirmed(
+                    //     studentName: DummyData.studentName,
+                    //     studentNim: DummyData.studentNim,
+                    //     inputDate: DummyData.bookDate,
+                    //     time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
+                    //     ruangan: DummyData.ruangan,
+                    //     groupSize: "${DummyData.jumlahPengguna} Orang",
+                    //     isAccepted: true,
+                    //     bookDate: '',
+                    //     jamMulai: '',
+                    //     jamSelesai: '',
+                    //     jumlahPengguna: '',
+                    //     keterangan: '',
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -192,24 +192,24 @@ class PeminjamanPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     BarChart(),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: CardConfirmed(
-                        studentName: DummyData.studentName,
-                        studentNim: DummyData.studentNim,
-                        inputDate: DummyData.bookDate,
-                        time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
-                        ruangan: DummyData.ruangan,
-                        groupSize: "${DummyData.jumlahPengguna} Orang",
-                        isAccepted: true,
-                        bookDate: '',
-                        jamMulai: '',
-                        jamSelesai: '',
-                        jumlahPengguna: '',
-                        keterangan: '',
-                      ),
-                    ),
+                    // SizedBox(height: 20),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    //   child: CardConfirmed(
+                    //     studentName: DummyData.studentName,
+                    //     studentNim: DummyData.studentNim,
+                    //     inputDate: DummyData.bookDate,
+                    //     time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
+                    //     ruangan: DummyData.ruangan,
+                    //     groupSize: "${DummyData.jumlahPengguna} Orang",
+                    //     isAccepted: true,
+                    //     bookDate: '',
+                    //     jamMulai: '',
+                    //     jamSelesai: '',
+                    //     jumlahPengguna: '',
+                    //     keterangan: '',
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
