@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -18,6 +18,30 @@ Map<String, String> _getHeaders() {
   return {};
 }
 
+Future<void> saveNimToPreferences(String nim) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('nim', nim);
+}
+
+Map<String, String> formatTime(String jamMulai, String jamSelesai) {
+  jamMulai = jamMulai.trim();
+  jamSelesai = jamSelesai.trim();
+
+  DateFormat inputFormat = DateFormat('HH:mm');
+  DateFormat outputFormat = DateFormat('HH:mm:ss');
+
+  DateTime startTime = inputFormat.parse(jamMulai);
+  DateTime endTime = inputFormat.parse(jamSelesai);
+
+  String formattedStartTime = outputFormat.format(startTime);
+  String formattedEndTime = outputFormat.format(endTime);
+
+  return {
+    'formattedStartTime': formattedStartTime,
+    'formattedEndTime': formattedEndTime,
+  };
+}
+
 Future<int> login(String email, String password) async {
   endpoint = 'login';
   var url = Uri.parse(base_url + endpoint);
@@ -25,13 +49,21 @@ Future<int> login(String email, String password) async {
     'email': email,
     'password': password,
   }, headers: _getHeaders());
-  return response.statusCode;
+  if (response.statusCode == 200) {
+    var responseBody = json.decode(response.body);
+    String nim = responseBody['nim'];
 
+    await saveNimToPreferences(nim);
+
+    return response.statusCode;
+  } else {
+    return response.statusCode;
+  }
+}
   //INI BUAT KALO RAISHA GANYALAIN NGROK
   // await Future.delayed(Duration(seconds: 1)); // Simulate network delay
   // return 200; // Simulate a successful login response
 
-}
 
 Future<List<Map<String, dynamic>>> getAllJadwal() async {
   endpoint = 'admin/jadwal';
@@ -45,10 +77,9 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
   }
 }
 
-Future<String> signUp(String nama, String nim, String email, String no_tlp, String password, int role, int prodi)  async {
-  endpoint= 'sign_up';
+Future<String> signUp(String nama, String nim, String email, String no_tlp, String password, int role, int prodi) async {
+  endpoint = 'sign_up';
   var url = Uri.parse(base_url + endpoint);
-  print('request body: $nama, $nim, $email, $no_tlp, $password, $role, $prodi');
   var response = await http.post(url, body: {
     'nama': nama,
     'nim': nim,
@@ -59,54 +90,32 @@ Future<String> signUp(String nama, String nim, String email, String no_tlp, Stri
     'prodi': prodi.toString(),
   }, headers: _getHeaders());
   print(response.body);
-  //get user_id from response
+
   var responseBody = json.decode(response.body);
-  return responseBody['user_id'].toString();
+  String nimFromResponse = responseBody['nim'];
+
+  await saveNimToPreferences(nimFromResponse);
+
+  return responseBody['message'];
 }
 
 Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, String idRuang) async {
   endpoint = 'ketersediaan-ruangan';
 
-  print('jam_mulai = $jamMulai');
-  print('jam_selesai = $jamSelesai');
-
-  // Convert time to HH:MM:SS format
-  DateFormat inputFormat = DateFormat.jm(); // 4 AM format
-  DateFormat outputFormat = DateFormat('HH:mm:ss'); // HH:MM:SS format
-
-  print('Input Format: ${inputFormat.pattern}');
-  print('Output Format: ${outputFormat.pattern}');
-
-  // Trim the input strings to remove any leading or trailing whitespace
-  jamMulai = jamMulai.trim();
-  jamSelesai = jamSelesai.trim();
-
-  print('Jam Mulai: $jamMulai');
-  print('Jam Selesai: $jamSelesai');
-
-  DateTime startTime = inputFormat.parse(jamMulai);
-  DateTime endTime = inputFormat.parse(jamSelesai);
-
-  print('Start Time: $startTime');
-  print('End Time: $endTime');
-
-  String formattedStartTime = outputFormat.format(startTime);
-  String formattedEndTime = outputFormat.format(endTime);
-
-  print('Start Time: $formattedStartTime');
-  print('End Time: $formattedEndTime');
+  var formattedTimes = formatTime(jamMulai, jamSelesai);
 
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'tgl_pinjam': tanggal,
-    'jam_mulai': formattedStartTime,
-    'jam_selesai': formattedEndTime,
+    'jam_mulai': formattedTimes['formattedStartTime']!,
+    'jam_selesai': formattedTimes['formattedEndTime']!,
     'id_ruang': idRuang,
   }, headers: _getHeaders());
 
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
     var isAvailable = responseBody['available'];
+    print("responseBody: $responseBody");
     return isAvailable;
   } else {
     print('Error: ${response.statusCode}');
@@ -114,26 +123,46 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
   }
 }
 
-  Future<int> addPeminjaman(String idUser, String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
-    endpoint = 'peminjaman';
-    var url = Uri.parse(base_url + endpoint);
-    var response = await http.post(url
-      , body: {
-        'id_user': idUser,
-        'id_ruang': idRuang,
-        'tgl_pinjam': tanggal,
-        'jam_mulai': jamMulai,
-        'jam_selesai': jamSelesai,
-          'keterangan': keterangan,
-          'jumlah_orang': jumlahOrang,
-        }, headers: _getHeaders());
-    return response.statusCode;
-  }
+Future<Map<int, String>> addPeminjaman(String idUser, String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
+  endpoint = 'peminjaman';
+
+  var formattedTimes = formatTime(jamMulai, jamSelesai);
+
+  print('formattedTimes: $formattedTimes');
+  print({
+    'id_user': idUser,
+    'id_ruang': idRuang,
+    'tgl_pinjam': tanggal,
+    'jam_mulai': formattedTimes['formattedStartTime']!,
+    'jam_selesai': formattedTimes['formattedEndTime']!,
+    'keterangan': keterangan,
+    'jumlah_orang': jumlahOrang,
+  });
+
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(url, body: {
+    'id_user': idUser,
+    'id_ruang': idRuang,
+    'tgl_pinjam': tanggal,
+    'jam_mulai': formattedTimes['formattedStartTime']!,
+    'jam_selesai': formattedTimes['formattedEndTime']!,
+    'keterangan': keterangan,
+    'jumlah_orang': jumlahOrang,
+  }, headers: _getHeaders());
+
+  // Log the full response body
+  print('Response body: ${response.body}');
+
+  // Attempt to parse the response body as JSON
+  var responseBody = json.decode(response.body);
+  print(responseBody);
+  return responseBody;
+}
 
 Future<List> getRuang() async {
   endpoint = 'ruangan';
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.get(url);
+  var response = await http.get(url, headers: _getHeaders());
   var responseBody = json.decode(response.body);
   return responseBody;
 }

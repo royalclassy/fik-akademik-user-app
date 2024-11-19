@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:class_leap/src/user/firebase_auth_services.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -63,8 +62,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login success')),
         );
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_id', nim);
 
         Navigator.pushReplacementNamed(context, '/home');
       } else {

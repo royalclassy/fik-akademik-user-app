@@ -1,6 +1,7 @@
 import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PinjamLab extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _PinjamLabState extends State<PinjamLab> {
   String? _purpose;
   String? message;
   bool? isAvailable;
+  String? userId;
 
   @override
   void dispose() {
@@ -42,6 +44,13 @@ class _PinjamLabState extends State<PinjamLab> {
   void initState() {
     super.initState();
     getRuangan();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('nim');
+    print('User ID: $userId');
   }
 
   Future<void> getRuangan() async {
@@ -54,9 +63,9 @@ class _PinjamLabState extends State<PinjamLab> {
     });
   }
 
-  Future<int> _submitForm() async {
-    int response = await addPeminjaman(
-      _userController.text,
+  Future<Map<int, String>> _submitForm() async {
+    Map<int, String> response = await addPeminjaman(
+      userId!,
       _selectedRoom!,
       _dateController.text,
       _startTimeController.text,
@@ -74,11 +83,12 @@ class _PinjamLabState extends State<PinjamLab> {
       _endTimeController.text,
       _selectedRoom!,
     );
-    if(availability) {
-      _submitForm();
-      return true;
-    }
-    else {
+    print('Availability: $availability');
+    if (availability) {
+      Map<int, String> response = await _submitForm();
+      print('Response: $response');
+      return response.containsKey(200);
+    } else {
       return false;
     }
   }
@@ -272,23 +282,24 @@ class _PinjamLabState extends State<PinjamLab> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
+                              if (_formKey.currentState!.validate()) {
                                 _testAvailability().then((value) {
-                                  if(value) {
+                                  if (value) {
                                     setState(() {
                                       message = 'Peminjaman berhasil';
                                     });
-                                  }
-                                  else {
+                                  } else {
                                     setState(() {
                                       message = 'Ruangan tidak tersedia';
                                     });
                                   }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message ?? ''),
+                                    ),
+                                  );
                                 });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(message ?? ''),
-                                  ),
-                                );
+                              }
                             },
                             child: Text(
                               'Kirim',
