@@ -3,12 +3,15 @@ import 'package:class_leap/src/screens/jadwal/kode_dosen_mk_screen.dart';
 import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
 import 'package:class_leap/src/screens/welcome/notification_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
+import 'package:class_leap/src/screens/welcome/profile_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:class_leap/src/custom_style/home_card.dart';
 import 'package:class_leap/src/screens/welcome/lab_detail_screen.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 import 'package:class_leap/src/custom_style/custom_button_two.dart';
+import 'package:class_leap/src/utils/data/profile_dosen_data.dart';
+import 'package:class_leap/src/screens/welcome/list_dosen_screen.dart';
 
 class JadwalPage extends StatefulWidget {
   const JadwalPage({Key? key}) : super(key: key);
@@ -93,6 +96,17 @@ class _JadwallabPageState extends State<JadwalPage> {
     // Add more classroom data as needed
   ];
 
+//   final List<Map<String, String>> profiles = [
+//   {
+//     'name': 'Dr. Widya Cholil, M.I.T ',
+//     'imageUrl': 'https://new-fik.upnvj.ac.id/wp-content/uploads/2024/05/widya.png',
+//   },
+//   {
+//   'name': 'Dr. Eng. Rizal Broer Bahaweres',
+//   'imageUrl': 'https://example.com/jane.jpg',
+//   },
+// ];
+
   int _currentIndex = 0;
 
   @override
@@ -130,15 +144,6 @@ class _JadwallabPageState extends State<JadwalPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Pemakaian Ruang Lab dan Kelas FIK UPNVJ',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Container(
@@ -177,7 +182,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                         ),
                       ],
                       options: CarouselOptions(
-                        height: 240,
+                        height: 300,
                         autoPlay: true,
                         autoPlayInterval: Duration(seconds: 10),
                         autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -190,6 +195,15 @@ class _JadwallabPageState extends State<JadwalPage> {
                         // },
                       ),
                     ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Jadwal Ruang Lab dan Kelas FIK UPNVJ',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 20),
@@ -237,6 +251,77 @@ class _JadwallabPageState extends State<JadwalPage> {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(height: 20),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Data Dosen',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ListDosenScreen()),
+                        );
+                      },
+                      child: Text('Lihat Semua'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: profiles.take(4).map((profile) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfiledetailPage(
+                                name: profile['name']!,
+                                imageUrl: profile['imageUrl']!,
+                                NIP: profile['NIP']!,
+                                email: profile['email']!,
+                                jabatan: profile['jabatan']!,
+                                keahlian: profile['keahlian']!,
+                                googlescholar: profile['googlescholar']!,
+                                sinta: profile['sinta']!,
+                                scopus: profile['scopus']!,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 100,
+                          margin: EdgeInsets.only(right: 10),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                backgroundImage: NetworkImage(profile['imageUrl']!),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                profile['name']!,
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),

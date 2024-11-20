@@ -151,6 +151,7 @@ class PeminjamanPage extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => PinjamKelas()),
+                                // MaterialPageRoute(builder: (context) => PinjamRuang()), //kalo jadi disatuin datanya sama yang ruang kelas
                               );
                             },
                           ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatefulWidget {
+class CustomSearchBar extends StatefulWidget {
   final Function(String) onSearch;
 
-  const SearchBar({Key? key, required this.onSearch}) : super(key: key);
+  const CustomSearchBar({Key? key, required this.onSearch}) : super(key: key);
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  _CustomSearchBarState createState() => _CustomSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _CustomSearchBarState extends State<CustomSearchBar> {
   final TextEditingController _controller = TextEditingController();
 
   @override
