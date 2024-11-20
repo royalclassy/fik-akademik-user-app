@@ -31,6 +31,9 @@ class PelaporanPage extends StatelessWidget {
             ),
           ),
           backgroundColor: Color(0xFFFF5833),
+          iconTheme: IconThemeData(
+            color: Colors.white, // Set all icons to white
+          ),
           bottom: TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,

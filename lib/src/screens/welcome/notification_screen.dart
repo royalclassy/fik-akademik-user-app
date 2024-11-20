@@ -17,6 +17,9 @@ class NotificationPage extends StatelessWidget {
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: Container(
         color: Colors.grey[200],

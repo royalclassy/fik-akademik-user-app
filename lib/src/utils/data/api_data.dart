@@ -60,9 +60,9 @@ Future<int> login(String email, String password) async {
     return response.statusCode;
   }
 }
-  //INI BUAT KALO RAISHA GANYALAIN NGROK
-  // await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-  // return 200; // Simulate a successful login response
+//INI BUAT KALO RAISHA GANYALAIN NGROK
+// await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+// return 200; // Simulate a successful login response
 
 
 Future<List<Map<String, dynamic>>> getAllJadwal() async {
@@ -167,3 +167,31 @@ Future<List> getRuang() async {
   return responseBody;
 }
 
+Future<Map<String, String>?> fetchUserData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final userId = prefs.getString('nim');
+  if (userId != null) {
+    try {
+      final response = await http.get(
+        Uri.parse('https://dfca-180-252-162-159.ngrok-free.app/api/user/$userId'),
+        headers: _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        final userData = jsonDecode(response.body);
+        return {
+          'name': userData['nama'],
+          'nim': userData['id_user'],
+          'email': userData['email'],
+        };
+      } else {
+        print('Failed to load user data');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+  return null;
+}

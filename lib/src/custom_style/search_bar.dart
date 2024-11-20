@@ -16,19 +16,22 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        controller: _controller,
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide.none,
+      child: Container(
+        width: double.infinity, // Make the search bar take the full width
+        child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            hintText: 'Cari...',
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Colors.grey[200],
           ),
-          filled: true,
-          fillColor: Colors.grey[200],
+          onChanged: widget.onSearch,
         ),
-        onChanged: widget.onSearch,
       ),
     );
   }

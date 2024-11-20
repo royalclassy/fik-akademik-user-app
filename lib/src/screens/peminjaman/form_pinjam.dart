@@ -129,8 +129,15 @@ class _PinjamRuangState extends State<PinjamRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pinjam Lab'),
+        title: Text('Pinjam Ruang', style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: Color(0xFFFFFFFF),
+        ),),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

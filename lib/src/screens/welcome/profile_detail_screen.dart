@@ -38,8 +38,15 @@ class ProfiledetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(name, style: TextStyle(
+          fontSize: 18,
+          color: Color(0xFFFFFFFF),
+          fontWeight: FontWeight.bold,
+        ),),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

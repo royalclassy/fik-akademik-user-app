@@ -45,6 +45,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Kalender Akademik',
           style: TextStyle(

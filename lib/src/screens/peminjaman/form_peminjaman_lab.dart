@@ -106,6 +106,9 @@ class _PinjamLabState extends State<PinjamLab> {
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

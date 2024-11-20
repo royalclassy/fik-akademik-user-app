@@ -33,6 +33,9 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: Column(
         children: [

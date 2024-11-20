@@ -35,6 +35,9 @@ class DetailkendalaPage extends StatelessWidget {
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:class_leap/src/utils/data/api_data.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String nim = '';
   String email = '';
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -25,46 +27,74 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('user_id');
-    if (userId != null) {
-      try {
-        final response = await http.get(
-          Uri.parse('https://dfca-180-252-162-159.ngrok-free.app/api/user/$userId'),
-        );
+    setState(() {
+      _isLoading = true;
+    });
 
-        if (response.statusCode == 200) {
-          final userData = jsonDecode(response.body);
-          setState(() {
-            name = userData['nama'];
-            nim = userData['id_user'];
-            email = userData['email'];
-          });
-        } else {
-          print('Failed to load user data');
-        }
-      } catch (e) {
-        print('Error: $e');
-      }
+    final userData = await fetchUserData();
+    if (userData != null) {
+      setState(() {
+        name = userData['name']!;
+        nim = userData['nim']!;
+        email = userData['email']!;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future<void> _logout() async {
-    await FirebaseAuth.instance.signOut();
+    //await FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-      (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
     );
   }
 
+  void _showLogoutConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _logout(); // Perform logout
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        automaticallyImplyLeading: false,
+        title: const Text('Profile', style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        )),
       ),
-      body: SingleChildScrollView(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -96,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _logout,
+                onPressed: _showLogoutConfirmationDialog,
                 child: const Text('Logout'),
               ),
             ],

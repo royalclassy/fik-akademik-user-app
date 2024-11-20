@@ -15,6 +15,9 @@ class KelasDetailPage extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: ListView.builder(
         itemCount: kelasData.length,
