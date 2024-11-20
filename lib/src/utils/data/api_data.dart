@@ -183,6 +183,7 @@ Future<Map<String, String>?> fetchUserData() async {
           'name': userData['nama'],
           'nim': userData['id_user'],
           'email': userData['email'],
+          'prodi': userData['prodi'],
         };
       } else {
         print('Failed to load user data');

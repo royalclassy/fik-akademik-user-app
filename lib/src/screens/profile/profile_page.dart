@@ -18,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String nim = '';
   String email = '';
+  String prodi = '';
   bool _isLoading = true;
 
   @override
@@ -37,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
         name = userData['name']!;
         nim = userData['nim']!;
         email = userData['email']!;
+        prodi = userData['prodi']!;
         _isLoading = false;
       });
     } else {
@@ -60,21 +62,21 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Logout'),
-          content: const Text('Are you sure you want to log out?'),
+          title: const Text('Konfirmasi Keluar'),
+          content: const Text('Apakah yakin ingin keluar?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: const Text('Cancel'),
+              child: const Text('Batalkan'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 _logout(); // Perform logout
               },
-              child: const Text('Logout'),
+              child: const Text('Keluar'),
             ),
           ],
         );
@@ -86,11 +88,15 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Profile', style: TextStyle(
+        title: const Text('Profil', style: TextStyle(
           color: Colors.white,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         )),
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -115,6 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 20),
               _buildProfileField(label: 'Email', value: email),
               const SizedBox(height: 20),
+              _buildProfileField(label: 'Program Studi', value: prodi),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
