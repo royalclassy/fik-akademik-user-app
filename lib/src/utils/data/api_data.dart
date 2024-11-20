@@ -73,7 +73,7 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();
   } else {
-    throw Exception('Failed to load data');
+    throw Exception('Gagal mengambil data jadwal');
   }
 }
 
