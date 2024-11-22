@@ -5,6 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'semua_pinjam_screen.dart'; // Import the screen to navigate to
 
 class PinjamRuang extends StatefulWidget {
+  final String room;
+
+  PinjamRuang({required this.room});
+
   @override
   _PinjamRuangState createState() => _PinjamRuangState();
 }
@@ -27,7 +31,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
   String? _purpose;
   String? message;
   bool? isAvailable;
-  String? userId;
+  // String? userId;
 
   @override
   void dispose() {
@@ -45,29 +49,29 @@ class _PinjamRuangState extends State<PinjamRuang> {
   void initState() {
     super.initState();
     getRuangan();
-    _fetchUserData();
+    // _fetchUserData();
   }
 
-  Future<void> _fetchUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('nim');
-    print('User ID: $userId');
-  }
+  // Future<void> _fetchUserData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getString('nim');
+  //   print('User ID: $userId');
+  // }
 
   Future<void> getRuangan() async {
-    var data = await getRuang();
+    var data = await getRuang(widget.room);
     setState(() {
       ruanganList = List<Map<String, String>>.from(data.map((item) => {
         'id_ruangan': item['id_ruangan'].toString(),
         'nama_ruangan': item['nama_ruangan'].toString(),
-        'type': item['type'].toString(),
+        // 'type': item['type'].toString(),
       }));
     });
   }
 
   Future<Map<int, String>> _submitForm() async {
-    Map<int, String> response = await addPeminjaman(
-      userId!,
+    final Map<int, String> response = await addPeminjaman(
+      // userId!,
       _selectedRoom!,
       _dateController.text,
       _startTimeController.text,
@@ -87,8 +91,12 @@ class _PinjamRuangState extends State<PinjamRuang> {
     );
     print('Availability: $availability');
     if (availability) {
-      Map<int, String> response = await _submitForm();
-      _showResultDialog(response.containsKey(200), response[200] ?? 'Unknown error');
+      final Map<int, String> response = await _submitForm();
+      if (response.isNotEmpty) {
+        _showResultDialog(true, response[200] ?? 'Unknown error');
+      } else {
+        _showResultDialog(false, response[200] ?? 'Unknown error');
+      }
     } else {
       _showResultDialog(false, 'Ruangan tidak tersedia');
     }
@@ -112,10 +120,30 @@ class _PinjamRuangState extends State<PinjamRuang> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(); // Close the dialog
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SemuadaftarPage()),
+                    MaterialPageRoute(builder: (context) => SemuadaftarPage(room: widget.room,)),
                   );
+
+                    _formKey.currentState?.reset();
+                    _dateController.clear();
+                    _startTimeController.clear();
+                    _endTimeController.clear();
+                    _participantsController.clear();
+                    _purposeController.clear();
+                    setState(() {
+                    _selectedRoom = null;
+                    _selectedDate = null;
+                    _startTime = null;
+                    _endTime = null;
+                    _numberOfParticipants = null;
+                    _purpose = null;
+                    });
+                  // Navigator.push(
+                    // context,
+                    // MaterialPageRoute(builder: (context) => SemuadaftarPage()),
+                  // );
                 },
                 child: Text('Lihat Semua Daftar'),
               ),

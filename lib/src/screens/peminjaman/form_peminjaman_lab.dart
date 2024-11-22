@@ -26,7 +26,7 @@ class _PinjamLabState extends State<PinjamLab> {
   String? _purpose;
   String? message;
   bool? isAvailable;
-  String? userId;
+  // String? userId;
 
   @override
   void dispose() {
@@ -44,17 +44,17 @@ class _PinjamLabState extends State<PinjamLab> {
   void initState() {
     super.initState();
     getRuangan();
-    _fetchUserData();
+    // _fetchUserData();
   }
 
-  Future<void> _fetchUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('nim');
-    print('User ID: $userId');
-  }
+  // Future<void> _fetchUserData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getString('nim');
+  //   print('User ID: $userId');
+  // }
 
   Future<void> getRuangan() async {
-    var data = await getRuang();
+    var data = await getRuang('lab');
     setState(() {
       ruanganList = List<Map<String, String>>.from(data.map((item) => {
         'id_ruangan': item['id_ruangan'].toString(),
@@ -64,8 +64,8 @@ class _PinjamLabState extends State<PinjamLab> {
   }
 
   Future<Map<int, String>> _submitForm() async {
-    Map<int, String> response = await addPeminjaman(
-      userId!,
+    final Map<int, String> response = await addPeminjaman(
+      // userId!,
       _selectedRoom!,
       _dateController.text,
       _startTimeController.text,
@@ -85,9 +85,13 @@ class _PinjamLabState extends State<PinjamLab> {
     );
     print('Availability: $availability');
     if (availability) {
-      Map<int, String> response = await _submitForm();
+      final Map<int, String> response = await _submitForm();
       print('Response: $response');
-      return response.containsKey(200);
+      if (response.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -291,6 +295,14 @@ class _PinjamLabState extends State<PinjamLab> {
                                     setState(() {
                                       message = 'Peminjaman berhasil';
                                     });
+                                    // Clear the form
+                                    _formKey.currentState!.reset();
+                                    _selectedRoom = null;
+                                    _selectedDate = null;
+                                    _startTime = null;
+                                    _endTime = null;
+                                    _numberOfParticipants = null;
+                                    _purpose = null;
                                   } else {
                                     setState(() {
                                       message = 'Ruangan tidak tersedia';

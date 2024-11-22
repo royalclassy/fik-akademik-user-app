@@ -1,16 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/booking_card.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data; // Add this import
 import 'package:intl/intl.dart';
 
 class SemuadaftarPage extends StatefulWidget {
+  final String room;
+
+  SemuadaftarPage({required this.room});
+
   @override
   _SemuadaftarPageState createState() => _SemuadaftarPageState();
 }
 
 class _SemuadaftarPageState extends State<SemuadaftarPage> {
+  late Future<List<Map<String, dynamic>>> _peminjamanFuture;
   String _selectedStatus = 'Diterima';
   DateTimeRange? _selectedDateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    _peminjamanFuture = fetchPeminjaman();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPeminjaman() async {
+    List<Map<String, dynamic>> peminjaman;
+    if(widget.room == 'lab') {
+      peminjaman = await api_data.getPeminjamanLab();
+    }else{
+      peminjaman = await api_data.getPeminjamanKelas();
+    }
+    print(peminjaman);
+    return peminjaman.toList();
+  }
 
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(

@@ -6,21 +6,36 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-final String base_url = 'https://dfca-180-252-162-159.ngrok-free.app/api/';
+final String base_url = 'http://127.0.0.1:8000/api/';
 late String endpoint;
+late SharedPreferences prefs;
 
-Map<String, String> _getHeaders() {
+Future<void> initializePreferences() async {
+  prefs = await SharedPreferences.getInstance();
+}
+
+Future<String?> getAccessToken() async {
+  await initializePreferences();
+  return prefs.getString('access_token');
+}
+
+Future<Map<String, String>> _getHeaders() async {
+  final accessToken = await getAccessToken();
+
   if (base_url.contains('ngrok')) {
     return {
+      'Authorization' : 'Bearer $accessToken',
       'ngrok-skip-browser-warning': '69420',
     };
   }
-  return {};
+  return {
+    'Authorization' : 'Bearer $accessToken',
+  };
 }
 
-Future<void> saveNimToPreferences(String nim) async {
+Future<void> saveTokenToPreferences(String token) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('nim', nim);
+  await prefs.setString('access_token', token);
 }
 
 Map<String, String> formatTime(String jamMulai, String jamSelesai) {
@@ -48,12 +63,13 @@ Future<int> login(String email, String password) async {
   var response = await http.post(url, body: {
     'email': email,
     'password': password,
-  }, headers: _getHeaders());
+    'role': 'user_dosen,user_mahasiswa,user_tendik',
+  }, headers: await _getHeaders());
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
-    String nim = responseBody['nim'];
+    String token = responseBody['token'];
 
-    await saveNimToPreferences(nim);
+    await saveTokenToPreferences(token);
 
     return response.statusCode;
   } else {
@@ -66,9 +82,9 @@ Future<int> login(String email, String password) async {
 
 
 Future<List<Map<String, dynamic>>> getAllJadwal() async {
-  endpoint = 'admin/jadwal';
+  endpoint = 'jadwal';
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.get(url, headers: _getHeaders());
+  var response = await http.get(url, headers: await _getHeaders());
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();
@@ -88,13 +104,13 @@ Future<String> signUp(String nama, String nim, String email, String no_tlp, Stri
     'password': password,
     'id_peran': role.toString(),
     'prodi': prodi.toString(),
-  }, headers: _getHeaders());
+  }, headers: await _getHeaders());
   print(response.body);
 
   var responseBody = json.decode(response.body);
-  String nimFromResponse = responseBody['nim'];
+  String token = responseBody['token'];
 
-  await saveNimToPreferences(nimFromResponse);
+  await saveTokenToPreferences(token);
 
   return responseBody['message'];
 }
@@ -110,7 +126,7 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
     'jam_mulai': formattedTimes['formattedStartTime']!,
     'jam_selesai': formattedTimes['formattedEndTime']!,
     'id_ruang': idRuang,
-  }, headers: _getHeaders());
+  }, headers: await _getHeaders());
 
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
@@ -123,14 +139,13 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
   }
 }
 
-Future<Map<int, String>> addPeminjaman(String idUser, String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
+Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
   endpoint = 'peminjaman';
 
   var formattedTimes = formatTime(jamMulai, jamSelesai);
 
   print('formattedTimes: $formattedTimes');
   print({
-    'id_user': idUser,
     'id_ruang': idRuang,
     'tgl_pinjam': tanggal,
     'jam_mulai': formattedTimes['formattedStartTime']!,
@@ -141,47 +156,87 @@ Future<Map<int, String>> addPeminjaman(String idUser, String idRuang, String tan
 
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
-    'id_user': idUser,
     'id_ruang': idRuang,
     'tgl_pinjam': tanggal,
     'jam_mulai': formattedTimes['formattedStartTime']!,
     'jam_selesai': formattedTimes['formattedEndTime']!,
     'keterangan': keterangan,
     'jumlah_orang': jumlahOrang,
-  }, headers: _getHeaders());
+  }, headers: await _getHeaders());
 
   // Log the full response body
-  print('Response body: ${response.body}');
+  // print('Response body: ${response.body}');
 
   // Attempt to parse the response body as JSON
-  var responseBody = json.decode(response.body);
-  print(responseBody);
-  return responseBody;
+  // var responseBody = json.decode(response.body);
+  // print(responseBody);
+  // return responseBody;
+    if (response.statusCode == 200) {
+    // Print the response body to understand its structure
+    final responseBody = json.decode(response.body);
+    print('responseBody: $responseBody');
+
+    // Create a Map<int, String> from the response
+    return {
+      responseBody['peminjaman_id']: responseBody['message']
+    };
+  } else {
+    throw Exception('Failed to add peminjaman');
+  }
 }
 
-Future<List> getRuang() async {
-  endpoint = 'ruangan';
+Future<List<Map<String, dynamic>>> getPeminjamanLab() async {
+  endpoint = 'peminjaman/lab';
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.get(url, headers: _getHeaders());
+  var response = await http.get(url, 
+    headers: await _getHeaders()
+    );
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to get data');
+  }
+}
+
+Future<List<Map<String, dynamic>>> getPeminjamanKelas() async {
+  endpoint = 'peminjaman/kelas';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, 
+    headers: await _getHeaders()
+    );
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to get data');
+  }
+}
+
+Future<List> getRuang(String tipe) async {
+  endpoint = 'ruangan?tipe=$tipe';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
   var responseBody = json.decode(response.body);
   return responseBody;
 }
 
 Future<Map<String, String>?> fetchUserData() async {
+  endpoint = 'user';
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  final userId = prefs.getString('nim');
-  if (userId != null) {
+  final accessToken = prefs.getString('access_token');
+  if (accessToken != null) {
     try {
       final response = await http.get(
-        Uri.parse('https://dfca-180-252-162-159.ngrok-free.app/api/user/$userId'),
-        headers: _getHeaders(),
+        Uri.parse(base_url + endpoint),
+        headers: await _getHeaders(),
       );
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
         return {
           'name': userData['nama'],
-          'nim': userData['id_user'],
+          'nim': userData['id'],
           'email': userData['email'],
           'prodi': userData['prodi'],
         };

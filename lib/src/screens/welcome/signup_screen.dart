@@ -275,8 +275,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onChanged: (String? newValue) {
                           setState(() {
                             _selectedRole = newValue;
-                            _selectedRoleInt = _roles.indexOf(newValue!);
+                            _selectedRoleInt = _rolesInt[_roles.indexOf(newValue!)];
                           });
+                          print('Selected role: $_selectedRoleInt');
                         },
                         validator: (value) {
                           if (value == null || value.isEmpty) {

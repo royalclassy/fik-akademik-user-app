@@ -76,7 +76,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PinjamLab()),
+                                MaterialPageRoute(builder: (context) => PinjamRuang(room: 'lab')),
                               );
                             },
                           ),
@@ -88,7 +88,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuadaftarPage()),
+                                MaterialPageRoute(builder: (context) => SemuadaftarPage(room: 'lab')),
                               );
                             },
                           ),
@@ -153,7 +153,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PinjamKelas()),
+                                MaterialPageRoute(builder: (context) => PinjamRuang(room: 'kelas')),
                                 // MaterialPageRoute(builder: (context) => PinjamRuang()), //kalo jadi disatuin datanya sama yang ruang kelas
                               );
                             },
@@ -166,7 +166,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuadaftarPage()),
+                                MaterialPageRoute(builder: (context) => SemuadaftarPage(room: 'kelas')),
                               );
                             },
                           ),
