@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -22,8 +23,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     String newPassword = _passwordController.text;
     if (_isPasswordValid) {
       try {
-        User? user = FirebaseAuth.instance.currentUser;
-        await user!.updatePassword(newPassword);
+        // User? user = FirebaseAuth.instance.currentUser;
+        // await user!.updatePassword(newPassword);
+        await api_data.updatePassword(newPassword);
+        
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password updated successfully')),
         );
@@ -71,10 +74,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _resetPassword,
-              child: const Text('Done'),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xFF3D5A80)),
+                backgroundColor: WidgetStateProperty.all(const Color(0xFF3D5A80)),
             ),
+              child: const Text('Done'),
             )],
         ),
       ),

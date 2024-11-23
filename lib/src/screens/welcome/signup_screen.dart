@@ -18,11 +18,11 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
-  TextEditingController _displayNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _nimController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _displayNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nimController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
 
 
@@ -58,18 +58,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       // print('NIM: $nim');
-      if (nim != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login success')),
-        );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login success')),
+      );
 
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed')),
-        );
-      }
-    }
+      Navigator.pushReplacementNamed(context, '/home');
+        }
   }
 
   final _formSignUpKey = GlobalKey<FormState>();
@@ -408,7 +402,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 lightColorScheme.primary),
                           ),
                           onPressed: () {

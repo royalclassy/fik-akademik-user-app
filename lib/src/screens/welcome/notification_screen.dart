@@ -4,11 +4,13 @@ import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart'
 import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
 
 class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Notifikasi',
           style: TextStyle(
             color: Colors.white,
@@ -16,14 +18,14 @@ class NotificationPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
       body: Container(
         color: Colors.grey[200],
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             NotificationCard(
@@ -35,8 +37,8 @@ class NotificationPage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => DetailpeminjamanPage(
                       studentName: 'John Doe',
-                      studentNim: '123456789',
-                      inputDate: '2023-10-01',
+                      // studentNim: '123456789',
+                      // inputDate: '2023-10-01',
                       ruangan: 'KHD 201',
                       bookDate: '2023-10-01',
                       jamMulai: '08:00',
@@ -59,8 +61,8 @@ class NotificationPage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => DetailpeminjamanPage(
                       studentName: 'John Doe',
-                      studentNim: '123456789',
-                      inputDate: '2023-10-01',
+                      // studentNim: '123456789',
+                      // inputDate: '2023-10-01',
                       ruangan: 'KHD 201',
                       bookDate: '2023-10-01',
                       jamMulai: '08:00',

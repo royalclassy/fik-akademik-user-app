@@ -6,11 +6,11 @@ class CustomButtonOne extends StatelessWidget {
   final String? subText; // Tambahkan parameter opsional subText
 
   const CustomButtonOne({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.subText, // SubText opsional
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class CustomButtonOne extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0), // Padding default
-          backgroundColor: Color(0xCCFF5833), // Background color fallback to primary
+          backgroundColor: const Color(0xCCFF5833), // Background color fallback to primary
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

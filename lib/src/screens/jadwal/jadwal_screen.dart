@@ -14,7 +14,7 @@ import 'package:class_leap/src/utils/data/profile_dosen_data.dart';
 import 'package:class_leap/src/screens/welcome/list_dosen_screen.dart';
 
 class JadwalPage extends StatefulWidget {
-  const JadwalPage({Key? key}) : super(key: key);
+  const JadwalPage({super.key});
 
   @override
   State<JadwalPage> createState() => _JadwallabPageState();
@@ -107,7 +107,7 @@ class _JadwallabPageState extends State<JadwalPage> {
 //   },
 // ];
 
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class _JadwallabPageState extends State<JadwalPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Home',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
@@ -123,7 +123,7 @@ class _JadwallabPageState extends State<JadwalPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
+        backgroundColor: const Color(0xFFFF5833),
         actions: [
           IconButton(
             onPressed: () {
@@ -138,7 +138,7 @@ class _JadwallabPageState extends State<JadwalPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -146,7 +146,7 @@ class _JadwallabPageState extends State<JadwalPage> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Container(
+                  child: SizedBox(
                     height: 200,
                     child: CarouselSlider(
                       items: [
@@ -159,7 +159,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                               ),
                             );
                           },
-                          child: HomeCard(
+                          child: const HomeCard(
                             imageUrl: 'assets/images/lab_ai.png',
                             title: 'Laboratorium FIK',
                             // fontSize: _currentIndex == 0 ? 14 : 14,
@@ -174,7 +174,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                               ),
                             );
                           },
-                          child: HomeCard(
+                          child: const HomeCard(
                             imageUrl: 'assets/images/kelas.png',
                             title: 'Ruang Kelas FIK',
                             // fontSize: _currentIndex == 1 ? 14 : 14,
@@ -184,8 +184,8 @@ class _JadwallabPageState extends State<JadwalPage> {
                       options: CarouselOptions(
                         height: 300,
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 10),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayInterval: const Duration(seconds: 10),
+                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
                         autoPlayCurve: Curves.fastOutSlowIn,
                         enlargeCenterPage: true,
                         // onPageChanged: (index, reason) {
@@ -197,8 +197,8 @@ class _JadwallabPageState extends State<JadwalPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Jadwal Ruang Lab dan Kelas FIK UPNVJ',
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -206,7 +206,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -221,7 +221,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                         },
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: CustomButton(
                         label: 'Jadwal Ruang Kelas',
@@ -235,7 +235,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -252,12 +252,12 @@ class _JadwallabPageState extends State<JadwalPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Data Dosen',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -272,11 +272,11 @@ class _JadwallabPageState extends State<JadwalPage> {
                           MaterialPageRoute(builder: (context) => ListDosenScreen()),
                         );
                       },
-                      child: Text('Lihat Semua'),
+                      child: const Text('Lihat Semua'),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -302,17 +302,17 @@ class _JadwallabPageState extends State<JadwalPage> {
                         },
                         child: Container(
                           width: 100,
-                          margin: EdgeInsets.only(right: 10),
+                          margin: const EdgeInsets.only(right: 10),
                           child: Column(
                             children: [
                               CircleAvatar(
                                 radius: 40,
                                 backgroundImage: NetworkImage(profile['imageUrl']!),
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
                                 profile['name']!,
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
                               ),

@@ -3,6 +3,8 @@ import 'package:class_leap/src/custom_style/mk_card.dart'; // Import MkCard
 import 'package:class_leap/src/custom_style/dosen_card.dart'; // Import MkCard
 
 class KodedosenmkPage extends StatefulWidget {
+  const KodedosenmkPage({super.key});
+
   @override
   _KodedosenmkPageState createState() => _KodedosenmkPageState();
 }
@@ -23,14 +25,14 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Kode Dosen dan Mata Kuliah',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
+        backgroundColor: const Color(0xFFFF5833),
       ),
       body: SafeArea(
         child: Column(
@@ -43,7 +45,7 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Program Studi:',
                         style: TextStyle(
                           fontSize: 18,
@@ -51,15 +53,15 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                          color: Color(0xCCFF5833),
+                          color: const Color(0xCCFF5833),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: DropdownButton<String>(
                           value: selectedProgram,
-                          hint: Text("Pilih Program", style: TextStyle(color: Colors.white)),
-                          items: [
+                          hint: const Text("Pilih Program", style: TextStyle(color: Colors.white)),
+                          items: const [
                             DropdownMenuItem(
                               value: "S1 - Informatika",
                               child: Text("S1 - Informatika",
@@ -87,14 +89,14 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
                               selectedProgram = newValue;
                             });
                           },
-                          dropdownColor: Color(0x99FF5833),
-                          underline: SizedBox(),
+                          dropdownColor: const Color(0x99FF5833),
+                          underline: const SizedBox(),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Row(
+                  const SizedBox(height: 20),
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
@@ -113,7 +115,7 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -131,7 +133,7 @@ class _KodedosenmkPageState extends State<KodedosenmkPage> {
                           dosenName: data['namaDosen']!,
                           dosenCode: data['kodeDosen']!,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         MkCard(
                           mkName: data['namaMatkul']!,
                           mkCode: data['kodeMatkul']!,

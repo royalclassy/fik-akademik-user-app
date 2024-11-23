@@ -4,6 +4,8 @@ import 'package:class_leap/src/utils/data/profile_dosen_data.dart';
 import 'package:class_leap/src/custom_style/search_bar.dart';
 
 class ListDosenScreen extends StatefulWidget {
+  const ListDosenScreen({super.key});
+
   @override
   _ListDosenScreenState createState() => _ListDosenScreenState();
 }
@@ -24,7 +26,7 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Dosen Fakultas Ilmu Komputer',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
@@ -32,8 +34,8 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -52,7 +54,7 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
                     },
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 DropdownButton<String>(
                   value: selectedJurusan,
                   onChanged: (value) {
@@ -76,11 +78,11 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
               ],
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.all(10.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
@@ -113,10 +115,10 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
                         radius: 50,
                         backgroundImage: NetworkImage(profile['imageUrl']!),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                         profile['name']!,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

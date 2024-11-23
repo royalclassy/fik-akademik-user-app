@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StatusDropdown extends StatefulWidget {
   final Function(String) onSave;
 
-  const StatusDropdown({Key? key, required this.onSave}) : super(key: key);
+  const StatusDropdown({super.key, required this.onSave});
 
   @override
   _StatusDropdownState createState() => _StatusDropdownState();
@@ -24,7 +24,7 @@ class _StatusDropdownState extends State<StatusDropdown> {
       children: [
         DropdownButton<String>(
           value: _selectedStatus,
-          hint: Text('Pilih Status'),
+          hint: const Text('Pilih Status'),
           items: _statusOptions.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -37,7 +37,7 @@ class _StatusDropdownState extends State<StatusDropdown> {
             });
           },
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
             if (_selectedStatus != null) {
@@ -46,7 +46,7 @@ class _StatusDropdownState extends State<StatusDropdown> {
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0), // Reduced padding
-            backgroundColor: Color(0xFFFF5833), // Background color fallback to primary
+            backgroundColor: const Color(0xFFFF5833), // Background color fallback to primary
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),

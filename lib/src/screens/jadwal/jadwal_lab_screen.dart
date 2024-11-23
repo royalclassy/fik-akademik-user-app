@@ -5,22 +5,41 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 class JadwallabPage extends StatefulWidget {
+  const JadwallabPage({super.key});
+
   @override
   _JadwallabPageState createState() => _JadwallabPageState();
 }
 
 class _JadwallabPageState extends State<JadwallabPage> {
   late Future<List<Map<String, dynamic>>> _jadwalFuture;
+  List<Map<String, String>> ruanganList = [];
   String? selectedRoom;
 
   @override
   void initState() {
     super.initState();
     _jadwalFuture = fetchJadwal();
+    getRuangan();
   }
 
-  Future<List<Map<String, dynamic>>> fetchJadwal() async {
+  Future<void> getRuangan() async {
+    var data = await api_data.getRuang('lab');
+    setState(() {
+      ruanganList = List<Map<String, String>>.from(data.map((item) => {
+        'id_ruangan': item['id_ruangan'].toString(),
+        'nama_ruangan': item['nama_ruangan'].toString(),
+      }));
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> fetchJadwal([String? room]) async {
     List<Map<String, dynamic>> allJadwal = await api_data.getAllJadwal();
+    allJadwal = allJadwal.where((jadwal) => jadwal['tipe_ruang'] == 'lab').toList();
+    if (room != null) {
+      print(room);
+      allJadwal = allJadwal.where((jadwal) => jadwal['ruangan'] == room).toList();
+    }
     return allJadwal;
   }
 
@@ -29,7 +48,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Penggunaan Ruang Lab',
           style: TextStyle(
             color: Colors.white,
@@ -37,7 +56,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
+        backgroundColor: const Color(0xFFFF5833),
       ),
       body: SafeArea(
         child: Column(
@@ -48,61 +67,38 @@ class _JadwallabPageState extends State<JadwallabPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   EasyDateTimeLine(initialDate: DateTime.now()),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("Ruang Lab: ", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      const Text("Ruang Lab: ", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                       Expanded(
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
-                                color: Color(0x99FF5833),
+                                color: const Color(0x99FF5833),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: DropdownButton<String>(
                                 value: selectedRoom,
-                                hint: Text("Pilih", style: TextStyle(color: Colors.white)),
-                                items: [
-                                  DropdownMenuItem(
-                                    value: "KHD 301",
-                                    child: Text("KHD 301 Lab Programming", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 302",
-                                    child: Text("KHD 302 Lab Cybersecurity", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 303",
-                                    child: Text("KHD 303 Lab Data Mining dan Data Science", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 304",
-                                    child: Text("KHD 304 Lab Artificial Intelligence", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 401",
-                                    child: Text("KHD 401 Lab Business Intelligence", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 402",
-                                    child: Text("KHD 402 Lab Database", style: TextStyle(color: Colors.white)),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "KHD 403",
-                                    child: Text("KH3 402 Lab Internet of Things", style: TextStyle(color: Colors.white)),
-                                  ),
-                                ],
+                                hint: const Text("Pilih", style: TextStyle(color: Colors.white)),
+                                items: ruanganList.map((room) {
+                                  return DropdownMenuItem(
+                                    value: room['nama_ruangan'],
+                                    child: Text(room['nama_ruangan']!),
+                                  );
+                                }).toList(),
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedRoom = newValue;
+                                    _jadwalFuture = fetchJadwal(selectedRoom);
                                   });
                                 },
-                                dropdownColor: Color(0xFFFFBE33),
-                                underline: SizedBox(),
-                                style: TextStyle(color: Colors.white),
+                                dropdownColor: const Color(0xFFFFBE33),
+                                underline: const SizedBox(),
+                                style: const TextStyle(color: Colors.white),
                                 isExpanded: true,
                               ),
                             );
@@ -111,11 +107,11 @@ class _JadwallabPageState extends State<JadwallabPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     height: 1,
                     width: double.infinity,
-                    color: Color(0xFFFF5833),
+                    color: const Color(0xFFFF5833),
                   ),
                 ],
               ),
@@ -125,11 +121,11 @@ class _JadwallabPageState extends State<JadwallabPage> {
                 future: _jadwalFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return const Center(child: Text('No data available'));
                   } else {
                     List<Map<String, dynamic>> jadwalList = snapshot.data!;
                     return ListView.builder(
@@ -144,7 +140,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
                                 jamMulai: jadwal['jamMulai']!,
                                 jamSelesai: jadwal['jamSelesai']!,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               JadwalCard(
                                 namaMatkul: jadwal['namaMatkul']!,
                                 kodeMatkul: jadwal['kodeMatkul']!,

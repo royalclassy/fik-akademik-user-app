@@ -19,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String nim = '';
   String email = '';
   String prodi = '';
+  String profile = '';
   bool _isLoading = true;
 
   @override
@@ -39,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
         nim = userData['nim']!;
         email = userData['email']!;
         prodi = userData['prodi']!;
+        profile = userData['profil']!;
         _isLoading = false;
       });
     } else {
@@ -99,15 +101,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('assets/images/sylus.jpg'),
+                backgroundImage: Image.network(profile ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png').image
               ),
               const SizedBox(height: 20),
               Text(

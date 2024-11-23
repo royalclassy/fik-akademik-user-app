@@ -6,11 +6,11 @@ class HomeCard extends StatelessWidget {
   final double fontSize;
 
   const HomeCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     this.fontSize = 14,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class HomeCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(10.0)),
             child: Image.asset(
               imageUrl,
               height: 150,

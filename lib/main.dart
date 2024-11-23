@@ -30,7 +30,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -41,11 +41,11 @@ class _MyAppState extends State<MyApp> {
 
   // Daftar halaman yang ditampilkan berdasarkan indeks
   final List<Widget> _pages = [
-    JadwalPage(),
+    const JadwalPage(),
     PeminjamanPage(),
     AcademicCalendarPage(),
     PelaporanPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   // Fungsi untuk mengganti halaman saat tombol BottomNavigationBar diklik
@@ -63,9 +63,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Color(0xFFFF5833), // Primary color
-          secondary: Color(0xFFFFBE33), // Secondary color
-          tertiary: Color(0xFFFF3374), // Tertiary color
+          primary: const Color(0xFFFF5833), // Primary color
+          secondary: const Color(0xFFFFBE33), // Secondary color
+          tertiary: const Color(0xFFFF3374), // Tertiary color
         ),
       ),
       home: const WelcomeScreen(),
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => Scaffold(
           body: _pages[_selectedIndex], // Menampilkan halaman berdasarkan indeks
           bottomNavigationBar: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(
                   color: Color(0xFFFF5833), // Color of the top border
@@ -85,9 +85,9 @@ class _MyAppState extends State<MyApp> {
             ),
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              backgroundColor: Color(0xFFFFFFFF),
-              selectedItemColor: Color(0xFFFF5833), // Warna icon dan text yang dipilih
-              unselectedItemColor: Color(0x66FF5833), // Warna icon dan text yang tidak dipilih
+              backgroundColor: const Color(0xFFFFFFFF),
+              selectedItemColor: const Color(0xFFFF5833), // Warna icon dan text yang dipilih
+              unselectedItemColor: const Color(0x66FF5833), // Warna icon dan text yang tidak dipilih
               currentIndex: _selectedIndex, // Indeks yang aktif
               onTap: _onItemTapped, // Mengubah indeks saat diklik
               items: const [

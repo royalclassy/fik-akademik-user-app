@@ -4,7 +4,7 @@ class ButtonReject extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
 
-  const ButtonReject({
+  const ButtonReject({super.key, 
     required this.label,
     required this.onPressed,
   });

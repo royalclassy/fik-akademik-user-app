@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 class KelasDetailPage extends StatelessWidget {
   final List<Map<String, String>> kelasData;
 
-  const KelasDetailPage({Key? key, required this.kelasData}) : super(key: key);
+  const KelasDetailPage({super.key, required this.kelasData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ruang Kelas FIK', style: TextStyle(
+        title: const Text('Ruang Kelas FIK', style: TextStyle(
           color: Color(0xFFFFFFFF),
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -33,7 +33,7 @@ class KelasDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(10.0)),
                     child: Image.asset(
                       lab['imageUrl']!,
                       height: 150,
@@ -48,15 +48,15 @@ class KelasDetailPage extends StatelessWidget {
                       children: [
                         Text(
                           lab['title']!,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 5),
-                        Text(lab['description']!, style: TextStyle(
+                        const SizedBox(height: 5),
+                        Text(lab['description']!, style: const TextStyle(
                           fontSize: 14),),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text('Lantai: ${lab['floor']}'),
                         Text('Ruangan: ${lab['room']}'),
                         Text('Gedung: ${lab['building']}'),

@@ -84,6 +84,8 @@ import 'package:class_leap/src/utils/data/dummy_data.dart';
 //import 'package:admin_fik_app/pages/datas/api_service.dart';
 
 class TerkonfirmasiPage extends StatefulWidget {
+  const TerkonfirmasiPage({super.key});
+
   @override
   _TerkonfirmasiPageState createState() => _TerkonfirmasiPageState();
 }
@@ -103,20 +105,20 @@ class _TerkonfirmasiPageState extends State<TerkonfirmasiPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Daftar Sudah Dikonfirmasi',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF58433),
+        backgroundColor: const Color(0xffff58433),
       ),
       body: Container(
         color: Colors.grey[200],
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
-          children: [
+          children: const [
             CardConfirmed(
               studentName: DummyData.studentName,
               inputDate: DummyData.bookDate,
@@ -124,7 +126,7 @@ class _TerkonfirmasiPageState extends State<TerkonfirmasiPage> {
               ruangan: DummyData.ruangan,
               groupSize: "${DummyData.jumlahPengguna} Orang",
               isAccepted: true,
-              studentNim: DummyData.studentNim,
+              // studentNim: DummyData.studentNim,
               bookDate: DummyData.bookDate,
               jamMulai: DummyData.jamMulai,
               jamSelesai: DummyData.jamSelesai,
@@ -139,7 +141,7 @@ class _TerkonfirmasiPageState extends State<TerkonfirmasiPage> {
               ruangan: DummyData.ruangan,
               groupSize: "${DummyData.jumlahPengguna} Orang",
               isAccepted: false,
-              studentNim: DummyData.studentNim,
+              // studentNim: DummyData.studentNim,
               bookDate: DummyData.bookDate,
               jamMulai: DummyData.jamMulai,
               jamSelesai: DummyData.jamSelesai,

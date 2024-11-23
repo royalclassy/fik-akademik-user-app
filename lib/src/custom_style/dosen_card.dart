@@ -6,10 +6,10 @@ class DosenCard extends StatelessWidget {
   final String dosenCode;
 
   const DosenCard({
-    Key? key,
+    super.key,
     required this.dosenName,
     required this.dosenCode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class DosenCard extends StatelessWidget {
         children: [
           Text(
             dosenName, // Data Dosen
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

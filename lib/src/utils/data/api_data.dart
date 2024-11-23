@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-final String base_url = 'http://127.0.0.1:8000/api/';
+const String base_url = 'http://127.0.0.1:8000/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -93,14 +93,14 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
   }
 }
 
-Future<String> signUp(String nama, String nim, String email, String no_tlp, String password, int role, int prodi) async {
+Future<String> signUp(String nama, String nim, String email, String noTlp, String password, int role, int prodi) async {
   endpoint = 'sign_up';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'nama': nama,
     'nim': nim,
     'email': email,
-    'no_tlp': no_tlp,
+    'no_tlp': noTlp,
     'password': password,
     'id_peran': role.toString(),
     'prodi': prodi.toString(),
@@ -185,22 +185,8 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   }
 }
 
-Future<List<Map<String, dynamic>>> getPeminjamanLab() async {
-  endpoint = 'peminjaman/lab';
-  var url = Uri.parse(base_url + endpoint);
-  var response = await http.get(url, 
-    headers: await _getHeaders()
-    );
-  if (response.statusCode == 200) {
-    List<dynamic> data = json.decode(response.body);
-    return data.cast<Map<String, dynamic>>();
-  } else {
-    throw Exception('Failed to get data');
-  }
-}
-
-Future<List<Map<String, dynamic>>> getPeminjamanKelas() async {
-  endpoint = 'peminjaman/kelas';
+Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
+  endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, 
     headers: await _getHeaders()
@@ -221,6 +207,72 @@ Future<List> getRuang(String tipe) async {
   return responseBody;
 }
 
+Future<List<Map<String, dynamic>>> getKendala(String room) async {
+  endpoint = 'kendala/$room';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, 
+    headers: await _getHeaders()
+    );
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to get data');
+  }
+}
+
+Future<List> getJenisKendala() async {
+  endpoint = 'kendala/jenis';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  var responseBody = json.decode(response.body);
+  return responseBody;
+}
+
+Future<List> getBentukKendala() async {
+  endpoint = 'kendala/bentuk';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  var responseBody = json.decode(response.body);
+  return responseBody;
+}
+
+Future<Map<int, String>> createKendala(String idRuang, String idJenisKendala, String idBentukKendala, String deskripsi) async {
+  endpoint = 'kendala';
+  print('idRuang: $idRuang, $idJenisKendala, $idBentukKendala, $deskripsi');
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(url, body: {
+    'id_ruang': idRuang,
+    'id_jenis_kendala': idJenisKendala,
+    'id_bentuk_kendala': idBentukKendala,
+    'deskripsi_kendala': deskripsi,
+  }, headers: await _getHeaders());
+
+  if (response.statusCode == 200) {
+    final responseBody = json.decode(response.body);
+    return {
+      responseBody['kendala_id']: responseBody['message']
+    };
+  } else {
+    throw Exception('Failed to create kendala');
+  }
+}
+
+Future<Map<String, String>> updatePassword(String newPassword) async {
+  endpoint = 'user/upadate/password';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(url, body: {
+    'password': newPassword,
+  }, headers: await _getHeaders());
+  if (response.statusCode == 200) {
+    return {
+      'message': 'Password updated successfully'
+    };
+  } else {
+    throw Exception('Failed to update password');
+  }
+}
+
 Future<Map<String, String>?> fetchUserData() async {
   endpoint = 'user';
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -239,6 +291,7 @@ Future<Map<String, String>?> fetchUserData() async {
           'nim': userData['id'],
           'email': userData['email'],
           'prodi': userData['prodi'],
+          'profil': userData['profil'],
         };
       } else {
         print('Failed to load user data');

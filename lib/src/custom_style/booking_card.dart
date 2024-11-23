@@ -10,22 +10,28 @@ class BookingCard extends StatelessWidget {
   final String studentName;
   final String inputDate;
   final String time;
+  final String timeStart;
+  final String timeEnd;
+  final String description;
   final String groupSize;
   final Function onAccept;
   final Function onReject;
   final String status;
 
   const BookingCard({
-    Key? key,
+    super.key,
     required this.ruangan,
     required this.studentName,
     required this.inputDate,
     required this.time,
+    required this.timeStart,
+    required this.timeEnd,
+    required this.description,
     required this.groupSize,
     required this.onAccept,
     required this.onReject,
     required this.status,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +42,16 @@ class BookingCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => DetailpeminjamanPage(
               studentName: studentName,
-              studentNim: DummyData.studentNim,
-              inputDate: inputDate,
+              // studentNim: DummyData.studentNim,
+              // inputDate: inputDate,
               ruangan: ruangan,
-              bookDate: DummyData.bookDate,
-              jamMulai: DummyData.jamMulai,
-              jamSelesai: DummyData.jamSelesai,
-              jumlahPengguna: DummyData.jumlahPengguna,
-              keterangan: DummyData.keterangan,
+              bookDate: inputDate,
+              jamMulai: timeStart,
+              jamSelesai: timeEnd,
+              jumlahPengguna: groupSize,
+              keterangan: description,
               status: status,
-              alasan: DummyData.alasan,
+              // alasan: DummyData.alasan,
             ),
           ),
         );
@@ -53,8 +59,8 @@ class BookingCard extends StatelessWidget {
       child: Card(
         elevation: 4,
         child: Container(
-          margin: EdgeInsets.all(8.0),
-          padding: EdgeInsets.all(16.0),
+          margin: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -68,16 +74,16 @@ class BookingCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       studentName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  Text(inputDate, style: TextStyle(fontSize: 14),),
+                  Text(inputDate, style: const TextStyle(fontSize: 14),),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,25 +93,25 @@ class BookingCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.access_time, size: 18,),
-                          SizedBox(width: 12),
-                          Text(time, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.access_time, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(time, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.location_pin, size: 18,),
-                          SizedBox(width: 12),
-                          Text(ruangan, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.location_pin, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(ruangan, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.group, size: 18,),
-                          SizedBox(width: 12),
-                          Text(groupSize, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.group, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(groupSize, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
                     ],

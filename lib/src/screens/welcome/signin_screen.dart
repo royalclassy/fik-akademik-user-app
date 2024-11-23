@@ -674,8 +674,8 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   // final FirebaseAuthService _auth = FirebaseAuthService();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final _formSignInKey = GlobalKey<FormState>();
   bool rememberPassword = true;
@@ -694,12 +694,12 @@ class _SignInScreenState extends State<SignInScreen> {
       int statusCode = await login(_emailController.text, _passwordController.text);
       if (statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login success')),
+          const SnackBar(content: Text('Login success')),
         );
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed')),
+          const SnackBar(content: Text('Login failed')),
         );
       }
     }
@@ -846,7 +846,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 lightColorScheme.primary),
                           ),
                           onPressed: () {

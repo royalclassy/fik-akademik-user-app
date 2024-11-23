@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class LaporLab extends StatefulWidget {
+  const LaporLab({super.key});
+
   @override
   _LaporLabState createState() => _LaporLabState();
 }
@@ -19,7 +21,7 @@ class _LaporLabState extends State<LaporLab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Form Pelaporan Kendala Lab',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
@@ -27,8 +29,8 @@ class _LaporLabState extends State<LaporLab> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -44,9 +46,9 @@ class _LaporLabState extends State<LaporLab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Pilih ruangan',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -72,10 +74,10 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Jenis Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Jenis Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Pilih jenis kendala',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -100,15 +102,15 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _selectedTime == null
                               ? 'Pilih waktu'
                               : _selectedTime!.format(context),
-                          hintStyle: TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           TimeOfDay? pickedTime = await showTimePicker(
@@ -128,11 +130,11 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Kode Perangkat', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Kode Perangkat', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Masukkan Kode Perangkat',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -149,10 +151,10 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Bentuk Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Bentuk Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Masukkan bentuk kerusakan atau kendala',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -166,10 +168,10 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Deskripsi Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Deskripsi Kerusakan atau Kendala', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Masukkan deskripsi dengan lengkap',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -183,7 +185,7 @@ class _LaporLabState extends State<LaporLab> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -193,17 +195,17 @@ class _LaporLabState extends State<LaporLab> {
                                 // Process the form submission
                               }
                             },
-                            child: Text(
-                              'Kirim',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              backgroundColor: Color(0xFF2F4858), // Set the button color here
+                              backgroundColor: const Color(0xFF2F4858), // Set the button color here
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
+                            ),
+                            child: Text(
+                              'Kirim',
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],

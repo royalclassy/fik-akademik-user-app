@@ -13,6 +13,8 @@ import 'package:class_leap/src/screens/peminjaman/form_peminjaman_lab.dart';
 import 'package:class_leap/src/screens/peminjaman/form_peminjaman_kelas.dart';
 
 class PeminjamanPage extends StatelessWidget {
+  const PeminjamanPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,7 +23,7 @@ class PeminjamanPage extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false, // Disable back button
-          title: Text(
+          title: const Text(
             'Peminjaman Ruangan',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
@@ -29,11 +31,11 @@ class PeminjamanPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: Color(0xFFFF5833),
-          iconTheme: IconThemeData(
+          backgroundColor: const Color(0xFFFF5833),
+          iconTheme: const IconThemeData(
             color: Colors.white, // Set all icons to white
           ),
-          bottom: TabBar(
+          bottom: const TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             labelStyle: TextStyle(
@@ -58,7 +60,7 @@ class PeminjamanPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Peminjaman Ruang Lab Komputer FIK',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -66,7 +68,7 @@ class PeminjamanPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -81,7 +83,7 @@ class PeminjamanPage extends StatelessWidget {
                             },
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: CustomButton(
                             label: 'Lihat Semua Daftar',
@@ -95,8 +97,8 @@ class PeminjamanPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
-                    Text(
+                    const SizedBox(height: 30),
+                    const Text(
                       'Kepadatan Peminjaman Ruang Lab FIK',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -104,8 +106,8 @@ class PeminjamanPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    BarChart(),
+                    const SizedBox(height: 10),
+                    const BarChart(),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -135,7 +137,7 @@ class PeminjamanPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Peminjaman Ruang Kelas Komputer FIK',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -143,7 +145,7 @@ class PeminjamanPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -159,7 +161,7 @@ class PeminjamanPage extends StatelessWidget {
                             },
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: CustomButton(
                             label: 'Lihat Semua Daftar',
@@ -186,8 +188,8 @@ class PeminjamanPage extends StatelessWidget {
                     //     },
                     //   ),
                     // ),
-                    SizedBox(height: 30),
-                    Text(
+                    const SizedBox(height: 30),
+                    const Text(
                       'Kepadatan Peminjaman Ruang Kelas FIK',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -195,8 +197,8 @@ class PeminjamanPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    BarChart(),
+                    const SizedBox(height: 10),
+                    const BarChart(),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),

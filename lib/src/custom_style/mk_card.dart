@@ -4,7 +4,7 @@ class MkCard extends StatelessWidget {
   final String mkName;
   final String mkCode;
 
-  MkCard({required this.mkName, required this.mkCode});
+  const MkCard({super.key, required this.mkName, required this.mkCode});
 
   @override
   Widget build(BuildContext context) {
@@ -12,16 +12,16 @@ class MkCard extends StatelessWidget {
       flex: 2,
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xCCFF5833), // Background warna untuk mata kuliah
+          color: const Color(0xCCFF5833), // Background warna untuk mata kuliah
           borderRadius: BorderRadius.circular(12), // Tambahkan border radius
         ),
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               mkName, // Data Mata Kuliah
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: Colors.white,
@@ -30,14 +30,14 @@ class MkCard extends StatelessWidget {
             Text(
               mkCode, // Kode Mata Kuliah
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),
             // Tambahan teks untuk testing jika diperlukan
             Text(
               mkName, // Data Mata Kuliah
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: Colors.white,
@@ -45,7 +45,7 @@ class MkCard extends StatelessWidget {
             ),
             Text(
               mkCode, // Kode Mata Kuliah
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),

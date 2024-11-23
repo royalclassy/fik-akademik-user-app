@@ -11,8 +11,8 @@ class DetailkendalaPage extends StatelessWidget {
   final String deskripsi;
   final String status;
 
-  DetailkendalaPage({
-    Key? key,
+  const DetailkendalaPage({
+    super.key,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -21,21 +21,21 @@ class DetailkendalaPage extends StatelessWidget {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Detail Laporan Kendala",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -64,11 +64,11 @@ class DetailkendalaPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
+            SizedBox(
               width: 140,
               child: Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
@@ -77,7 +77,7 @@ class DetailkendalaPage extends StatelessWidget {
             Expanded(
               child: Text(
                 value,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
@@ -85,7 +85,7 @@ class DetailkendalaPage extends StatelessWidget {
             ),
           ],
         ),
-        Divider(color: Color(0xffede9d0)),
+        const Divider(color: Color(0xffede9d0)),
       ],
     );
   }

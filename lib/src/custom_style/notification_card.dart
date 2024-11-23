@@ -5,7 +5,7 @@ class NotificationCard extends StatelessWidget {
   final String description;
   final VoidCallback onTap;
 
-  const NotificationCard({
+  const NotificationCard({super.key, 
     required this.title,
     required this.description,
     required this.onTap,
@@ -14,7 +14,7 @@ class NotificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -23,22 +23,22 @@ class NotificationCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.0),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12.0,
                   color: Colors.black54,
                 ),

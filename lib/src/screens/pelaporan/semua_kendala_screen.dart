@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/report_card.dart';
-import 'package:class_leap/src/utils/data/dummy_report.dart';
+// import 'package:class_leap/src/utils/data/dummy_report.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
 
 class SemuakendalaPage extends StatefulWidget {
+  final String room;
+
+  const SemuakendalaPage({super.key, required this.room});
+
   @override
   _SemuakendalaPageState createState() => _SemuakendalaPageState();
 }
@@ -28,10 +33,38 @@ class Report {
     required this.deskripsi,
     required this.status,
   });
+
+    factory Report.fromJson(Map<String, dynamic> json) {
+    return Report(
+      studentName: json['nama_pelapor'],
+      studentNim: json['nim_nrp'],
+      inputDate: json['tanggal'],
+      ruangan: json['nama_ruangan'],
+      jenis: json['jenis_kendala'],
+      bentuk: json['bentuk_kendala'],
+      deskripsi: json['deskripsi_kendala'],
+      status: json['status'],
+    );
+  }
 }
+
 class _SemuakendalaPageState extends State<SemuakendalaPage> {
-  String _selectedStatus = 'Selesai';
+  late Future<List<Report>> _kendalaFuture;
+  String _selectedStatus = 'finished';
   DateTimeRange? _selectedDateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    _kendalaFuture = fetchPeminjaman();
+  }
+
+  Future<List<Report>> fetchPeminjaman() async {
+    List<Map<String, dynamic>> kendala;
+    kendala = await api_data.getKendala(widget.room);
+    print(kendala);
+    return kendala.map((data) => Report.fromJson(data)).toList();
+  }
 
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
@@ -68,7 +101,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Semua Daftar Pelaporan',
             style: TextStyle(
               color: Colors.white,
@@ -76,11 +109,11 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: Color(0xFFFF5833),
-          iconTheme: IconThemeData(
+          backgroundColor: const Color(0xFFFF5833),
+          iconTheme: const IconThemeData(
             color: Colors.white, // Set all icons to white
           ),
-          bottom: TabBar(
+          bottom: const TabBar(
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             labelStyle: TextStyle(
@@ -101,10 +134,10 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () => _selectDateRange(context),
-                    child: Text('Pilih Tanggal'),
+                    child: const Text('Pilih Tanggal'),
                   ),
                   IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: _clearDateRange,
                   ),
                 ],
@@ -116,27 +149,62 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                   // Tab for "Sedang Berjalan"
                   Container(
                     color: Colors.grey[200],
-                    padding: EdgeInsets.all(16),
-                    child: _buildReportList(
-                      _filterReports(DummyData.reports)
-                          .where((report) => report.status == 'Diproses')
-                          .toList(),
+                    padding: const EdgeInsets.all(16),
+                    child: FutureBuilder<List<Report>>(
+                      future: _kendalaFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text('Tidak data laporan kendala'));
+                        } else {
+                          List<Report> bookings = snapshot.data!
+                              .where((booking) => booking.status == 'pending')
+                              .toList();
+                          return ListView.builder(
+                            itemCount: bookings.length,
+                            itemBuilder: (context, index) {
+                              Report booking = bookings[index];
+                              return ReportCard(
+                                studentName: booking.studentName,
+                                studentNim: booking.studentNim,
+                                inputDate: booking.inputDate,
+                                ruangan: booking.ruangan,
+                                jenis: booking.jenis,
+                                bentuk: booking.bentuk,
+                                deskripsi: booking.deskripsi,
+                                status: booking.status,
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
                   // Tab for "Riwayat"
                   Container(
                     color: Colors.grey[200],
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         DropdownButton<String>(
                           value: _selectedStatus,
-                          items: ['Selesai', 'Dibatalkan']
-                              .map((status) => DropdownMenuItem(
-                            value: status,
-                            child: Text(status),
-                          ))
-                              .toList(),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'approved',
+                              child: Text('Dikerjakan'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'rejected',
+                              child: Text('Ditolak'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'finished',
+                              child: Text('Selesai'),
+                            ),
+                          ],
                           onChanged: (value) {
                             setState(() {
                               _selectedStatus = value!;
@@ -144,10 +212,37 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                           },
                         ),
                         Expanded(
-                          child: _buildReportList(
-                            _filterReports(DummyData.reports)
-                                .where((report) => report.status == _selectedStatus)
-                                .toList(),
+                          child: FutureBuilder<List<Report>>(
+                            future: _kendalaFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Center(child: Text('Tidak data laporan kendala'));
+                              } else {
+                                List<Report> bookings = snapshot.data!
+                                    .where((booking) => booking.status == _selectedStatus)
+                                    .toList();
+                                return ListView.builder(
+                                  itemCount: bookings.length,
+                                  itemBuilder: (context, index) {
+                                    Report booking = bookings[index];
+                                    return ReportCard(
+                                      studentName: booking.studentName,
+                                      studentNim: booking.studentNim,
+                                      inputDate: booking.inputDate,
+                                      ruangan: booking.ruangan,
+                                      jenis: booking.jenis,
+                                      bentuk: booking.bentuk,
+                                      deskripsi: booking.deskripsi,
+                                      status: booking.status,
+                                    );
+                                  },
+                                );
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -164,7 +259,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
 
   Widget _buildReportList(List<Report> reports) {
     if (reports.isEmpty) {
-      return Center(child: Text('Tidak ada data'));
+      return const Center(child: Text('Tidak ada data'));
     }
     return ListView(
       children: reports.map((report) => ReportCard(

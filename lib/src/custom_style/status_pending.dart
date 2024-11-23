@@ -4,7 +4,7 @@ class ButtonPending extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
 
-  const ButtonPending({
+  const ButtonPending({super.key, 
     required this.label,
     required this.onPressed,
   });

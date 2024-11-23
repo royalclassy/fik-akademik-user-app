@@ -16,7 +16,7 @@ class ReportCard extends StatelessWidget {
   final String status;
 
   const ReportCard({
-    Key? key,
+    super.key,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -25,7 +25,7 @@ class ReportCard extends StatelessWidget {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +50,8 @@ class ReportCard extends StatelessWidget {
       child: Card(
         elevation: 4,
         child: Container(
-          margin: EdgeInsets.all(8.0),
-          padding: EdgeInsets.all(16.0),
+          margin: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -65,16 +65,16 @@ class ReportCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       studentName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  Text(inputDate, style: TextStyle(fontSize: 14),),
+                  Text(inputDate, style: const TextStyle(fontSize: 14),),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,25 +84,25 @@ class ReportCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.access_time, size: 18,),
-                          SizedBox(width: 12),
-                          Text(jenis, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.access_time, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(jenis, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.location_pin, size: 18,),
-                          SizedBox(width: 12),
-                          Text(ruangan, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.location_pin, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(ruangan, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.description, size: 18,),
-                          SizedBox(width: 12),
-                          Text(bentuk, style: TextStyle(fontSize: 14),),
+                          const Icon(Icons.description, size: 18,),
+                          const SizedBox(width: 12),
+                          Text(bentuk, style: const TextStyle(fontSize: 14),),
                         ],
                       ),
                     ],

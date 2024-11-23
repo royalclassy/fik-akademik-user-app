@@ -6,10 +6,10 @@ class JamCard extends StatelessWidget {
   final String jamSelesai;
 
   const JamCard({
-    Key? key,
+    super.key,
     required this.jamMulai,
     required this.jamSelesai,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class JamCard extends StatelessWidget {
         children: [
           Text(
             timeFormat.format(jamMulaiDateTime),
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
           Text(
             timeFormat.format(jamSelesaiDateTime),
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),

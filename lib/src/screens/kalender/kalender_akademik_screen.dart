@@ -4,6 +4,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class AcademicCalendarPage extends StatefulWidget {
+  const AcademicCalendarPage({super.key});
+
   @override
   _AcademicCalendarPageState createState() => _AcademicCalendarPageState();
 }
@@ -46,7 +48,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'Kalender Akademik',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
@@ -54,19 +56,19 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
+        backgroundColor: const Color(0xFFFF5833),
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          labelStyle: TextStyle(
+          labelStyle: const TextStyle(
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
           ),
-          unselectedLabelStyle: TextStyle(
+          unselectedLabelStyle: const TextStyle(
             fontFamily: 'Poppins',
           ),
-          tabs: [
+          tabs: const [
             Tab(text: 'Universitas'),
             Tab(text: 'Fakultas'),
           ],
@@ -78,10 +80,10 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
           children: [
             localPath != null
                 ? PDFView(filePath: localPath!)
-                : Center(child: CircularProgressIndicator()),
+                : const Center(child: CircularProgressIndicator()),
             localPath != null
                 ? PDFView(filePath: localPath!)
-                : Center(child: CircularProgressIndicator()),
+                : const Center(child: CircularProgressIndicator()),
           ],
         ),
       ),

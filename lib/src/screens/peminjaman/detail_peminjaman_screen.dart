@@ -6,8 +6,8 @@ import 'package:class_leap/src/utils/data/dummy_data.dart';
 
 class DetailpeminjamanPage extends StatelessWidget {
   final String studentName;
-  final String studentNim;
-  final String inputDate;
+  // final String studentNim;
+  // final String inputDate;
   final String ruangan;
   final String bookDate;
   final String jamMulai;
@@ -17,11 +17,11 @@ class DetailpeminjamanPage extends StatelessWidget {
   final String status;
   final String alasan;
 
-  DetailpeminjamanPage({
-    Key? key,
+  const DetailpeminjamanPage({
+    super.key,
     required this.studentName,
-    required this.studentNim,
-    required this.inputDate,
+    // required this.studentNim,
+    // required this.inputDate,
     required this.ruangan,
     required this.bookDate,
     required this.jamMulai,
@@ -29,14 +29,14 @@ class DetailpeminjamanPage extends StatelessWidget {
     required this.jumlahPengguna,
     required this.keterangan,
     required this.status,
-    required this.alasan,
-  }) : super(key: key);
+    this.alasan = '',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Detail Peminjaman",
           style: TextStyle(
             color: Colors.white,
@@ -44,8 +44,8 @@ class DetailpeminjamanPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -56,8 +56,8 @@ class DetailpeminjamanPage extends StatelessWidget {
           children: [
             buildRowWithDivider('Status', status),
             buildRowWithDivider('Nama', studentName),
-            buildRowWithDivider('NIM', studentNim),
-            buildRowWithDivider('Tgl Input', inputDate),
+            // buildRowWithDivider('NIM', studentNim),
+            // buildRowWithDivider('Tgl Input', inputDate),
             buildRowWithDivider('Ruangan', ruangan),
             buildRowWithDivider('Tgl Pinjam', bookDate),
             buildRowWithDivider('Jam Mulai', jamMulai),
@@ -65,15 +65,15 @@ class DetailpeminjamanPage extends StatelessWidget {
             buildRowWithDivider('Jml Pengguna', jumlahPengguna),
             buildRowWithDivider('Keterangan', keterangan),
             if (status == 'Ditolak') ...[
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Alasan Ditolak:',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 alasan,
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ],
@@ -88,11 +88,11 @@ class DetailpeminjamanPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
+            SizedBox(
               width: 140,
               child: Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
@@ -101,7 +101,7 @@ class DetailpeminjamanPage extends StatelessWidget {
             Expanded(
               child: Text(
                 value,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
@@ -109,7 +109,7 @@ class DetailpeminjamanPage extends StatelessWidget {
             ),
           ],
         ),
-        Divider(color: Color(0xffede9d0)),
+        const Divider(color: Color(0xffede9d0)),
       ],
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sales_graph/flutter_sales_graph.dart';
 
 class BarChart extends StatelessWidget {
-  const BarChart({Key? key}) : super(key: key);
+  const BarChart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,13 @@ class BarChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white, // Background color
         border: Border.all(
-          color: Color(0xff2f4858), // Border color
+          color: const Color(0xff2f4858), // Border color
           width: 2.0, // Border width
         ),
         borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Center(
           child: FlutterSalesGraph(
             salesData: [100, 200, 150, 300, 250, 350],

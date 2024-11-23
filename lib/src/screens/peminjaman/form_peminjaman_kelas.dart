@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PinjamKelas extends StatefulWidget {
+  const PinjamKelas({super.key});
+
   @override
   _PinjamKelasState createState() => _PinjamKelasState();
 }
@@ -19,7 +21,7 @@ class _PinjamKelasState extends State<PinjamKelas> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Form Peminjaman Kelas',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
@@ -27,8 +29,8 @@ class _PinjamKelasState extends State<PinjamKelas> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
-        iconTheme: IconThemeData(
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
       ),
@@ -44,9 +46,9 @@ class _PinjamKelasState extends State<PinjamKelas> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Ruangan', style: TextStyle(fontWeight: FontWeight.bold)),
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Pilih ruangan',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -72,15 +74,15 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Tanggal Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Tanggal Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _selectedDate == null
                               ? 'Pilih tanggal'
                               : DateFormat('yyyy-MM-dd').format(_selectedDate!),
-                          hintStyle: TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -102,15 +104,15 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Waktu Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _startTime == null
                               ? 'Pilih waktu mulai'
                               : _startTime!.format(context),
-                          hintStyle: TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           TimeOfDay? pickedTime = await showTimePicker(
@@ -130,15 +132,15 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Waktu Selesai', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Waktu Selesai', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         readOnly: true,
                         decoration: InputDecoration(
                           hintText: _endTime == null
                               ? 'Pilih waktu selesai'
                               : _endTime!.format(context),
-                          hintStyle: TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(fontSize: 14),
                         ),
                         onTap: () async {
                           TimeOfDay? pickedTime = await showTimePicker(
@@ -158,11 +160,11 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Jumlah Peserta', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Jumlah Peserta', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Masukkan jumlah peserta',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -179,10 +181,10 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text('Tujuan Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      const Text('Tujuan Peminjaman', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Masukkan tujuan peminjaman',
                           hintStyle: TextStyle(fontSize: 14),
                         ),
@@ -196,7 +198,7 @@ class _PinjamKelasState extends State<PinjamKelas> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -206,17 +208,17 @@ class _PinjamKelasState extends State<PinjamKelas> {
                                 // Process the form submission
                               }
                             },
-                            child: Text(
-                              'Kirim',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              backgroundColor: Color(0xFF2F4858), // Set the button color here
+                              backgroundColor: const Color(0xFF2F4858), // Set the button color here
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
+                            ),
+                            child: Text(
+                              'Kirim',
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
