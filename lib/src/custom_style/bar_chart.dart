@@ -18,6 +18,7 @@ class BarChart extends StatefulWidget {
 
 class _BarChartState extends State<BarChart> {
   List<double> dataChart = [0,0,0,0,0];
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +44,6 @@ class _BarChartState extends State<BarChart> {
 
   @override
   Widget build(BuildContext context) {
-    print(dataChart);
     return Container(
       width: double.infinity, // Set the width to double infinity
       decoration: BoxDecoration(
