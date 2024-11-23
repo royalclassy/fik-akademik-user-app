@@ -107,7 +107,7 @@ class PeminjamanPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const BarChart(),
+                    const BarChart(room: 'lab', type: 'peminjaman'),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -198,7 +198,7 @@ class PeminjamanPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const BarChart(),
+                    const BarChart(room: 'kelas', type: 'peminjaman',),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),

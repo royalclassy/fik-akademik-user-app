@@ -109,7 +109,7 @@ class PelaporanPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const BarChart(),
+                    const BarChart(room: 'lab', type: 'kendala'),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -199,7 +199,7 @@ class PelaporanPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const BarChart(),
+                    const BarChart(room: 'kelas', type: 'kendala',),
                     // SizedBox(height: 20),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 8.0),

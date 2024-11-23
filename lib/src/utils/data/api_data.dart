@@ -199,8 +199,8 @@ Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
   }
 }
 
-Future<List> getRuang(String tipe) async {
-  endpoint = 'ruangan?tipe=$tipe';
+Future<List> getRuang(String room) async {
+  endpoint = 'ruangan?tipe=$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, headers: await _getHeaders());
   var responseBody = json.decode(response.body);
@@ -235,6 +235,24 @@ Future<List> getBentukKendala() async {
   var response = await http.get(url, headers: await _getHeaders());
   var responseBody = json.decode(response.body);
   return responseBody;
+}
+
+Future<List> getPeminjamanStatistik(String room) async {
+  endpoint = 'peminjaman/statistik?tipe=$room';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  // print(response.body);
+  var responseBody = json.decode(response.body);
+  return responseBody['data'];
+}
+
+Future<List> getKendalaStatistik(String room) async {
+  endpoint = 'kendala/statistik?tipe=$room';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  var responseBody = json.decode(response.body);
+  // print(responseBody['data']);
+  return responseBody['data'];
 }
 
 Future<Map<int, String>> createKendala(String idRuang, String idJenisKendala, String idBentukKendala, String deskripsi) async {
