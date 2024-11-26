@@ -49,7 +49,7 @@ class Booking {
 
 class _SemuadaftarPageState extends State<SemuadaftarPage> {
   late Future<List<Booking>> _peminjamanFuture;
-  String _selectedStatus = 'approved';
+  String _selectedStatus = 'disetujui';
   DateTimeRange? _selectedDateRange;
 
   @override
@@ -195,11 +195,11 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                           value: _selectedStatus,
                           items: [
                             DropdownMenuItem(
-                              value: 'approved',
+                              value: 'disetujui',
                               child: Text('Disetujui'),
                             ),
                             DropdownMenuItem(
-                              value: 'rejected',
+                              value: 'ditolak',
                               child: Text('Ditolak'),
                             ),
                           ],
