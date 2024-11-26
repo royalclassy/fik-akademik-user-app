@@ -89,7 +89,6 @@ class _PinjamRuangState extends State<PinjamRuang> {
       _endTimeController.text,
       _selectedRoom!,
     );
-    print('Availability: $availability');
     if (availability) {
       final Map<int, String> response = await _submitForm();
       if (response.isNotEmpty) {

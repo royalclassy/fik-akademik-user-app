@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'http://127.0.0.1:8000/api/';
+const String base_url = 'https://b2c8-103-147-92-254.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -57,11 +57,11 @@ Map<String, String> formatTime(String jamMulai, String jamSelesai) {
   };
 }
 
-Future<int> login(String email, String password) async {
+Future<int> login(String identifier, String password) async {
   endpoint = 'login';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
-    'email': email,
+    'identifier' : identifier,
     'password': password,
     'role': 'user_dosen,user_mahasiswa,user_tendik',
   }, headers: await _getHeaders());
@@ -89,6 +89,7 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();
   } else {
+    print(response.body);
     throw Exception('Gagal mengambil data jadwal');
   }
 }
@@ -200,9 +201,13 @@ Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
 }
 
 Future<List> getRuang(String room) async {
-  endpoint = 'ruangan?tipe=$room';
+  endpoint = 'ruangan';
+  print(room);
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.get(url, headers: await _getHeaders());
+  var response = await http.post(url, body: {
+    'tipe_ruang':room,
+  }, headers: await _getHeaders());
+  print(response.body);
   var responseBody = json.decode(response.body);
   return responseBody;
 }
@@ -241,6 +246,7 @@ Future<List> getPeminjamanStatistik(String room) async {
   endpoint = 'peminjaman/statistik?tipe=$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, headers: await _getHeaders());
+  print(response.body);
   // print(response.body);
   var responseBody = json.decode(response.body);
   return responseBody['data'];
@@ -277,7 +283,7 @@ Future<Map<int, String>> createKendala(String idRuang, String idJenisKendala, St
 }
 
 Future<Map<String, String>> updatePassword(String newPassword) async {
-  endpoint = 'user/upadate/password';
+  endpoint = 'user/update/password';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'password': newPassword,
@@ -291,7 +297,7 @@ Future<Map<String, String>> updatePassword(String newPassword) async {
   }
 }
 
-Future<Map<String, String>?> fetchUserData() async {
+Future<Map<String, dynamic>?> fetchUserData() async {
   endpoint = 'user';
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final accessToken = prefs.getString('access_token');
@@ -304,13 +310,8 @@ Future<Map<String, String>?> fetchUserData() async {
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
-        return {
-          'name': userData['nama'],
-          'nim': userData['id'],
-          'email': userData['email'],
-          'prodi': userData['prodi'],
-          'profil': userData['profil'],
-        };
+        print('User data: $userData');
+        return userData;
       } else {
         print('Failed to load user data');
         return null;

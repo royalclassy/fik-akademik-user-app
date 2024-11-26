@@ -1,11 +1,9 @@
-import 'package:class_leap/src/screens/password/reset_password_screen.dart';
 import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:class_leap/src/utils/data/api_data.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,9 +16,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String nim = '';
   String email = '';
-  String prodi = '';
   String profile = '';
-  bool _isLoading = true;
+  String prodi = '';
+  bool isLoading = true; // Add this variable to track loading state
 
   @override
   void initState() {
@@ -29,79 +27,60 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
+  final userData = await api_data.fetchUserData();
 
-    final userData = await fetchUserData();
-    if (userData != null) {
+  if (userData != null && mounted) {
+    setState(() {
+      name = userData['nama']!;
+      nim = userData['id']!;
+      email = userData['email']!;
+      profile = userData['profil'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+
+      // Handle the nested prodi field
+      final prodiData = userData['prodi'];
+      if (prodiData != null) {
+        // Extract the necessary fields from the nested prodi object
+        prodi = prodiData['nama_prodi'];
+        // You can add more fields as needed
+      }
+
+      isLoading = false;
+    });
+  } else {
+    if (mounted) {
       setState(() {
-        name = userData['name']!;
-        nim = userData['nim']!;
-        email = userData['email']!;
-        prodi = userData['prodi']!;
-        profile = userData['profil']!;
-        _isLoading = false;
-      });
-    } else {
-      setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }
+}
 
   Future<void> _logout() async {
-    //await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear all stored data
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          (Route<dynamic> route) => false,
     );
   }
 
-  void _showLogoutConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Konfirmasi Keluar'),
-          content: const Text('Apakah yakin ingin keluar?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Batalkan'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(); // Perform logout
-              },
-              child: const Text('Keluar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Profil', style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        )),
-        backgroundColor: const Color(0xFFFF5833),
-        iconTheme: const IconThemeData(
-          color: Colors.white, // Set all icons to white
+        title: Text(
+          'Profil',
+          style: TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        backgroundColor: Color(0xFFFF5833),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+      body: isLoading
+          ? Center(child: CircularProgressIndicator()) // Show loader if loading
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -109,7 +88,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: Image.network(profile ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png').image
+                // backgroundImage: AssetImage('images/bg1.png'),
+                backgroundImage: Image.network(profile ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png').image,
               ),
               const SizedBox(height: 20),
               Text(
@@ -121,21 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 20),
               _buildProfileField(label: 'NIM', value: nim),
               const SizedBox(height: 20),
+              _buildProfileField(label: 'Prodi', value: prodi),
+              const SizedBox(height: 20),
               _buildProfileField(label: 'Email', value: email),
               const SizedBox(height: 20),
-              _buildProfileField(label: 'Program Studi', value: prodi),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
-                  );
-                },
-                child: const Text('Edit Password'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showLogoutConfirmationDialog,
+                onPressed: _logout,
                 child: const Text('Logout'),
               ),
             ],

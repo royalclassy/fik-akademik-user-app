@@ -1,9 +1,7 @@
 import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
 import 'package:class_leap/src/screens/welcome/sign_up_screen_api.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:class_leap/src/screens/profile/profile_page.dart';
 import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
@@ -15,17 +13,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyB_n1_uHwaWw8Qk5KLB_cppwjOWAgMJgRE",
-      authDomain: "claeapthesis.firebaseapp.com",
-      projectId: "claeapthesis",
-      storageBucket: "claeapthesis.appspot.com",
-      messagingSenderId: "478482507446",
-      appId: "1:478482507446:web:cc76596a3ba5c5d05aa817",
-      measurementId: "G-XXXXXXXXXX", // If available
-    ),
-  );
   runApp(const MyApp());
 }
 

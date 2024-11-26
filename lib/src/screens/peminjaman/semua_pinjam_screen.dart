@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/booking_card.dart';
-// import 'package:class_leap/src/utils/data/dummy_data.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
 
@@ -62,7 +61,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
   Future<List<Booking>> fetchPeminjaman() async {
     List<Map<String, dynamic>> peminjaman;
     peminjaman = await api_data.getPeminjaman(widget.room);
-    print(peminjaman);
+    print("Peminjaman: $peminjaman");
     return peminjaman.map((data) => Booking.fromJson(data)).toList();
   }
 
@@ -161,7 +160,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                           return Center(child: Text('Tidak ada data peminjaman'));
                         } else {
                           List<Booking> bookings = snapshot.data!
-                              .where((booking) => booking.status == 'pending')
+                              .where((booking) => booking.status == 'menunggu')
                               .toList();
                           return ListView.builder(
                             itemCount: bookings.length,
@@ -185,11 +184,6 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                         }
                       },
                     ),
-                    // child: _buildBookingList(
-                    //   _filterBookings(DummyData.bookings)
-                    //       .where((booking) => booking.status == 'Menunggu')
-                    //       .toList(),
-                    // ),
                   ),
                   // Tab for "Riwayat"
                   Container(
@@ -251,11 +245,6 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                               }
                             },
                           ),
-                          // child: _buildBookingList(
-                          //   _filterBookings(DummyData.bookings)
-                          //       .where((booking) => booking.status == _selectedStatus)
-                          //       .toList(),
-                          // ),
                         ),
                       ],
                     ),
@@ -266,27 +255,6 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBookingList(List<Booking> bookings) {
-    if (bookings.isEmpty) {
-      return const Center(child: Text('Tidak ada data'));
-    }
-    return ListView(
-      children: bookings.map((booking) => BookingCard(
-        studentName: booking.studentName,
-        inputDate: booking.bookDate,
-        time: "${booking.jamMulai} - ${booking.jamSelesai}",
-        timeStart: booking.jamMulai,
-        timeEnd: booking.jamSelesai,
-        description: booking.keterangan,
-        ruangan: booking.ruangan,
-        groupSize: "${booking.jumlahPengguna} orang",
-        onAccept: () {},
-        onReject: () {},
-        status: booking.status,
-      )).toList(),
     );
   }
 }
