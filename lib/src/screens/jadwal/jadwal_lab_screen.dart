@@ -20,6 +20,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
     super.initState();
     selectedDay = _getDayOfWeek(DateTime.now());
     _jadwalFuture = fetchJadwal();
+    print("Jadwal Future: $_jadwalFuture");
     getRuangan();
   }
 

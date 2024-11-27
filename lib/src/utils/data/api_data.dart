@@ -87,6 +87,7 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
   var response = await http.get(url, headers: await _getHeaders());
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
+    print("data: $data");
     return data.cast<Map<String, dynamic>>();
   } else {
     print(response.body);
@@ -94,19 +95,42 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
   }
 }
 
-Future<String> signUp(String nama, String nim, String email, String noTlp, String password, int role, int prodi) async {
+Future<List<Map<String, dynamic>>> getProdi() async {
+  endpoint = 'prodi';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Gagal mengambil data prodi');
+  }
+}
+
+Future<List<Map<String, dynamic>>> getPeranUser() async {
+  endpoint = 'user/peran';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Gagal mengambil data peran user');
+  }
+}
+
+Future<String> signUp(String nama, String nim, String email, String noTlp, String password, int role, int? prodi) async {
   endpoint = 'sign_up';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'nama': nama,
-    'nim': nim,
+    'kode_user': nim,
     'email': email,
     'no_tlp': noTlp,
     'password': password,
     'id_peran': role.toString(),
-    'prodi': prodi.toString(),
+    'id_prodi': prodi.toString(),
   }, headers: await _getHeaders());
-  print(response.body);
 
   var responseBody = json.decode(response.body);
   String token = responseBody['token'];
@@ -116,7 +140,7 @@ Future<String> signUp(String nama, String nim, String email, String noTlp, Strin
   return responseBody['message'];
 }
 
-Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, String idRuang) async {
+Future<Map<String, dynamic>> getAvailablity(String tanggal, String jamMulai, String jamSelesai, String idRuang, String jumlahOrang) async {
   endpoint = 'ketersediaan-ruangan';
 
   var formattedTimes = formatTime(jamMulai, jamSelesai);
@@ -127,16 +151,17 @@ Future<bool> getAvailablity(String tanggal, String jamMulai, String jamSelesai, 
     'jam_mulai': formattedTimes['formattedStartTime']!,
     'jam_selesai': formattedTimes['formattedEndTime']!,
     'id_ruang': idRuang,
+    'jumlah_orang': jumlahOrang,
   }, headers: await _getHeaders());
 
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
     var isAvailable = responseBody['available'];
-    print("responseBody: $responseBody");
-    return isAvailable;
+    var message = responseBody['message'];
+    return {'available': isAvailable, 'message': message};
   } else {
     print('Error: ${response.statusCode}');
-    return false;
+    return {'available': false, 'message': 'Error checking availability'};
   }
 }
 
@@ -145,7 +170,6 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
 
   var formattedTimes = formatTime(jamMulai, jamSelesai);
 
-  print('formattedTimes: $formattedTimes');
   print({
     'id_ruang': idRuang,
     'tgl_pinjam': tanggal,
@@ -310,7 +334,6 @@ Future<Map<String, dynamic>?> fetchUserData() async {
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
-        print('User data: $userData');
         return userData;
       } else {
         print('Failed to load user data');

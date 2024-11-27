@@ -9,8 +9,6 @@ import 'package:class_leap/src/screens/peminjaman/terkonfirmasi_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/semua_pinjam_screen.dart';
 import 'package:class_leap/src/custom_style/card_confirmed.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
-import 'package:class_leap/src/screens/peminjaman/form_peminjaman_lab.dart';
-import 'package:class_leap/src/screens/peminjaman/form_peminjaman_kelas.dart';
 
 class PeminjamanPage extends StatelessWidget {
   const PeminjamanPage({super.key});

@@ -4,9 +4,6 @@ import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:class_leap/src/user/firebase_auth_services.dart';
 import 'package:class_leap/src/utils/theme/theme.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -17,14 +14,51 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController _displayNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nimController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  List<Map<String, dynamic>> _prodiList = [];
+  int _selectedProdi = 0;
+  List<Map<String, dynamic>> _peranList = [];
+  int? _selectedPeran;
 
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchProdiData();
+    _fetchPeranData();
+  }
+
+  Future<void> _fetchProdiData() async {
+  try {
+    List<Map<String, dynamic>> prodiData = await getProdi();
+    setState(() {
+      _prodiList = prodiData;
+      if (_prodiList.isNotEmpty) {
+        _selectedProdi = _prodiList[0]['id_prodi'];
+      }
+    });
+  } catch (e) {
+    print('Failed to fetch prodi data: $e');
+  }
+}
+
+Future<void> _fetchPeranData() async {
+  try {
+    List<Map<String, dynamic>> peranData = await getPeranUser();
+    setState(() {
+      _peranList = peranData;
+      if (_peranList.isNotEmpty) {
+        _selectedPeran = _peranList[0]['id_peran'];
+      }
+    });
+  } catch (e) {
+    print('Failed to fetch peran data: $e');
+  }
+}
 
   @override
   void dispose() {
@@ -38,61 +72,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _handleSignUp() async {
     if (_formSignUpKey.currentState!.validate()) {
-      // Debug prints to check the values
-      // print('NIM: ${_nimController.text}');
-      // print('Email: ${_emailController.text}');
-      // print('Password: ${_passwordController.text}');
-      // print('Display Name: ${_displayNameController.text}');
-      // print('Phone: ${_phoneController.text}');
-      // print('Role: $_selectedRoleInt');
-      // print('Program: $_selectedProgramInt');
 
-      String nim = await signUp(
+      String message = await signUp(
         _displayNameController.text,
         _nimController.text,
         _emailController.text,
         _phoneController.text,
         _passwordController.text,
-        _selectedRoleInt!,
-        _selectedProgramInt!,
+        _selectedPeran!,
+        _selectedProdi,
       );
 
-      // print('NIM: $nim');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login success')),
+        SnackBar(content: Text(message)),
       );
 
       Navigator.pushReplacementNamed(context, '/home');
-        }
+    }
   }
 
   final _formSignUpKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
-
-  // List of program options
-  final List<String> _programs = [
-    'S1 Informatika',
-    'S1 Sistem Informasi',
-    'D3 Sistem Informasi',
-    'S1 Data Sains',
-    'Lainnya'
-  ];
-
-  final List<String> _roles = [
-    'Dosen',
-    'Mahasiswa',
-    'Tenaga Didik'
-  ];
-
-  // List of integers corresponding to the program options
-  final List<int> _programsInt = [0, 1, 2, 3, 4];
-  final List<int> _rolesInt = [6, 7, 8];
-
-  // Variable to hold the selected program
-  String? _selectedProgram;
-  int? _selectedProgramInt;
-  String? _selectedRole;
-  int? _selectedRoleInt;
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +168,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Masukkan email anda';
+                            return 'Masukkan email2 anda';
                           }
                           return null;
                         },
@@ -258,20 +258,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       DropdownButtonFormField<String>(
-                        value: _selectedRole,
+                        value: _selectedPeran != null ? _selectedPeran.toString() : (_peranList.isNotEmpty ? _peranList[0]['id_peran'].toString() : null),
                         hint: const Text('Pilih Peran'),
-                        items: _roles.map((String role) {
+                        items: _peranList.map((Map<String, dynamic> peran) {
                           return DropdownMenuItem<String>(
-                            value: role,
-                            child: Text(role),
+                            value: peran['id_peran'].toString(),
+                            child: Text(peran['nama_peran']),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            _selectedRole = newValue;
-                            _selectedRoleInt = _rolesInt[_roles.indexOf(newValue!)];
+                            _selectedPeran = int.parse(newValue!);
                           });
-                          print('Selected role: $_selectedRoleInt');
                         },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -298,18 +296,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       DropdownButtonFormField<String>(
-                        value: _selectedProgram,
+                        value: _selectedProdi != 0 ? _selectedProdi.toString() : null,
                         hint: const Text('Pilih Program Studi'),
-                        items: _programs.map((String program) {
-                          return DropdownMenuItem<String>(
-                            value: program,
-                            child: Text(program),
-                          );
-                        }).toList(),
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: '0',
+                            child: Text('None'),
+                          ),
+                          ..._prodiList.map((Map<String, dynamic> prodi) {
+                            return DropdownMenuItem<String>(
+                              value: prodi['id_prodi'].toString(),
+                              child: Text(prodi['nama_prodi']),
+                            );
+                          }).toList(),
+                        ],
                         onChanged: (String? newValue) {
                           setState(() {
-                            _selectedProgram = newValue;
-                            _selectedProgramInt = _programs.indexOf(newValue!);
+                            _selectedProdi = newValue != null ? int.parse(newValue) : 0;
                           });
                         },
                         validator: (value) {
@@ -448,7 +451,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0), // Add padding to the right
+                              padding: const EdgeInsets.only(right: 10.0),
+                              // Add padding to the right
                               child: Text(
                                 'Masuk',
                                 style: TextStyle(
@@ -480,60 +484,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _signUp() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String displayName = _displayNameController.text;
-    String nim = _nimController.text;
-
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      User? user = userCredential.user;
-
-      if (user != null) {
-        await user.updateDisplayName(displayName);
-        await user.reload();
-        user = FirebaseAuth.instance.currentUser;
-
-        if (user != null) {
-          // Store NIM and selected program in Firestore or Realtime Database
-          await FirebaseFirestore.instance.collection('users')
-              .doc(user.uid)
-              .set({
-            'displayName': displayName,
-            'nim': nim,
-            'email': email,
-            'program': _selectedProgramInt, // Store the selected program as an integer
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Sign up success'),
-            ),
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const JadwalPage(),
-            ),
-          );
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sign up failed'),
-          ),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException: ${e.code}, ${e.message}');
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
 }

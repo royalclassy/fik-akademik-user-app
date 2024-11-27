@@ -81,25 +81,30 @@ class _PinjamRuangState extends State<PinjamRuang> {
     );
     return response;
   }
+Future<void> _testAvailability() async {
+  var availabilityResponse = await getAvailablity(
+    _dateController.text,
+    _startTimeController.text,
+    _endTimeController.text,
+    _selectedRoom!,
+    _participantsController.text,
+  );
+  bool availability = availabilityResponse['available'];
+  String message = availabilityResponse['message'];
 
-  Future<void> _testAvailability() async {
-    bool availability = await getAvailablity(
-      _dateController.text,
-      _startTimeController.text,
-      _endTimeController.text,
-      _selectedRoom!,
-    );
-    if (availability) {
-      final Map<int, String> response = await _submitForm();
-      if (response.isNotEmpty) {
-        _showResultDialog(true, response[200] ?? 'Unknown error');
-      } else {
-        _showResultDialog(false, response[200] ?? 'Unknown error');
-      }
+  print('Availability: $availability');
+  print('Message: $message');
+  if (availability) {
+    final Map<int, String> response = await _submitForm();
+    if (response.isNotEmpty) {
+      _showResultDialog(true, response[200] ?? 'Unknown error');
     } else {
-      _showResultDialog(false, 'Ruangan tidak tersedia');
+      _showResultDialog(false, response[200] ?? 'Unknown error');
     }
+  } else {
+    _showResultDialog(false, message);
   }
+}
 
   void _showResultDialog(bool success, String message) {
     showDialog(
