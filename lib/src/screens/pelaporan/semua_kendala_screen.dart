@@ -50,7 +50,7 @@ class Report {
 
 class _SemuakendalaPageState extends State<SemuakendalaPage> {
   late Future<List<Report>> _kendalaFuture;
-  String _selectedStatus = 'finished';
+  String _selectedStatus = 'selesai';
   DateTimeRange? _selectedDateRange;
 
   @override
@@ -161,7 +161,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                           return Center(child: Text('Tidak data laporan kendala'));
                         } else {
                           List<Report> bookings = snapshot.data!
-                              .where((booking) => booking.status == 'pending')
+                              .where((booking) => booking.status == 'menunggu')
                               .toList();
                           return ListView.builder(
                             itemCount: bookings.length,
@@ -193,15 +193,15 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                           value: _selectedStatus,
                           items: [
                             DropdownMenuItem(
-                              value: 'approved',
-                              child: Text('Dikerjakan'),
+                              value: 'menunggu',
+                              child: Text('Menunggu'),
                             ),
                             DropdownMenuItem(
-                              value: 'rejected',
-                              child: Text('Ditolak'),
+                              value: 'dalam proses',
+                              child: Text('Dalam Proses'),
                             ),
                             DropdownMenuItem(
-                              value: 'finished',
+                              value: 'selesai',
                               child: Text('Selesai'),
                             ),
                           ],

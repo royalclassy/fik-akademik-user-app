@@ -285,14 +285,13 @@ Future<List> getKendalaStatistik(String room) async {
   return responseBody['data'];
 }
 
-Future<Map<int, String>> createKendala(String idRuang, String idJenisKendala, String idBentukKendala, String deskripsi) async {
+Future<Map<int, String>> createKendala(String idRuang, String idAset, String deskripsi) async {
   endpoint = 'kendala';
-  print('idRuang: $idRuang, $idJenisKendala, $idBentukKendala, $deskripsi');
+  print("request : $idRuang, $idAset, $deskripsi");
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'id_ruang': idRuang,
-    'id_jenis_kendala': idJenisKendala,
-    'id_bentuk_kendala': idBentukKendala,
+    'id_aset': idAset,
     'deskripsi_kendala': deskripsi,
   }, headers: await _getHeaders());
 
