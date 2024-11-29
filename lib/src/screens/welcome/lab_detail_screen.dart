@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'asset_detail_screen.dart'; // Import the new screen
 
 class LabDetailPage extends StatelessWidget {
-  final List<Map<String, String>> labData;
+  final List<Map<String, dynamic>> labData;
 
   const LabDetailPage({super.key, required this.labData});
 
@@ -60,6 +61,26 @@ class LabDetailPage extends StatelessWidget {
                         Text('Lantai: ${lab['floor']}'),
                         Text('Ruangan: ${lab['room']}'),
                         Text('Gedung: ${lab['building']}'),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AssetDetailPage(lab: lab),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                            ),
+                            child: const Text('Daftar Aset', style: TextStyle(
+                                color: Colors.white,
+                            fontSize: 14, fontWeight: FontWeight.bold,),),
+                          ),
+                        ),
                       ],
                     ),
                   ),

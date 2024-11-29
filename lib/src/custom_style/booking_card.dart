@@ -6,6 +6,7 @@ import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart'
 import 'package:class_leap/src/utils/data/dummy_data.dart';
 
 class BookingCard extends StatelessWidget {
+  final String id;
   final String ruangan;
   final String studentName;
   final String inputDate;
@@ -20,6 +21,7 @@ class BookingCard extends StatelessWidget {
 
   const BookingCard({
     super.key,
+    required this.id,
     required this.ruangan,
     required this.studentName,
     required this.inputDate,
@@ -41,6 +43,7 @@ class BookingCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => DetailpeminjamanPage(
+              idPeminjaman:id,
               studentName: studentName,
               // studentNim: DummyData.studentNim,
               // inputDate: inputDate,

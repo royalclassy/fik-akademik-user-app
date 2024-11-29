@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'asset_detail_screen.dart'; // Import the new screen
 
 class KelasDetailPage extends StatelessWidget {
-  final List<Map<String, String>> kelasData;
+  final List<Map<String, dynamic>> kelasData;
 
   const KelasDetailPage({super.key, required this.kelasData});
 
@@ -55,11 +56,31 @@ class KelasDetailPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(lab['description']!, style: const TextStyle(
-                          fontSize: 14),),
+                            fontSize: 14),),
                         const SizedBox(height: 5),
                         Text('Lantai: ${lab['floor']}'),
                         Text('Ruangan: ${lab['room']}'),
                         Text('Gedung: ${lab['building']}'),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AssetDetailPage(lab: lab),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                            ),
+                            child: const Text('Daftar Aset', style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14, fontWeight: FontWeight.bold,),),
+                          ),
+                        ),
                       ],
                     ),
                   ),

@@ -13,6 +13,7 @@ class SemuadaftarPage extends StatefulWidget {
 }
 
 class Booking {
+  final String id;
   final String studentName;
   final String bookDate;
   final String jamMulai;
@@ -23,6 +24,7 @@ class Booking {
   final String status;
 
   Booking({
+    required this.id,
     required this.studentName,
     required this.bookDate,
     required this.jamMulai,
@@ -35,6 +37,7 @@ class Booking {
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
+      id: json['id'].toString(),
       studentName: json['nama_peminjam'],
       bookDate: json['tanggal'],
       jamMulai: json['jam_mulai'],
@@ -167,6 +170,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                             itemBuilder: (context, index) {
                               Booking booking = bookings[index];
                               return BookingCard(
+                                id: booking.id,
                                 studentName: booking.studentName,
                                 inputDate: booking.bookDate,
                                 time: "${booking.jamMulai} - ${booking.jamSelesai}",
@@ -228,6 +232,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                                   itemBuilder: (context, index) {
                                     Booking booking = bookings[index];
                                     return BookingCard(
+                                      id: booking.id,
                                       studentName: booking.studentName,
                                       inputDate: booking.bookDate,
                                       time: "${booking.jamMulai} - ${booking.jamSelesai}",

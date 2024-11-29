@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://b2c8-103-147-92-254.ngrok-free.app/api/';
+const String base_url = 'https://e29f-112-215-171-253.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -65,6 +65,7 @@ Future<int> login(String identifier, String password) async {
     'password': password,
     'role': 'user_dosen,user_mahasiswa,user_tendik',
   }, headers: await _getHeaders());
+  print(response.body);
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
     String token = responseBody['token'];
@@ -344,4 +345,35 @@ Future<Map<String, dynamic>?> fetchUserData() async {
     }
   }
   return null;
+}
+
+Future<Map<String, dynamic>> batalPeminjaman(String room) async {
+  endpoint = 'peminjaman/batal';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(
+    url,
+    body: {
+      'id': room,
+    },
+    headers: await _getHeaders(),
+  );
+  if (response.statusCode == 200) {
+    Map<String, dynamic> data = json.decode(response.body);
+    return data;
+  } else {
+    throw Exception('Failed to cancel peminjaman');
+  }
+}
+
+Future<List<Map<String, dynamic>>> getAllProfildosen() async {
+  endpoint = 'profildosen';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  print(response.body);
+  if (response.statusCode == 200) {
+    print(json.decode(response.body));
+    return List<Map<String, dynamic>>.from(json.decode(response.body));
+  } else {
+    throw Exception('Failed to load data');
+  }
 }
