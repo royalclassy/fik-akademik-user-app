@@ -1,5 +1,3 @@
-import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
-import 'package:class_leap/src/screens/profile/profile_page.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
@@ -76,7 +74,7 @@ Future<void> _fetchPeranData() async {
     if (_formSignUpKey.currentState!.validate()) {
       if (!agreePersonalData) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
+          const SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
         );
         return;
       }
@@ -305,7 +303,7 @@ Future<void> _fetchPeranData() async {
                         value: _selectedProdi != 0 ? _selectedProdi.toString() : null,
                         hint: const Text('Pilih Program Studi'),
                         items: [
-                          DropdownMenuItem<String>(
+                          const DropdownMenuItem<String>(
                             value: '0',
                             child: Text('None'),
                           ),
@@ -314,7 +312,7 @@ Future<void> _fetchPeranData() async {
                               value: prodi['id_prodi'].toString(),
                               child: Text(prodi['nama_prodi']),
                             );
-                          }).toList(),
+                          }),
                         ],
                         onChanged: (String? newValue) {
                           setState(() {

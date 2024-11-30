@@ -1,9 +1,6 @@
 import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -107,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator()) // Show loader if loading
+          ? const Center(child: CircularProgressIndicator()) // Show loader if loading
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

@@ -1,17 +1,13 @@
 // lib/src/screens/jadwal/jadwal_screen.dart
-import 'package:class_leap/src/screens/welcome/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:class_leap/src/custom_style/home_card.dart';
 import 'package:class_leap/src/screens/welcome/lab_detail_screen.dart';
 import 'package:class_leap/src/utils/data/lab_data.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_kelas_screen.dart';
-import 'package:class_leap/src/screens/jadwal/kode_dosen_mk_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
 import 'package:class_leap/src/screens/welcome/profile_detail_screen.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
-import 'package:class_leap/src/custom_style/custom_button_two.dart';
-import 'package:class_leap/src/utils/data/profile_dosen_data.dart';
 import 'package:class_leap/src/screens/welcome/list_dosen_screen.dart';
 import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
 import 'package:class_leap/src/utils/data/kelas_data.dart';
@@ -123,8 +119,8 @@ class _JadwallabPageState extends State<JadwalPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Jadwal Ruang Lab dan Kelas FIK UPNVJ',
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -132,7 +128,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -142,26 +138,26 @@ class _JadwallabPageState extends State<JadwalPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => JadwallabPage()),
+                            MaterialPageRoute(builder: (context) => const JadwallabPage()),
                           );
                         },
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: CustomButton(
                         label: 'Jadwal Ruang Kelas',
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => JadwalkelasPage()),
+                            MaterialPageRoute(builder: (context) => const JadwalkelasPage()),
                           );
                         },
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 //   children: [
@@ -182,7 +178,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Data Dosen',
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -194,14 +190,14 @@ class _JadwallabPageState extends State<JadwalPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ListDosenScreen()),
+                          MaterialPageRoute(builder: (context) => const ListDosenScreen()),
                         );
                       },
-                      child: Text('Lihat Semua'),
+                      child: const Text('Lihat Semua'),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 FutureBuilder<List<Map<String, dynamic>>>(
                   future: _fetchProfiles(),
                   builder: (context, snapshot) {
@@ -241,17 +237,17 @@ class _JadwallabPageState extends State<JadwalPage> {
                               },
                               child: Container(
                                 width: 100,
-                                margin: EdgeInsets.only(right: 10),
+                                margin: const EdgeInsets.only(right: 10),
                                 child: Column(
                                   children: [
                                     CircleAvatar(
                                       radius: 40,
                                       backgroundImage: NetworkImage(profile['imageurl']!),
                                     ),
-                                    SizedBox(height: 5),
+                                    const SizedBox(height: 5),
                                     Text(
                                       profile['nama']!,
-                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                     ),

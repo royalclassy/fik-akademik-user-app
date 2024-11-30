@@ -54,14 +54,14 @@ class _BarChartState extends State<BarChart> {
         borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Center(
           child: FlutterSalesGraph(
             salesData: dataChart,
-            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+            labels: const ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
             maxBarHeight: 250.0,
             barWidth: 44.0,
-            colors: [Color(0xff3e537e), Color(0xff735596), Color(0xffb54a91)],
+            colors: const [Color(0xff3e537e), Color(0xff735596), Color(0xffb54a91)],
             dateLineHeight: 20.0,
           ),
         ),

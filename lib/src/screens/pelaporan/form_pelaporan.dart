@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 class FormPelaporan extends StatefulWidget {
@@ -190,7 +189,7 @@ class _FormPelaporanState extends State<FormPelaporan> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Kirim',
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),

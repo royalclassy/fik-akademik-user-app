@@ -1,7 +1,6 @@
 import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'semua_pinjam_screen.dart'; // Import the screen to navigate to
 
 class PinjamRuang extends StatefulWidget {
@@ -362,7 +361,7 @@ Future<void> _testAvailability() async {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Kirim',
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),

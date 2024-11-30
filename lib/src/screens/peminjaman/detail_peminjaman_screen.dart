@@ -1,9 +1,4 @@
-import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/status_accept.dart';
-import 'package:class_leap/src/custom_style/status_reject.dart';
-import 'package:class_leap/src/custom_style/status_pending.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
 
 class DetailpeminjamanPage extends StatelessWidget {

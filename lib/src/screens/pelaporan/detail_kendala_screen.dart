@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/utils/data/dummy_report.dart';
 
 class DetailkendalaPage extends StatelessWidget {
   final String studentName;

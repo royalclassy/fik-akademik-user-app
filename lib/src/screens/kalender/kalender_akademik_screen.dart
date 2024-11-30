@@ -80,7 +80,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> with Single
           children: [
             localPath != null
                 ? PDFView(filePath: localPath!)
-                : Center(child: CircularProgressIndicator()),
+                : const Center(child: CircularProgressIndicator()),
             localPath != null
                 ? PDFView(filePath: localPath!)
                 : const Center(child: CircularProgressIndicator()),

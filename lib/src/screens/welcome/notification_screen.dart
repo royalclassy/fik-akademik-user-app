@@ -35,7 +35,7 @@ class NotificationPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailpeminjamanPage(
+                    builder: (context) => const DetailpeminjamanPage(
                       idPeminjaman: "",
                       studentName: 'John Doe',
                       // studentNim: '123456789',
@@ -60,7 +60,7 @@ class NotificationPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailpeminjamanPage(
+                    builder: (context) => const DetailpeminjamanPage(
                       idPeminjaman: "",
                       studentName: 'John Doe',
                       // studentNim: '123456789',
@@ -85,7 +85,7 @@ class NotificationPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailkendalaPage(
+                    builder: (context) => const DetailkendalaPage(
                       studentName: 'John Doe',
                       studentNim: '123456789',
                       status: 'Diproses',

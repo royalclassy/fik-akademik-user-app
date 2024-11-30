@@ -3,7 +3,6 @@ import 'package:class_leap/src/custom_style/status_accept.dart';
 import 'package:class_leap/src/custom_style/status_reject.dart';
 import 'package:class_leap/src/custom_style/status_pending.dart';
 import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
 
 class BookingCard extends StatelessWidget {
   final String id;

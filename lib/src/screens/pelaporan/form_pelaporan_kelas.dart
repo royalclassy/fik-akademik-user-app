@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class LaporKelas extends StatefulWidget {
   const LaporKelas({super.key});
@@ -203,7 +202,7 @@ class _LaporKelasState extends State<LaporKelas> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Kirim',
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),

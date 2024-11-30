@@ -2,13 +2,7 @@ import 'package:class_leap/src/custom_style/bar_chart.dart';
 import 'package:class_leap/src/screens/peminjaman/form_pinjam.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
-import 'package:class_leap/src/custom_style/custom_button_one.dart';
-import 'package:class_leap/src/custom_style/custom_button_two.dart';
-import 'package:class_leap/src/screens/peminjaman/menunggu_screen.dart';
-import 'package:class_leap/src/screens/peminjaman/terkonfirmasi_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/semua_pinjam_screen.dart';
-import 'package:class_leap/src/custom_style/card_confirmed.dart';
-import 'package:class_leap/src/utils/data/dummy_data.dart';
 
 class PeminjamanPage extends StatelessWidget {
   const PeminjamanPage({super.key});
@@ -76,7 +70,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PinjamRuang(room: 'lab')),
+                                MaterialPageRoute(builder: (context) => const PinjamRuang(room: 'lab')),
                               );
                             },
                           ),
@@ -88,7 +82,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuadaftarPage(room: 'lab')),
+                                MaterialPageRoute(builder: (context) => const SemuadaftarPage(room: 'lab')),
                               );
                             },
                           ),
@@ -153,7 +147,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => PinjamRuang(room: 'kelas')),
+                                MaterialPageRoute(builder: (context) => const PinjamRuang(room: 'kelas')),
                                 // MaterialPageRoute(builder: (context) => PinjamRuang()), //kalo jadi disatuin datanya sama yang ruang kelas
                               );
                             },
@@ -166,7 +160,7 @@ class PeminjamanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuadaftarPage(room: 'kelas')),
+                                MaterialPageRoute(builder: (context) => const SemuadaftarPage(room: 'kelas')),
                               );
                             },
                           ),

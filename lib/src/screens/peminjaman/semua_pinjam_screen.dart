@@ -156,11 +156,11 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                       future: _peminjamanFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Center(child: Text('Tidak ada data peminjaman'));
+                          return const Center(child: Text('Tidak ada data peminjaman'));
                         } else {
                           List<Booking> bookings = snapshot.data!
                               .where((booking) => booking.status == 'menunggu')
@@ -197,7 +197,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                       children: [
                         DropdownButton<String>(
                           value: _selectedStatus,
-                          items: [
+                          items: const [
                             DropdownMenuItem(
                               value: 'disetujui',
                               child: Text('Disetujui'),
@@ -218,11 +218,11 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                             future: _peminjamanFuture,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(child: CircularProgressIndicator());
+                                return const Center(child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
                                 return Center(child: Text('Error: ${snapshot.error}'));
                               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return Center(child: Text('Tidak ada data peminjaman'));
+                                return const Center(child: Text('Tidak ada data peminjaman'));
                               } else {
                                 List<Booking> bookings = snapshot.data!
                                     .where((booking) => booking.status == _selectedStatus)

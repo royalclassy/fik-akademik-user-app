@@ -15,7 +15,7 @@ class AssetDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(data['title'], style: TextStyle(
+        title: Text(data['title'], style: const TextStyle(
           color: Color(0xFFFFFFFF),
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -30,11 +30,11 @@ class AssetDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Daftar Aset',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // ...assets.map<Widget>((asset) => Text(asset)).toList(),
             AssetList(assets: assets),
           ],

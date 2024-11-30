@@ -5,6 +5,8 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 class JadwalkelasPage extends StatefulWidget {
+  const JadwalkelasPage({super.key});
+
   @override
   _JadwalkelasPageState createState() => _JadwalkelasPageState();
 }
@@ -70,7 +72,7 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFFFF5833),
+        backgroundColor: const Color(0xFFFF5833),
         iconTheme: const IconThemeData(
           color: Colors.white, // Set all icons to white
         ),
@@ -92,20 +94,20 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
                       });
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("Ruang Kelas: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const Text("Ruang Kelas: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                          color: Color(0x99FF5833),
+                          color: const Color(0x99FF5833),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: DropdownButton<String>(
                           value: selectedRoom,
-                          hint: Text("Pilih", style: TextStyle(color: Colors.white)),
+                          hint: const Text("Pilih", style: TextStyle(color: Colors.white)),
                           items: ruanganList.map((room) {
                             return DropdownMenuItem(
                               value: room['id_ruangan'],
@@ -120,17 +122,17 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
                               updateJadwal(); // Update jadwal when room changes
                             });
                           },
-                          dropdownColor: Color(0xFFFFBE33),
-                          underline: SizedBox(),
+                          dropdownColor: const Color(0xFFFFBE33),
+                          underline: const SizedBox(),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     height: 1,
                     width: double.infinity,
-                    color: Color(0xFFFF5833),
+                    color: const Color(0xFFFF5833),
                   ),
                 ],
               ),
@@ -140,11 +142,11 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
                 future: _jadwalFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return const Center(child: Text('No data available'));
                   } else {
                     List<Map<String, dynamic>> jadwalList = snapshot.data!;
                     return ListView.builder(
@@ -159,7 +161,7 @@ class _JadwalkelasPageState extends State<JadwalkelasPage> {
                                 jamMulai: jadwal['jamMulai']!,
                                 jamSelesai: jadwal['jamSelesai']!,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               JadwalCard(
                                 namaMatkul: jadwal['namaMatkul']!,
                                 kodeMatkul: jadwal['kodeMatkul']!,

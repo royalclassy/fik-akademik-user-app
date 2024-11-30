@@ -1,4 +1,3 @@
-import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
 import 'package:class_leap/src/screens/welcome/sign_up_screen_api.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/peminjaman_screen.dart';
 import 'package:class_leap/src/screens/pelaporan/pelaporan_screen.dart';
 import 'package:class_leap/src/screens/kalender/kalender_akademik_screen.dart';
-import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
@@ -29,9 +27,9 @@ class _MyAppState extends State<MyApp> {
   // Daftar halaman yang ditampilkan berdasarkan indeks
   final List<Widget> _pages = [
     const JadwalPage(),
-    PeminjamanPage(),
-    AcademicCalendarPage(),
-    PelaporanPage(),
+    const PeminjamanPage(),
+    const AcademicCalendarPage(),
+    const PelaporanPage(),
     const ProfilePage(),
   ];
 

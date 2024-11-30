@@ -1,15 +1,7 @@
 import 'package:class_leap/src/custom_style/bar_chart.dart';
 import 'package:class_leap/src/screens/pelaporan/form_pelaporan.dart';
-import 'package:class_leap/src/screens/pelaporan/form_pelaporan_kelas.dart';
-import 'package:class_leap/src/screens/pelaporan/form_pelaporan_lab.dart';
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/custom_button_one.dart';
-import 'package:class_leap/src/screens/pelaporan/kendala_baru_screen.dart';
-import 'package:class_leap/src/screens/pelaporan/kendala_dikerjakan_screen.dart';
-import 'package:class_leap/src/screens/pelaporan/kendala_selesai_screen.dart';
-import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
 import 'package:class_leap/src/screens/pelaporan/semua_kendala_screen.dart';
-import 'package:class_leap/src/custom_style/card_confirmed.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 // import 'package:class_leap/src/utils/data/dummy_data.dart';
 
@@ -80,7 +72,7 @@ class PelaporanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => FormPelaporan(room: 'lab')),
+                                MaterialPageRoute(builder: (context) => const FormPelaporan(room: 'lab')),
                               );
                             },
                           ),
@@ -92,7 +84,7 @@ class PelaporanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuakendalaPage(room: 'lab')),
+                                MaterialPageRoute(builder: (context) => const SemuakendalaPage(room: 'lab')),
                               );
                             },
                           ),
@@ -157,7 +149,7 @@ class PelaporanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => FormPelaporan(room: 'kelas')),
+                                MaterialPageRoute(builder: (context) => const FormPelaporan(room: 'kelas')),
                               );
                             },
                           ),
@@ -169,7 +161,7 @@ class PelaporanPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SemuakendalaPage(room: 'kelas')),
+                                MaterialPageRoute(builder: (context) => const SemuakendalaPage(room: 'kelas')),
                               );
                             },
                           ),

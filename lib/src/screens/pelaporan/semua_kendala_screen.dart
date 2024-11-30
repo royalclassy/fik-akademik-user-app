@@ -154,11 +154,11 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                       future: _kendalaFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Center(child: Text('Tidak data laporan kendala'));
+                          return const Center(child: Text('Tidak data laporan kendala'));
                         } else {
                           List<Report> bookings = snapshot.data!
                               .where((booking) => booking.status == 'menunggu')
@@ -191,7 +191,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                       children: [
                         DropdownButton<String>(
                           value: _selectedStatus,
-                          items: [
+                          items: const [
                             DropdownMenuItem(
                               value: 'menunggu',
                               child: Text('Menunggu'),
@@ -216,11 +216,11 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                             future: _kendalaFuture,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(child: CircularProgressIndicator());
+                                return const Center(child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
                                 return Center(child: Text('Error: ${snapshot.error}'));
                               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return Center(child: Text('Tidak data laporan kendala'));
+                                return const Center(child: Text('Tidak data laporan kendala'));
                               } else {
                                 List<Report> bookings = snapshot.data!
                                     .where((booking) => booking.status == _selectedStatus)

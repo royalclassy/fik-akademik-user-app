@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/booking_card.dart'; // Import BookingCard
-import 'package:class_leap/src/utils/data/dummy_data.dart'; // Import dummy data
+// Import BookingCard
+// Import dummy data
 
 class MenungguPage extends StatelessWidget {
   const MenungguPage({super.key});
@@ -23,7 +23,7 @@ class MenungguPage extends StatelessWidget {
         color: Colors.grey[200],
         padding: const EdgeInsets.all(16),
         child: ListView(
-          children: [
+          children: const [
             // BookingCard(
             //   studentName: DummyData.studentName,
             //   inputDate: DummyData.bookDate,
@@ -38,7 +38,7 @@ class MenungguPage extends StatelessWidget {
             //   },
             //   status: 'Menunggu', // Add status parameter
             // ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // BookingCard(
             //   studentName: DummyData.studentName,
             //   inputDate: DummyData.bookDate,
@@ -53,7 +53,7 @@ class MenungguPage extends StatelessWidget {
             //   },
             //   status: 'Menunggu', // Add status parameter
             // ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             // BookingCard(
             //   studentName: DummyData.studentName,
             //   inputDate: DummyData.bookDate,
