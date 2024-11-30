@@ -16,8 +16,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        width: double.infinity, // Make the search bar take the full width
+      child: Expanded(
         child: TextField(
           controller: _controller,
           decoration: InputDecoration(
@@ -29,8 +28,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             ),
             filled: true,
             fillColor: Colors.grey[200],
+            contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
           ),
-          onChanged: widget.onSearch,
+          onSubmitted: widget.onSearch,
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfiledetailPage extends StatelessWidget {
-  final String id;
+  final String id_prodi;
   final String name;
   final String imageUrl;
   final String NIP;
@@ -17,7 +17,7 @@ class ProfiledetailPage extends StatelessWidget {
 
   const ProfiledetailPage({
     super.key,
-    required this.id,
+    required this.id_prodi,
     required this.name,
     required this.imageUrl,
     required this.NIP,
@@ -78,6 +78,18 @@ class ProfiledetailPage extends StatelessWidget {
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('Id prodi:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(id_prodi, style: const TextStyle(fontSize: 14)),
+                    ),
+                  ],
+                ),
                 TableRow(
                   children: [
                     const Padding(

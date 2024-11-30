@@ -15,8 +15,25 @@ import 'package:class_leap/src/utils/data/profile_dosen_data.dart';
 import 'package:class_leap/src/screens/welcome/list_dosen_screen.dart';
 import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
 import 'package:class_leap/src/utils/data/kelas_data.dart';
+import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
-
+Future<List<Map<String, dynamic>>> _fetchProfiles() async {
+  var data = await api_data.getAllProfildosen();
+  return List<Map<String, dynamic>>.from(data.map((item) => {
+    'nama': item['nama'].toString() ?? 'Unknown',
+    'imageurl': item['imageurl'].toString() ?? '',
+    'NIP': item['nip'].toString() ?? 'Unknown',
+    'NIDN': item['nidn'].toString() ?? 'Unknown',
+    'email': item['email'].toString() ?? 'Unknown',
+    'jabatan': item['jabatan'].toString() ?? 'Unknown',
+    'jabatan_fungsi': item['jabatan_fungsi'].toString() ?? 'Unknown',
+    'kepakaran': item['kepakaran'].toString() ?? 'Unknown',
+    'id_gscholar': item['id_gscholar'].toString() ?? 'Unknown',
+    'id_sinta': item['id_sinta'].toString() ?? 'Unknown',
+    'id_scopus': item['id_scopus'].toString() ?? 'Unknown',
+    'id_prodi': item['id_prodi'].toString() ?? 'Unknown',
+  }));
+}
 class JadwalPage extends StatefulWidget {
   const JadwalPage({super.key});
 
@@ -90,7 +107,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                             );
                           },
                           child: const HomeCard(
-                            imageUrl: 'assets/images/kelas.png',
+                            imageUrl: 'assets/images/kelas_302.png',
                             title: 'Ruang Kelas FIK',
                           ),
                         ),
@@ -145,23 +162,23 @@ class _JadwallabPageState extends State<JadwalPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: CustomButtonTwo(
-                        label: 'Jadwal KRSku',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => KodedosenmkPage()),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     Expanded(
+                //       child: CustomButtonTwo(
+                //         label: 'Jadwal KRSku',
+                //         onPressed: () {
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(builder: (context) => KodedosenmkPage()),
+                //           );
+                //         },
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -185,77 +202,142 @@ class _JadwallabPageState extends State<JadwalPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: profiles.take(4).map((profile) {
-                      return GestureDetector(
-                        onTap: () {
-                          if (profile['id'] != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfiledetailPage(
-                                  id: profile['id']!,
-                                  name: profile['name']!,
-                                  imageUrl: profile['imageUrl']!,
-                                  NIP: profile['NIP']!,
-                                  NIDN: profile['NIDN']!,
-                                  email: profile['email']!,
-                                  jabatan: profile['jabatan']!,
-                                  jabatanFungsi: profile['jabatanFungsi']!,
-                                  keahlian: profile['keahlian']!,
-                                  googlescholar: profile['googlescholar']!,
-                                  sinta: profile['sinta']!,
-                                  scopus: profile['scopus']!,
+                FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _fetchProfiles(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No profiles found.'));
+                    } else {
+                      final profiles = snapshot.data!;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: profiles.take(4).map((profile) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfiledetailPage(
+                                      id_prodi: profile['id_prodi'] ?? 'Unknown',
+                                      name: profile['nama'] ?? 'Unknown',
+                                      imageUrl: profile['imageurl'] ?? "",
+                                      NIP: profile['NIP'] ?? 'Unknown',
+                                      NIDN: profile['NIDN'] ?? 'Unknown',
+                                      email: profile['email'] ?? 'Unknown',
+                                      jabatan: profile['jabatan'] ?? 'Unknown',
+                                      jabatanFungsi: profile['jabatan_fungsi'] ?? 'Unknown',
+                                      keahlian: profile['kepakaran'] ?? 'Unknown',
+                                      googlescholar: profile['id_gscholar'] ?? 'Unknown',
+                                      sinta: profile['id_sinta'] ?? 'Unknown',
+                                      scopus: profile['id_scopus'] ?? 'Unknown',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 100,
+                                margin: EdgeInsets.only(right: 10),
+                                child: Column(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: NetworkImage(profile['imageurl']!),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      profile['nama']!,
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
-                          }
-                          else {
-                            print('Profile ID is null');
-                          }
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => ProfiledetailPage(
-                          //       name: profile['name']!,
-                          //       imageUrl: profile['imageUrl']!,
-                          //       NIP: profile['NIP']!,
-                          //       email: profile['email']!,
-                          //       jabatan: profile['jabatan']!,
-                          //       jabatanFungsi: profile['jabatanFungsi']!,
-                          //       keahlian: profile['keahlian']!,
-                          //       googlescholar: profile['googlescholar']!,
-                          //       sinta: profile['sinta']!,
-                          //       scopus: profile['scopus']!,
-                          //     ),
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          width: 100,
-                          margin: EdgeInsets.only(right: 10),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 40,
-                                backgroundImage: NetworkImage(profile['imageUrl']!),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                profile['name']!,
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
+                          }).toList(),
                         ),
                       );
-                    }).toList(),
-                  ),
+                    }
+                  },
                 ),
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.horizontal,
+                //   child: Row(
+                //     children: profiles.take(4).map((profile) {
+                //       return GestureDetector(
+                //         onTap: () {
+                //           // if (profile['id'] != null) {
+                //           //   Navigator.push(
+                //           //     context,
+                //           //     MaterialPageRoute(
+                //           //       builder: (context) => ProfiledetailPage(
+                //           //         id: profile['id']!,
+                //           //         name: profile['name']!,
+                //           //         imageUrl: profile['imageUrl']!,
+                //           //         NIP: profile['NIP']!,
+                //           //         NIDN: profile['NIDN']!,
+                //           //         email: profile['email']!,
+                //           //         jabatan: profile['jabatan']!,
+                //           //         jabatanFungsi: profile['jabatanFungsi']!,
+                //           //         keahlian: profile['keahlian']!,
+                //           //         googlescholar: profile['googlescholar']!,
+                //           //         sinta: profile['sinta']!,
+                //           //         scopus: profile['scopus']!,
+                //           //       ),
+                //           //     ),
+                //           //   );
+                //           // }
+                //           // else {
+                //           //   print('Profile ID is null');
+                //           // }
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ProfiledetailPage(
+                //                 id: profile['id'] ?? 'Unknown',
+                //                 name: profile['name'] ?? 'Unknown',
+                //                 imageUrl: profile['imageUrl'] ?? "",
+                //                 NIP: profile['NIP'] ?? 'Unknown',
+                //                 NIDN: profile['NIDN'] ?? 'Unknown',
+                //                 email: profile['email'] ?? 'Unknown',
+                //                 jabatan: profile['jabatan'] ?? 'Unknown',
+                //                 jabatanFungsi: profile['jabatanFungsi'] ?? 'Unknown',
+                //                 keahlian: profile['keahlian'] ?? 'Unknown',
+                //                 googlescholar: profile['googlescholar']?? 'Unknown',
+                //                 sinta: profile['sinta'] ?? 'Unknown',
+                //                 scopus: profile['scopus'] ?? 'Unknown',
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //         child: Container(
+                //           width: 100,
+                //           margin: EdgeInsets.only(right: 10),
+                //           child: Column(
+                //             children: [
+                //               CircleAvatar(
+                //                 radius: 40,
+                //                 backgroundImage: NetworkImage(profile['imageUrl']!),
+                //               ),
+                //               SizedBox(height: 5),
+                //               Text(
+                //                 profile['name']!,
+                //                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                //                 textAlign: TextAlign.center,
+                //                 overflow: TextOverflow.ellipsis,
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       );
+                //     }).toList(),
+                //   ),
+                // ),
               ],
             ),
           ),
