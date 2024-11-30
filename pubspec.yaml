@@ -111,8 +111,8 @@ flutter_native_splash:
   ios: true
   web: true
   color: "ffffff"
-  background_image: assets/images/logo.png
+  background_image: assets/images/logo_upn.png
   fullscreen: true
   android_12:
-    image: assets/images/logo.png
+    image: assets/images/logo_upn.png
     color: "ffffff"

@@ -1,10 +1,13 @@
+import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/status_accept.dart';
 import 'package:class_leap/src/custom_style/status_reject.dart';
 import 'package:class_leap/src/custom_style/status_pending.dart';
 import 'package:class_leap/src/utils/data/dummy_data.dart';
+import 'package:class_leap/src/utils/data/api_data.dart';
 
 class DetailpeminjamanPage extends StatelessWidget {
+  final String idPeminjaman;
   final String studentName;
   // final String studentNim;
   // final String inputDate;
@@ -19,6 +22,7 @@ class DetailpeminjamanPage extends StatelessWidget {
 
   const DetailpeminjamanPage({
     super.key,
+    required this.idPeminjaman,
     required this.studentName,
     // required this.studentNim,
     // required this.inputDate,
@@ -31,6 +35,17 @@ class DetailpeminjamanPage extends StatelessWidget {
     required this.status,
     this.alasan = '',
   });
+
+Future<void> _cancelPeminjaman(idPeminjaman) async {
+  try {
+    var response = await batalPeminjaman(idPeminjaman);
+    // Handle successful cancellation
+    print('Peminjaman cancelled successfully: ${response['message']}');
+  } catch (e) {
+    // Handle error
+    print('Failed to cancel peminjaman: $e');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +94,25 @@ class DetailpeminjamanPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: status == 'menunggu'
+          ? Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          onPressed: () {
+            _cancelPeminjaman(idPeminjaman);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+          child: const Text('Batalkan Peminjaman', style:
+            TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            )),
+        ),
+      )
+          : null,
     );
   }
 

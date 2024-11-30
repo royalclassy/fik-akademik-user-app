@@ -23,6 +23,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   int _selectedProdi = 0;
   List<Map<String, dynamic>> _peranList = [];
   int? _selectedPeran;
+  bool agreePersonalData = false;
+
 
 
   @override
@@ -72,6 +74,12 @@ Future<void> _fetchPeranData() async {
 
   Future<void> _handleSignUp() async {
     if (_formSignUpKey.currentState!.validate()) {
+      if (!agreePersonalData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
+        );
+        return;
+      }
 
       String message = await signUp(
         _displayNameController.text,
@@ -90,9 +98,7 @@ Future<void> _fetchPeranData() async {
       Navigator.pushReplacementNamed(context, '/home');
     }
   }
-
   final _formSignUpKey = GlobalKey<FormState>();
-  bool agreePersonalData = true;
 
   @override
   Widget build(BuildContext context) {

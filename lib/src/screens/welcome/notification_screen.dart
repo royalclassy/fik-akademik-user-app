@@ -36,6 +36,7 @@ class NotificationPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailpeminjamanPage(
+                      idPeminjaman: "",
                       studentName: 'John Doe',
                       // studentNim: '123456789',
                       // inputDate: '2023-10-01',
@@ -60,6 +61,7 @@ class NotificationPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailpeminjamanPage(
+                      idPeminjaman: "",
                       studentName: 'John Doe',
                       // studentNim: '123456789',
                       // inputDate: '2023-10-01',

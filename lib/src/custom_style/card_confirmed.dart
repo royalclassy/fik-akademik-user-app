@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
 
 class CardConfirmed extends StatelessWidget {
+  final String idPeminjaman;
   final String studentName;
   final String inputDate;
   final String ruangan;
@@ -18,6 +19,7 @@ class CardConfirmed extends StatelessWidget {
 
   const CardConfirmed({
     super.key,
+    required this.idPeminjaman,
     required this.studentName,
     required this.inputDate,
     required this.ruangan,
@@ -40,6 +42,7 @@ class CardConfirmed extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => DetailpeminjamanPage(
+              idPeminjaman: idPeminjaman,
               studentName: studentName,
               // studentNim: studentNim,
               // inputDate: inputDate,

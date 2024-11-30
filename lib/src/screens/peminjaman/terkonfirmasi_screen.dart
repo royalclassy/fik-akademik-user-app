@@ -40,6 +40,7 @@ class _TerkonfirmasiPageState extends State<TerkonfirmasiPage> {
         child: ListView(
           children: const [
             CardConfirmed(
+              idPeminjaman: "",
               studentName: DummyData.studentName,
               inputDate: DummyData.bookDate,
               time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",
@@ -55,6 +56,7 @@ class _TerkonfirmasiPageState extends State<TerkonfirmasiPage> {
             ),
             SizedBox(height: 16),
             CardConfirmed(
+              idPeminjaman: "",
               studentName: DummyData.studentName,
               inputDate: DummyData.bookDate,
               time: "${DummyData.jamMulai} - ${DummyData.jamSelesai} WIB",

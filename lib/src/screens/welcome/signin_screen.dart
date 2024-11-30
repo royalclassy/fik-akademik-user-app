@@ -1,14 +1,9 @@
-import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
-import 'package:class_leap/src/screens/welcome/signup_screen.dart';
-import 'package:class_leap/src/user/firebase_auth_services.dart';
-import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:class_leap/src/screens/profile/profile_page.dart'; // Import ProfilePage
+import 'package:class_leap/src/screens/welcome/signup_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
-import 'package:class_leap/main.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -18,28 +13,46 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // final FirebaseAuthService _auth = FirebaseAuthService();
-
   final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   final _formSignInKey = GlobalKey<FormState>();
   bool rememberPassword = true;
 
   @override
-  void dispose() {
-    _identifierController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadUserCredentials();
+  }
+
+  Future<void> _loadUserCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email');
+    final password = prefs.getString('password');
+    if (email != null && password != null) {
+      _identifierController.text = email;
+      _passwordController.text = password;
+      setState(() {
+        rememberPassword = true;
+      });
+    }
+  }
+
+  Future<void> _saveUserCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (rememberPassword) {
+      await prefs.setString('email', _identifierController.text);
+      await prefs.setString('password', _passwordController.text);
+    } else {
+      await prefs.remove('email');
+      await prefs.remove('password');
+    }
   }
 
   Future<void> _handleLogin() async {
     if (_formSignInKey.currentState!.validate()) {
-      // Debug prints to check the values
-
-      int statusCode = await login(
-          _identifierController.text, _passwordController.text);
+      int statusCode = await login(_identifierController.text, _passwordController.text);
       if (statusCode == 200) {
+        await _saveUserCredentials();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login success')),
         );
@@ -95,12 +108,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         controller: _identifierController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Masukkan email atau nim/nik anda';
+                            return 'Masukkan email atau NIM/NIK anda';
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          label: const Text('identitas'),
+                          label: const Text('Identitas'),
                           hintText: 'Masukkan email atau nim/nik anda',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
@@ -175,15 +188,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ],
                           ),
-                          GestureDetector(
-                            child: Text(
-                              'Lupa kata sandi?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: lightColorScheme.primary,
-                              ),
-                            ),
-                          )
                         ],
                       ),
                       const SizedBox(
@@ -193,23 +197,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
+                            backgroundColor: MaterialStateProperty.all<Color>(
                                 lightColorScheme.primary),
                           ),
-                          onPressed: () {
-                            // if (_formSignInKey.currentState!.validate() &&
-                            //     rememberPassword) {
-                            //   _signIn();
-                            // } else if (!rememberPassword) {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     const SnackBar(
-                            //       content: Text(
-                            //           'Tolong setujui pemrosesan data anda'),
-                            //     ),
-                            //   );
-                            // }
-                            _handleLogin();
-                          },
+                          onPressed: _handleLogin,
                           child: Text(
                             'Masuk',
                             style: TextStyle(
@@ -250,8 +241,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               );
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              // Add padding to the right
+                              padding: const EdgeInsets.only(right: 10.0), // Add padding to the right
                               child: Text(
                                 'Daftar',
                                 style: TextStyle(
@@ -282,5 +272,4 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-
 }

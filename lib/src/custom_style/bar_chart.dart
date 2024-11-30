@@ -26,21 +26,20 @@ class _BarChartState extends State<BarChart> {
   }
 
   Future<void> getStatistik() async {
-    List<double> data;
-    if (widget.type == 'peminjaman') {
-      data = List<double>.from(await api_data.getPeminjamanStatistik(widget.room));
-    } else {
-      data = List<double>.from(await api_data.getKendalaStatistik(widget.room));
-    }
-    
-    setState(() {
-      dataChart = List<double>.from(data);
-      while (dataChart.length < 5) {
-        dataChart.add(0);
-      }
-    });
-    // print(dataChart);
+  List<double> data;
+  if (widget.type == 'peminjaman') {
+    data = List<double>.from((await api_data.getPeminjamanStatistik(widget.room)).map((e) => e.toDouble()));
+  } else {
+    data = List<double>.from((await api_data.getKendalaStatistik(widget.room)).map((e) => e.toDouble()));
   }
+
+  setState(() {
+    dataChart = List<double>.from(data);
+    while (dataChart.length < 5) {
+      dataChart.add(0.0);
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +60,7 @@ class _BarChartState extends State<BarChart> {
             salesData: dataChart,
             labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
             maxBarHeight: 250.0,
-            barWidth: 36.0,
+            barWidth: 44.0,
             colors: [Color(0xff3e537e), Color(0xff735596), Color(0xffb54a91)],
             dateLineHeight: 20.0,
           ),

@@ -2,24 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfiledetailPage extends StatelessWidget {
+  final String id_prodi;
   final String name;
   final String imageUrl;
   final String NIP;
-  final String keahlian;
+  final String NIDN;
   final String email;
   final String jabatan;
+  final String jabatanFungsi;
+  final String keahlian;
   final String googlescholar;
   final String sinta;
   final String scopus;
 
   const ProfiledetailPage({
     super.key,
+    required this.id_prodi,
     required this.name,
     required this.imageUrl,
     required this.NIP,
-    required this.keahlian,
+    required this.NIDN,
     required this.email,
     required this.jabatan,
+    required this.jabatanFungsi,
+    required this.keahlian,
     required this.googlescholar,
     required this.sinta,
     required this.scopus,
@@ -67,8 +73,8 @@ class ProfiledetailPage extends StatelessWidget {
             const SizedBox(height: 10),
             Table(
               columnWidths: const {
-                0: const FixedColumnWidth(160.0),
-                1: const FlexColumnWidth(),
+                0: FixedColumnWidth(160.0),
+                1: FlexColumnWidth(),
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
@@ -76,11 +82,35 @@ class ProfiledetailPage extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('NIP/NIDN:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      child: Text('Id prodi:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(id_prodi, style: const TextStyle(fontSize: 14)),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('NIP:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(NIP, style: const TextStyle(fontSize: 14)),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('NIDN:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(NIDN, style: const TextStyle(fontSize: 14)),
                     ),
                   ],
                 ),
@@ -115,7 +145,19 @@ class ProfiledetailPage extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('Keahlian:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      child: Text('Jabatan Fungsi:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(jabatanFungsi, style: const TextStyle(fontSize: 14)),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('Kepakaran:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),

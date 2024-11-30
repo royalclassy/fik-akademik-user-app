@@ -63,14 +63,18 @@ class _JadwallabPageState extends State<JadwallabPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Penggunaan Ruang Lab',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFFFFFFFF),
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -93,7 +97,7 @@ class _JadwallabPageState extends State<JadwallabPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("Ruang Lab: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text("Ruang Lab: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
