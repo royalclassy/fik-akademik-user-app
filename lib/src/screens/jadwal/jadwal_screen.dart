@@ -57,17 +57,17 @@ class _JadwallabPageState extends State<JadwalPage> {
           ),
         ),
         backgroundColor: const Color(0xFFFF5833),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
-              );
-            },
-            icon: const Icon(Icons.notifications, color: Colors.white),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => NotificationPage()),
+        //       );
+        //     },
+        //     icon: const Icon(Icons.notifications, color: Colors.white),
+        //   ),
+        // ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

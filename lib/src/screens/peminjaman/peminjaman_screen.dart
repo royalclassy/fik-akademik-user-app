@@ -22,7 +22,7 @@ class PeminjamanPage extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false, // Disable back button
           title: const Text(
-            'Peminjaman Ruangan',
+            'Peminjaman Ruang Lab dan Kelas',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
               fontSize: 18,

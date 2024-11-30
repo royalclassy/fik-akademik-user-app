@@ -26,7 +26,7 @@ class PelaporanPage extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false, // Disable back button
           title: const Text(
-            'Pelaporan Ruangan',
+            'Pelaporan Ruang Lab dan Kelas',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
               fontSize: 18,
