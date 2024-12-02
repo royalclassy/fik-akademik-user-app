@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://02a6-180-252-92-160.ngrok-free.app/api/';
+const String base_url = 'https://ed65-180-252-89-111.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 

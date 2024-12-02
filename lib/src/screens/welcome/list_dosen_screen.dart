@@ -153,7 +153,7 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
     var data = await api_data.getAllProfildosen();
     profiles = List<Map<String, dynamic>>.from(data.map((item) => {
       'nama': item['nama'].toString() ?? 'Unknown',
-      'imageurl': item['imageurl'].toString() ?? '',
+      'imageUrl': item['image_url'].toString() ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
       'NIP': item['nip'].toString() ?? 'Unknown',
       'NIDN': item['nidn'].toString() ?? 'Unknown',
       'email': item['email'].toString() ?? 'Unknown',
@@ -265,8 +265,12 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
                       final profile = profiles[index];
                       return ListTile(
                         leading: CircleAvatar(
-                          backgroundImage: NetworkImage(profile['imageurl'] ?? ''),
-                        ),
+                          backgroundImage: NetworkImage(
+                              profile['imageUrl']?.isNotEmpty ?? false
+                                  ? profile['imageUrl']
+                                  : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                          ),
+                      ),
                         title: Text(profile['nama'] ?? 'Unknown'),
                         subtitle: Text(profile['jabatan'] ?? 'Unknown'),
                         onTap: () {
@@ -276,7 +280,7 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
                               builder: (context) => ProfiledetailPage(
                                 id_prodi: profile['id_prodi'] ?? 'Unknown',
                                 name: profile['nama'] ?? 'Unknown',
-                                imageUrl: profile['imageurl'] ?? "",
+                                imageUrl: profile['imageUrl'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                                 NIP: profile['NIP'] ?? 'Unknown',
                                 NIDN: profile['NIDN'] ?? 'Unknown',
                                 email: profile['email'] ?? 'Unknown',

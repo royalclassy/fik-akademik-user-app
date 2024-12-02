@@ -16,7 +16,8 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Expanded(
+      child: SizedBox( // Ganti Expanded menjadi SizedBox
+        width: double.infinity,
         child: TextField(
           controller: _controller,
           decoration: InputDecoration(
