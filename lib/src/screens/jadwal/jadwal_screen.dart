@@ -1,23 +1,20 @@
-// lib/src/screens/jadwal/jadwal_screen.dart
+import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:class_leap/src/custom_style/home_card.dart';
 import 'package:class_leap/src/screens/welcome/lab_detail_screen.dart';
-import 'package:class_leap/src/utils/data/lab_data.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_kelas_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_lab_screen.dart';
 import 'package:class_leap/src/screens/welcome/profile_detail_screen.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 import 'package:class_leap/src/screens/welcome/list_dosen_screen.dart';
-import 'package:class_leap/src/screens/welcome/kelas_detail_screen.dart';
-import 'package:class_leap/src/utils/data/kelas_data.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 
 Future<List<Map<String, dynamic>>> _fetchProfiles() async {
   var data = await api_data.getAllProfildosen();
   return List<Map<String, dynamic>>.from(data.map((item) => {
     'nama': item['nama'].toString() ?? 'Unknown',
-    'imageurl': item['imageurl'].toString() ?? '',
+    'imageUrl': item['image_url'].toString() ?? '',
     'NIP': item['nip'].toString() ?? 'Unknown',
     'NIDN': item['nidn'].toString() ?? 'Unknown',
     'email': item['email'].toString() ?? 'Unknown',
@@ -30,6 +27,7 @@ Future<List<Map<String, dynamic>>> _fetchProfiles() async {
     'id_prodi': item['id_prodi'].toString() ?? 'Unknown',
   }));
 }
+
 class JadwalPage extends StatefulWidget {
   const JadwalPage({super.key});
 
@@ -53,17 +51,6 @@ class _JadwallabPageState extends State<JadwalPage> {
           ),
         ),
         backgroundColor: const Color(0xFFFF5833),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => NotificationPage()),
-        //       );
-        //     },
-        //     icon: const Icon(Icons.notifications, color: Colors.white),
-        //   ),
-        // ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -84,7 +71,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LabDetailPage(labData: labData),
+                                builder: (context) => const LabDetailPage(),
                               ),
                             );
                           },
@@ -98,7 +85,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => KelasDetailPage(kelasData: kelasData),
+                                builder: (context) => const KelasDetailPage(),
                               ),
                             );
                           },
@@ -158,23 +145,6 @@ class _JadwallabPageState extends State<JadwalPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     Expanded(
-                //       child: CustomButtonTwo(
-                //         label: 'Jadwal KRSku',
-                //         onPressed: () {
-                //           Navigator.push(
-                //             context,
-                //             MaterialPageRoute(builder: (context) => KodedosenmkPage()),
-                //           );
-                //         },
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -242,7 +212,11 @@ class _JadwallabPageState extends State<JadwalPage> {
                                   children: [
                                     CircleAvatar(
                                       radius: 40,
-                                      backgroundImage: NetworkImage(profile['imageurl']!),
+                                      backgroundImage: NetworkImage(
+                                          profile['imageUrl']?.isNotEmpty ?? false
+                                              ? profile['imageUrl']
+                                              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                                      ),
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
@@ -261,79 +235,6 @@ class _JadwallabPageState extends State<JadwalPage> {
                     }
                   },
                 ),
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: profiles.take(4).map((profile) {
-                //       return GestureDetector(
-                //         onTap: () {
-                //           // if (profile['id'] != null) {
-                //           //   Navigator.push(
-                //           //     context,
-                //           //     MaterialPageRoute(
-                //           //       builder: (context) => ProfiledetailPage(
-                //           //         id: profile['id']!,
-                //           //         name: profile['name']!,
-                //           //         imageUrl: profile['imageUrl']!,
-                //           //         NIP: profile['NIP']!,
-                //           //         NIDN: profile['NIDN']!,
-                //           //         email: profile['email']!,
-                //           //         jabatan: profile['jabatan']!,
-                //           //         jabatanFungsi: profile['jabatanFungsi']!,
-                //           //         keahlian: profile['keahlian']!,
-                //           //         googlescholar: profile['googlescholar']!,
-                //           //         sinta: profile['sinta']!,
-                //           //         scopus: profile['scopus']!,
-                //           //       ),
-                //           //     ),
-                //           //   );
-                //           // }
-                //           // else {
-                //           //   print('Profile ID is null');
-                //           // }
-                //           Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //               builder: (context) => ProfiledetailPage(
-                //                 id: profile['id'] ?? 'Unknown',
-                //                 name: profile['name'] ?? 'Unknown',
-                //                 imageUrl: profile['imageUrl'] ?? "",
-                //                 NIP: profile['NIP'] ?? 'Unknown',
-                //                 NIDN: profile['NIDN'] ?? 'Unknown',
-                //                 email: profile['email'] ?? 'Unknown',
-                //                 jabatan: profile['jabatan'] ?? 'Unknown',
-                //                 jabatanFungsi: profile['jabatanFungsi'] ?? 'Unknown',
-                //                 keahlian: profile['keahlian'] ?? 'Unknown',
-                //                 googlescholar: profile['googlescholar']?? 'Unknown',
-                //                 sinta: profile['sinta'] ?? 'Unknown',
-                //                 scopus: profile['scopus'] ?? 'Unknown',
-                //               ),
-                //             ),
-                //           );
-                //         },
-                //         child: Container(
-                //           width: 100,
-                //           margin: EdgeInsets.only(right: 10),
-                //           child: Column(
-                //             children: [
-                //               CircleAvatar(
-                //                 radius: 40,
-                //                 backgroundImage: NetworkImage(profile['imageUrl']!),
-                //               ),
-                //               SizedBox(height: 5),
-                //               Text(
-                //                 profile['name']!,
-                //                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                //                 textAlign: TextAlign.center,
-                //                 overflow: TextOverflow.ellipsis,
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       );
-                //     }).toList(),
-                //   ),
-                // ),
               ],
             ),
           ),

@@ -236,6 +236,17 @@ Future<List> getRuang(String room) async {
   return responseBody;
 }
 
+Future<Map<String, dynamic>> getAssetDetails(String idRuangan) async {
+  endpoint = 'ruangan/$idRuangan';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception('Failed to load asset details');
+  }
+}
+
 Future<List<Map<String, dynamic>>> getKendala(String room) async {
   endpoint = 'kendala/$room';
   var url = Uri.parse(base_url + endpoint);
