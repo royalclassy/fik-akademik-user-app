@@ -17,6 +17,7 @@ class BookingCard extends StatelessWidget {
   final Function onAccept;
   final Function onReject;
   final String status;
+  final String alasanPenolakan;
 
   const BookingCard({
     super.key,
@@ -32,6 +33,7 @@ class BookingCard extends StatelessWidget {
     required this.onAccept,
     required this.onReject,
     required this.status,
+    required this.alasanPenolakan,
   });
 
   @override
@@ -53,6 +55,7 @@ class BookingCard extends StatelessWidget {
               jumlahPengguna: groupSize,
               keterangan: description,
               status: status,
+              alasan_penolakan: alasanPenolakan,
               // alasan: DummyData.alasan,
             ),
           ),

@@ -14,7 +14,8 @@ class CardConfirmed extends StatelessWidget {
   final String jumlahPengguna;
   final String keterangan;
   final String time; // Add the time parameter
-  final String groupSize; // Add the groupSize parameter
+  final String groupSize;// Add the groupSize parameter
+  final String alasanPenolakan;
 
   const CardConfirmed({
     super.key,
@@ -31,6 +32,7 @@ class CardConfirmed extends StatelessWidget {
     required this.keterangan,
     required this.time, // Initialize the time parameter
     required this.groupSize, // Initialize the groupSize parameter
+    required this.alasanPenolakan
   });
 
   @override
@@ -52,7 +54,7 @@ class CardConfirmed extends StatelessWidget {
               jumlahPengguna: jumlahPengguna,
               keterangan: keterangan,
               status: isAccepted? 'Diterima' : 'Ditolak',
-              alasan: '',
+              alasan_penolakan: alasanPenolakan,
             ),
           ),
         );

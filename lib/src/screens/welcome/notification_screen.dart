@@ -47,7 +47,7 @@ class NotificationPage extends StatelessWidget {
                       jumlahPengguna: '5',
                       keterangan: 'Lab usage for project',
                       status: 'Accepted',
-                      alasan: 'All requirements met',
+                      alasan_penolakan: 'All requirements met',
                     ),
                   ),
                 );
@@ -72,7 +72,7 @@ class NotificationPage extends StatelessWidget {
                       jumlahPengguna: '5',
                       keterangan: 'Lab usage for project',
                       status: 'Rejected',
-                      alasan: 'Lab is under maintenance',
+                      alasan_penolakan: 'Lab is under maintenance',
                     ),
                   ),
                 );
@@ -94,6 +94,7 @@ class NotificationPage extends StatelessWidget {
                       jenis: 'Hardware',
                       bentuk: 'Broken projector',
                       deskripsi: 'The projector is not working',
+                      keteranganPenyelesaian: '',
                     ),
                   ),
                 );

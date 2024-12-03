@@ -4,8 +4,6 @@ import 'package:class_leap/src/utils/data/api_data.dart';
 class DetailpeminjamanPage extends StatelessWidget {
   final String idPeminjaman;
   final String studentName;
-  // final String studentNim;
-  // final String inputDate;
   final String ruangan;
   final String bookDate;
   final String jamMulai;
@@ -13,14 +11,12 @@ class DetailpeminjamanPage extends StatelessWidget {
   final String jumlahPengguna;
   final String keterangan;
   final String status;
-  final String alasan;
+  final String alasan_penolakan;
 
   const DetailpeminjamanPage({
     super.key,
     required this.idPeminjaman,
     required this.studentName,
-    // required this.studentNim,
-    // required this.inputDate,
     required this.ruangan,
     required this.bookDate,
     required this.jamMulai,
@@ -28,19 +24,48 @@ class DetailpeminjamanPage extends StatelessWidget {
     required this.jumlahPengguna,
     required this.keterangan,
     required this.status,
-    this.alasan = '',
+    required this.alasan_penolakan,
   });
 
-Future<void> _cancelPeminjaman(idPeminjaman) async {
-  try {
-    var response = await batalPeminjaman(idPeminjaman);
-    // Handle successful cancellation
-    print('Peminjaman cancelled successfully: ${response['message']}');
-  } catch (e) {
-    // Handle error
-    print('Failed to cancel peminjaman: $e');
+  Future<void> _cancelPeminjaman(BuildContext context, String idPeminjaman) async {
+    try {
+      var response = await batalPeminjaman(idPeminjaman);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Peminjaman berhasil dibatalkan: ${response['message']}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal membatalkan peminjaman: $e')),
+      );
+    }
   }
-}
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Pembatalan'),
+          content: Text('Apakah kamu yakin mau membatalkan peminjaman ruang?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _cancelPeminjaman(context, idPeminjaman);
+              },
+              child: Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,15 +91,13 @@ Future<void> _cancelPeminjaman(idPeminjaman) async {
           children: [
             buildRowWithDivider('Status', status),
             buildRowWithDivider('Nama', studentName),
-            // buildRowWithDivider('NIM', studentNim),
-            // buildRowWithDivider('Tgl Input', inputDate),
             buildRowWithDivider('Ruangan', ruangan),
             buildRowWithDivider('Tgl Pinjam', bookDate),
             buildRowWithDivider('Jam Mulai', jamMulai),
             buildRowWithDivider('Jam Selesai', jamSelesai),
             buildRowWithDivider('Jml Pengguna', jumlahPengguna),
             buildRowWithDivider('Keterangan', keterangan),
-            if (status == 'Ditolak') ...[
+            if (status == 'ditolak') ...[
               const SizedBox(height: 8),
               const Text(
                 'Alasan Ditolak:',
@@ -82,7 +105,7 @@ Future<void> _cancelPeminjaman(idPeminjaman) async {
               ),
               const SizedBox(height: 4),
               Text(
-                alasan,
+                alasan_penolakan,
                 style: const TextStyle(fontSize: 14),
               ),
             ],
@@ -91,22 +114,24 @@ Future<void> _cancelPeminjaman(idPeminjaman) async {
       ),
       bottomNavigationBar: status == 'menunggu'
           ? Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            _cancelPeminjaman(idPeminjaman);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-          ),
-          child: const Text('Batalkan Peminjaman', style:
-            TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            )),
-        ),
-      )
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _showConfirmationDialog(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text(
+                  'Batalkan Peminjaman',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            )
           : null,
     );
   }

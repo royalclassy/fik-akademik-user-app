@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:flutter/material.dart';
+import 'edit_profile_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,7 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String email = '';
   String profile = '';
   String prodi = '';
-  bool isLoading = true; // Add this variable to track loading state
+  bool isLoading = true;
+  File? image;
 
   @override
   void initState() {
@@ -24,40 +28,36 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchUserData() async {
-  final userData = await api_data.fetchUserData();
+    final userData = await api_data.fetchUserData();
 
-  if (userData != null && mounted) {
-    setState(() {
-      name = userData['nama']!;
-      nim = userData['nim_nrp']!;
-      email = userData['email']!;
-      profile = userData['profil'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
-
-      // Handle the nested prodi field
-      final prodiData = userData['prodi'];
-      if (prodiData != null) {
-        // Extract the necessary fields from the nested prodi object
-        prodi = prodiData['nama_prodi'];
-        // You can add more fields as needed
-      }
-
-      isLoading = false;
-    });
-  } else {
-    if (mounted) {
+    if (userData != null && mounted) {
       setState(() {
+        name = userData['nama']!;
+        nim = userData['nim_nrp']!;
+        email = userData['email']!;
+        profile = userData['profil'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+
+        final prodiData = userData['prodi'];
+        if (prodiData != null) {
+          prodi = prodiData['nama_prodi'];
+        }
+
         isLoading = false;
       });
+    } else {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-}
 
   Future<void> _logout() async {
-    //await FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -70,15 +70,13 @@ class _ProfilePageState extends State<ProfilePage> {
           content: const Text('Apakah yakin ingin keluar?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Batalkan'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(); // Perform logout
+                Navigator.of(context).pop();
+                _logout();
               },
               child: const Text('Keluar'),
             ),
@@ -87,6 +85,23 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
   }
+
+  void _navigateToEditProfile() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => EditProfilePage(
+        name: name,
+        nim: nim,
+        email: email,
+        idProdi: prodi,
+        profile: profile,
+      ),
+    ),
+  ).then((_) {
+    _fetchUserData();
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +115,11 @@ class _ProfilePageState extends State<ProfilePage> {
         )),
         backgroundColor: const Color(0xFFFF5833),
         iconTheme: const IconThemeData(
-          color: Colors.white, // Set all icons to white
+          color: Colors.white,
         ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator()) // Show loader if loading
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -112,22 +127,21 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircleAvatar(
                 radius: 50,
-                // backgroundImage: AssetImage('images/bg1.png'),
-                backgroundImage: Image.network(profile ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png').image,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                name,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                backgroundImage: NetworkImage(profile),
               ),
               const SizedBox(height: 20),
               _buildProfileField(label: 'Nama', value: name),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               _buildProfileField(label: 'NIM', value: nim),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              _buildProfileField(label: 'Email', value: email),
+              const SizedBox(height: 10),
               _buildProfileField(label: 'Prodi', value: prodi),
               const SizedBox(height: 20),
-              _buildProfileField(label: 'Email', value: email),
+              ElevatedButton(
+                onPressed: _navigateToEditProfile,
+                child: const Text('Edit Profile'),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _showLogoutConfirmationDialog,

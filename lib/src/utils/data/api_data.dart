@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:intl/intl.dart';
 
@@ -385,5 +386,62 @@ Future<List<Map<String, dynamic>>> getAllProfildosen() async {
     return List<Map<String, dynamic>>.from(json.decode(response.body));
   } else {
     throw Exception('Failed to load data');
+  }
+}
+
+Future<void> updateProfile(String name, String nim, String email, String idProdi, File image) async {
+  const String endpoint = 'user/update';
+  final String url = base_url + endpoint;
+  final headers = await _getHeaders();
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: {
+        'image': image.path,
+        'nama': name,
+        'nim': nim,
+        'email': email,
+        'id_prodi': idProdi,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Profile updated successfully');
+    } else {
+      print('Failed to update profile: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update profile');
+    }
+  } catch (e) {
+    print('Error updating profile: $e');
+    throw Exception('Error updating profile');
+  }
+}
+
+Future<String> uploadProfileImage(File image) async {
+  const String endpoint = 'user/update';
+  final String url = base_url + endpoint;
+  final headers = await _getHeaders();
+
+  var request = http.MultipartRequest('POST', Uri.parse(url));
+  request.headers.addAll(headers);
+  request.files.add(await http.MultipartFile.fromPath('profile_image', image.path));
+
+  try {
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(responseBody);
+      return jsonResponse['imageUrl'];
+    } else {
+      print('Failed to upload image: ${response.statusCode}');
+      print('Response body: $responseBody');
+      throw Exception('Failed to upload image');
+    }
+  } catch (e) {
+    print('Error uploading image: $e');
+    throw Exception('Error uploading image');
   }
 }

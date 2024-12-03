@@ -22,6 +22,7 @@ class Report {
   final String bentuk;
   final String deskripsi;
   final String status;
+  final String keteranganPenyelesaian;
 
   Report({
     required this.studentName,
@@ -32,6 +33,7 @@ class Report {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
+    required this.keteranganPenyelesaian,
   });
 
     factory Report.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class Report {
       bentuk: json['bentuk_kendala'],
       deskripsi: json['deskripsi_kendala'],
       status: json['status'],
+      keteranganPenyelesaian: json['keterangan_penyelesaian'],
     );
   }
 }
@@ -176,6 +179,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                                 bentuk: booking.bentuk,
                                 deskripsi: booking.deskripsi,
                                 status: booking.status,
+                                keteranganPenyelesaian: booking.keteranganPenyelesaian,
                               );
                             },
                           );
@@ -238,6 +242,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                                       bentuk: booking.bentuk,
                                       deskripsi: booking.deskripsi,
                                       status: booking.status,
+                                      keteranganPenyelesaian: booking.keteranganPenyelesaian,
                                     );
                                   },
                                 );
@@ -271,6 +276,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
         bentuk: report.bentuk,
         deskripsi: report.deskripsi,
         status: report.status,
+        keteranganPenyelesaian: report.keteranganPenyelesaian,
       )).toList(),
     );
   }

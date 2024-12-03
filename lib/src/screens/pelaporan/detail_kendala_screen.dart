@@ -9,6 +9,7 @@ class DetailkendalaPage extends StatelessWidget {
   final String bentuk;
   final String deskripsi;
   final String status;
+  final String keteranganPenyelesaian;
 
   const DetailkendalaPage({
     super.key,
@@ -20,72 +21,43 @@ class DetailkendalaPage extends StatelessWidget {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
+    required this.keteranganPenyelesaian,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Detail Laporan Kendala",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color(0xFFFF5833),
-        iconTheme: const IconThemeData(
-          color: Colors.white, // Set all icons to white
-        ),
+        title: Text('Detail Kendala'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildRowWithDivider('Status', status),
-            buildRowWithDivider('Nama', studentName),
-            buildRowWithDivider('NIM', studentNim),
-            buildRowWithDivider('Tgl Input', inputDate),
-            buildRowWithDivider('Ruangan', ruangan),
-            buildRowWithDivider('Jenis Kendala', jenis),
-            buildRowWithDivider('Bentuk Kendala', bentuk),
-            buildRowWithDivider('Deskripsi', deskripsi),
+            Text('Nama: $studentName'),
+            Text('NIM: $studentNim'),
+            Text('Tanggal: $inputDate'),
+            Text('Ruangan: $ruangan'),
+            Text('Jenis: $jenis'),
+            Text('Bentuk: $bentuk'),
+            Text('Deskripsi: $deskripsi'),
+            Text('Status: $status'),
+            if (status == 'Selesai') ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Keterangan Penyelesaian:',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                keteranganPenyelesaian,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildRowWithDivider(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 140,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Divider(color: Color(0xffede9d0)),
-      ],
     );
   }
 }

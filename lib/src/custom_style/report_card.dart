@@ -13,6 +13,7 @@ class ReportCard extends StatelessWidget {
   final String bentuk;
   final String deskripsi;
   final String status;
+  final String keteranganPenyelesaian;
 
   const ReportCard({
     super.key,
@@ -24,6 +25,7 @@ class ReportCard extends StatelessWidget {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
+    required this.keteranganPenyelesaian,
   });
 
   @override
@@ -41,7 +43,8 @@ class ReportCard extends StatelessWidget {
               jenis: jenis,
               bentuk: bentuk,
               deskripsi: deskripsi,
-              status: status, // Pass the status parameter here
+              status: status,
+              keteranganPenyelesaian: keteranganPenyelesaian,
             ),
           ),
         );
@@ -123,6 +126,18 @@ class ReportCard extends StatelessWidget {
                     ),
                 ],
               ),
+              if (status == 'Selesai') ...[
+                const SizedBox(height: 8),
+                const Text(
+                  'Keterangan Penyelesaian:',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  keteranganPenyelesaian,
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
             ],
           ),
         ),

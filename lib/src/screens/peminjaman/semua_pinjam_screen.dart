@@ -22,6 +22,7 @@ class Booking {
   final String jumlahPengguna;
   final String keterangan;
   final String status;
+  final String alasanPenolakan;
 
   Booking({
     required this.id,
@@ -33,6 +34,7 @@ class Booking {
     required this.jumlahPengguna,
     required this.keterangan,
     required this.status,
+    required this.alasanPenolakan,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Booking {
       jumlahPengguna: json['jumlah_orang'].toString(),
       keterangan: json['keterangan'],
       status: json['status'],
+      alasanPenolakan: json['alasan_penolakan'] ?? '',
     );
   }
 }
@@ -182,6 +185,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                                 onAccept: () {},
                                 onReject: () {},
                                 status: booking.status,
+                                alasanPenolakan: booking.alasanPenolakan,
                               );
                             },
                           );
@@ -244,6 +248,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                                       onAccept: () {},
                                       onReject: () {},
                                       status: booking.status,
+                                      alasanPenolakan: booking.alasanPenolakan,
                                     );
                                   },
                                 );
