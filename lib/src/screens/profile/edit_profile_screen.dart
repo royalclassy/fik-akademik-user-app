@@ -79,32 +79,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-      await _uploadImage(_image!);
-    }
+Future<void> _pickImage() async {
+  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  if (pickedFile != null) {
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+    print(_image);
   }
+}
 
-  Future<void> _uploadImage(File image) async {
-    try {
-      String imageUrl = await api_data.uploadProfileImage(image);
-      if (mounted) {
-        setState(() {
-          _profile = imageUrl;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload image: $e')),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

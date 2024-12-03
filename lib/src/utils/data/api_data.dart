@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
@@ -395,53 +396,32 @@ Future<void> updateProfile(String name, String nim, String email, String idProdi
   final headers = await _getHeaders();
 
   try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: {
-        'image': image.path,
-        'nama': name,
-        'nim': nim,
-        'email': email,
-        'id_prodi': idProdi,
-      },
-    );
+    var request = http.MultipartRequest('POST', Uri.parse(url))
+      ..headers.addAll(headers)
+      ..fields['nama'] = name
+      ..fields['nim'] = nim
+      ..fields['email'] = email
+      ..fields['id_prodi'] = idProdi;
+
+    if (image.path.isNotEmpty) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        image.path,
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+
+    var response = await request.send().timeout(Duration(seconds: 15));
 
     if (response.statusCode == 200) {
       print('Profile updated successfully');
     } else {
       print('Failed to update profile: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Response body: ${await response.stream.bytesToString()}');
       throw Exception('Failed to update profile');
     }
   } catch (e) {
     print('Error updating profile: $e');
     throw Exception('Error updating profile');
-  }
-}
-
-Future<String> uploadProfileImage(File image) async {
-  const String endpoint = 'user/update';
-  final String url = base_url + endpoint;
-  final headers = await _getHeaders();
-
-  var request = http.MultipartRequest('POST', Uri.parse(url));
-  request.headers.addAll(headers);
-  request.files.add(await http.MultipartFile.fromPath('profile_image', image.path));
-
-  try {
-    var response = await request.send();
-    var responseBody = await response.stream.bytesToString();
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(responseBody);
-      return jsonResponse['imageUrl'];
-    } else {
-      print('Failed to upload image: ${response.statusCode}');
-      print('Response body: $responseBody');
-      throw Exception('Failed to upload image');
-    }
-  } catch (e) {
-    print('Error uploading image: $e');
-    throw Exception('Error uploading image');
   }
 }
