@@ -411,7 +411,7 @@ Future<void> updateProfile(String name, String nim, String email, String idProdi
       ));
     }
 
-    var response = await request.send().timeout(Duration(seconds: 15));
+    var response = await request.send().timeout(Duration(seconds: 30));
 
     if (response.statusCode == 200) {
       print('Profile updated successfully');
