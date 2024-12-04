@@ -1,4 +1,4 @@
-import 'package:class_leap/src/screens/welcome/sign_up_screen_api.dart';
+import 'package:class_leap/src/screens/welcome/signup_screen.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/screens/profile/profile_page.dart';

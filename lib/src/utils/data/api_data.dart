@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://ed65-180-252-89-111.ngrok-free.app/api/';
+const String base_url = 'https://7ac2-180-252-80-71.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 

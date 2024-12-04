@@ -104,55 +104,59 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Profil', style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        )),
-        backgroundColor: const Color(0xFFFF5833),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      automaticallyImplyLeading: false,
+      title: const Text('Profil', style: TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      )),
+      backgroundColor: const Color(0xFFFF5833),
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
+    ),
+    body: isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: NetworkImage(profile),
+            ),
+            const SizedBox(height: 20),
+            _buildProfileField(label: 'Nama', value: name),
+            const SizedBox(height: 10),
+            _buildProfileField(label: 'NIM', value: nim),
+            const SizedBox(height: 10),
+            _buildProfileField(label: 'Email', value: email),
+            const SizedBox(height: 10),
+            _buildProfileField(label: 'Prodi', value: prodi),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _navigateToEditProfile,
+                  child: const Text('Edit Profile'),
+                ),
+                ElevatedButton(
+                  onPressed: _showLogoutConfirmationDialog,
+                  child: const Text('Logout'),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(profile),
-              ),
-              const SizedBox(height: 20),
-              _buildProfileField(label: 'Nama', value: name),
-              const SizedBox(height: 10),
-              _buildProfileField(label: 'NIM', value: nim),
-              const SizedBox(height: 10),
-              _buildProfileField(label: 'Email', value: email),
-              const SizedBox(height: 10),
-              _buildProfileField(label: 'Prodi', value: prodi),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _navigateToEditProfile,
-                child: const Text('Edit Profile'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showLogoutConfirmationDialog,
-                child: const Text('Logout'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildProfileField({required String label, required String value}) {
     return Row(

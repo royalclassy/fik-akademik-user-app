@@ -76,6 +76,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
+      initialDateRange: _selectedDateRange,
     );
     if (picked != null && picked != _selectedDateRange) {
       setState(() {
@@ -90,14 +91,17 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
     });
   }
 
-  List<Booking> _filterBookings(List<Booking> bookings) {
-    if (_selectedDateRange == null) return bookings;
-    return bookings.where((booking) {
-      final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
-      return bookingDate.isAfter(_selectedDateRange!.start) &&
-             bookingDate.isBefore(_selectedDateRange!.end);
-    }).toList();
-  }
+List<Booking> _filterBookings(List<Booking> bookings) {
+  if (_selectedDateRange == null) return bookings;
+  return bookings.where((booking) {
+    final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
+    print('Booking Date: $bookingDate');
+    print('Start Date: ${_selectedDateRange!.start}');
+    print('End Date: ${_selectedDateRange!.end}');
+    return (bookingDate.isAfter(_selectedDateRange!.start) || bookingDate.isAtSameMomentAs(_selectedDateRange!.start)) &&
+           (bookingDate.isBefore(_selectedDateRange!.end) || bookingDate.isAtSameMomentAs(_selectedDateRange!.end));
+  }).toList();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +143,31 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () => _selectDateRange(context),
-                    child: const Text('Select Date Range'),
+                    child: const Text('Pilih Rentang Waktu'),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: _clearDateRange,
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 30, // Adjust the width
+                    height: 30, // Adjust the height
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100], // Background color
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearDateRange,
+                        iconSize: 20.0, // Adjust the size
+                        color: Colors.red, // Adjust the color
+                        padding: EdgeInsets.zero, // Remove padding
+                      ),
+                    ),
                   ),
+                  if (_selectedDateRange != null)
+                    Text(
+                      '${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
                 ],
               ),
             ),
@@ -158,16 +181,22 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                     child: FutureBuilder<List<Booking>>(
                       future: _peminjamanFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('Tidak ada data peminjaman'));
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('Tidak ada data peminjaman'));
                         } else {
-                          List<Booking> bookings = snapshot.data!
-                              .where((booking) => booking.status == 'menunggu')
-                              .toList();
+                          List<Booking> bookings = _filterBookings(
+                              snapshot.data!);
+                          bookings = bookings.where((booking) =>
+                          booking.status == 'menunggu').toList();
                           return ListView.builder(
                             itemCount: bookings.length,
                             itemBuilder: (context, index) {
@@ -176,7 +205,8 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                                 id: booking.id,
                                 studentName: booking.studentName,
                                 inputDate: booking.bookDate,
-                                time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                time: "${booking.jamMulai} - ${booking
+                                    .jamSelesai}",
                                 timeStart: booking.jamMulai,
                                 timeEnd: booking.jamSelesai,
                                 description: booking.keterangan,
@@ -221,16 +251,22 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                           child: FutureBuilder<List<Booking>>(
                             future: _peminjamanFuture,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return const Center(child: Text('Tidak ada data peminjaman'));
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('Tidak ada data peminjaman'));
                               } else {
-                                List<Booking> bookings = snapshot.data!
-                                    .where((booking) => booking.status == _selectedStatus)
-                                    .toList();
+                                List<Booking> bookings = _filterBookings(
+                                    snapshot.data!);
+                                bookings = bookings.where((booking) => booking
+                                    .status == _selectedStatus).toList();
                                 return ListView.builder(
                                   itemCount: bookings.length,
                                   itemBuilder: (context, index) {
@@ -239,12 +275,14 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                                       id: booking.id,
                                       studentName: booking.studentName,
                                       inputDate: booking.bookDate,
-                                      time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                      time: "${booking.jamMulai} - ${booking
+                                          .jamSelesai}",
                                       timeStart: booking.jamMulai,
                                       timeEnd: booking.jamSelesai,
                                       description: booking.keterangan,
                                       ruangan: booking.ruangan,
-                                      groupSize: "${booking.jumlahPengguna} orang",
+                                      groupSize: "${booking
+                                          .jumlahPengguna} orang",
                                       onAccept: () {},
                                       onReject: () {},
                                       status: booking.status,
@@ -266,5 +304,4 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
         ),
       ),
     );
-  }
-}
+  }}

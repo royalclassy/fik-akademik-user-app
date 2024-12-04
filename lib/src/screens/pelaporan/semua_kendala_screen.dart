@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/report_card.dart';
-// import 'package:class_leap/src/utils/data/dummy_report.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
 
@@ -36,7 +35,7 @@ class Report {
     required this.keteranganPenyelesaian,
   });
 
-    factory Report.fromJson(Map<String, dynamic> json) {
+  factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
       studentName: json['nama_pelapor'],
       studentNim: json['nim_nrp'],
@@ -137,12 +136,31 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () => _selectDateRange(context),
-                    child: const Text('Pilih Tanggal'),
+                    child: const Text('Pilih Rentang Waktu'),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: _clearDateRange,
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 30, // Adjust the width
+                    height: 30, // Adjust the height
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100], // Background color
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearDateRange,
+                        iconSize: 20.0, // Adjust the size
+                        color: Colors.red, // Adjust the color
+                        padding: EdgeInsets.zero, // Remove padding
+                      ),
+                    ),
                   ),
+                  if (_selectedDateRange != null)
+                    Text(
+                      '${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
                 ],
               ),
             ),
@@ -163,7 +181,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return const Center(child: Text('Tidak data laporan kendala'));
                         } else {
-                          List<Report> bookings = snapshot.data!
+                          List<Report> bookings = _filterReports(snapshot.data!)
                               .where((booking) => booking.status == 'menunggu')
                               .toList();
                           return ListView.builder(
@@ -226,7 +244,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                                 return const Center(child: Text('Tidak data laporan kendala'));
                               } else {
-                                List<Report> bookings = snapshot.data!
+                                List<Report> bookings = _filterReports(snapshot.data!)
                                     .where((booking) => booking.status == _selectedStatus)
                                     .toList();
                                 return ListView.builder(
@@ -259,25 +277,6 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildReportList(List<Report> reports) {
-    if (reports.isEmpty) {
-      return const Center(child: Text('Tidak ada data'));
-    }
-    return ListView(
-      children: reports.map((report) => ReportCard(
-        studentName: report.studentName,
-        studentNim: report.studentNim,
-        inputDate: report.inputDate,
-        ruangan: report.ruangan,
-        jenis: report.jenis,
-        bentuk: report.bentuk,
-        deskripsi: report.deskripsi,
-        status: report.status,
-        keteranganPenyelesaian: report.keteranganPenyelesaian,
-      )).toList(),
     );
   }
 }
