@@ -158,19 +158,27 @@ Widget build(BuildContext context) {
   );
 }
 
-  Widget _buildProfileField({required String label, required String value}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+Widget _buildProfileField({required String label, required String value}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+      ),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(fontSize: 14),
+              textAlign: TextAlign.right,
+            ),
+          ],
         ),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 }

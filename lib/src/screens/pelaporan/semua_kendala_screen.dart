@@ -21,6 +21,7 @@ class Report {
   final String bentuk;
   final String deskripsi;
   final String status;
+  final String tanggalPenyelesaian;
   final String keteranganPenyelesaian;
 
   Report({
@@ -32,6 +33,7 @@ class Report {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
+    required this.tanggalPenyelesaian,
     required this.keteranganPenyelesaian,
   });
 
@@ -45,7 +47,8 @@ class Report {
       bentuk: json['bentuk_kendala'],
       deskripsi: json['deskripsi_kendala'],
       status: json['status'],
-      keteranganPenyelesaian: json['keterangan_penyelesaian'],
+      tanggalPenyelesaian: json['tanggal_penyelesaian'] ?? '',
+      keteranganPenyelesaian: json['keterangan_penyelesaian'] ?? '',
     );
   }
 }
@@ -54,6 +57,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
   late Future<List<Report>> _kendalaFuture;
   String _selectedStatus = 'selesai';
   DateTimeRange? _selectedDateRange;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -68,11 +72,27 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
     return kendala.map((data) => Report.fromJson(data)).toList();
   }
 
+  Future<void> _submitForm() async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
+    // Simulate a network request or form submission
+    await Future.delayed(Duration(seconds: 2));
+
+    setState(() {
+      _isLoading = false; // Hide loading indicator
+    });
+
+    // Handle the form submission result
+  }
+
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
+      initialDateRange: _selectedDateRange,
     );
     if (picked != null && picked != _selectedDateRange) {
       setState(() {
@@ -165,112 +185,120 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
               ),
             ),
             Expanded(
-              child: TabBarView(
+              child: Stack(
                 children: [
-                  // Tab for "Sedang Berjalan"
-                  Container(
-                    color: Colors.grey[200],
-                    padding: const EdgeInsets.all(16),
-                    child: FutureBuilder<List<Report>>(
-                      future: _kendalaFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('Tidak data laporan kendala'));
-                        } else {
-                          List<Report> bookings = _filterReports(snapshot.data!)
-                              .where((booking) => booking.status == 'menunggu')
-                              .toList();
-                          return ListView.builder(
-                            itemCount: bookings.length,
-                            itemBuilder: (context, index) {
-                              Report booking = bookings[index];
-                              return ReportCard(
-                                studentName: booking.studentName,
-                                studentNim: booking.studentNim,
-                                inputDate: booking.inputDate,
-                                ruangan: booking.ruangan,
-                                jenis: booking.jenis,
-                                bentuk: booking.bentuk,
-                                deskripsi: booking.deskripsi,
-                                status: booking.status,
-                                keteranganPenyelesaian: booking.keteranganPenyelesaian,
+                  TabBarView(
+                    children: [
+                      // Tab for "Sedang Berjalan"
+                      Container(
+                        color: Colors.grey[200],
+                        padding: const EdgeInsets.all(16),
+                        child: FutureBuilder<List<Report>>(
+                          future: _kendalaFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('Tidak data laporan kendala'));
+                            } else {
+                              List<Report> bookings = _filterReports(snapshot.data!)
+                                  .where((booking) => booking.status == 'menunggu')
+                                  .toList();
+                              return ListView.builder(
+                                itemCount: bookings.length,
+                                itemBuilder: (context, index) {
+                                  Report booking = bookings[index];
+                                  return ReportCard(
+                                    studentName: booking.studentName,
+                                    studentNim: booking.studentNim,
+                                    inputDate: booking.inputDate,
+                                    ruangan: booking.ruangan,
+                                    jenis: booking.jenis,
+                                    bentuk: booking.bentuk,
+                                    deskripsi: booking.deskripsi,
+                                    status: booking.status,
+                                    keteranganPenyelesaian: booking.keteranganPenyelesaian,
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  // Tab for "Riwayat"
-                  Container(
-                    color: Colors.grey[200],
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        DropdownButton<String>(
-                          value: _selectedStatus,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'menunggu',
-                              child: Text('Menunggu'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'dalam proses',
-                              child: Text('Dalam Proses'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'selesai',
-                              child: Text('Selesai'),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedStatus = value!;
-                            });
+                            }
                           },
                         ),
-                        Expanded(
-                          child: FutureBuilder<List<Report>>(
-                            future: _kendalaFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return const Center(child: Text('Tidak data laporan kendala'));
-                              } else {
-                                List<Report> bookings = _filterReports(snapshot.data!)
-                                    .where((booking) => booking.status == _selectedStatus)
-                                    .toList();
-                                return ListView.builder(
-                                  itemCount: bookings.length,
-                                  itemBuilder: (context, index) {
-                                    Report booking = bookings[index];
-                                    return ReportCard(
-                                      studentName: booking.studentName,
-                                      studentNim: booking.studentNim,
-                                      inputDate: booking.inputDate,
-                                      ruangan: booking.ruangan,
-                                      jenis: booking.jenis,
-                                      bentuk: booking.bentuk,
-                                      deskripsi: booking.deskripsi,
-                                      status: booking.status,
-                                      keteranganPenyelesaian: booking.keteranganPenyelesaian,
+                      ),
+                      // Tab for "Riwayat"
+                      Container(
+                        color: Colors.grey[200],
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            DropdownButton<String>(
+                              value: _selectedStatus,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'menunggu',
+                                  child: Text('Menunggu'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'dalam proses',
+                                  child: Text('Dalam Proses'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'selesai',
+                                  child: Text('Selesai'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedStatus = value!;
+                                });
+                              },
+                            ),
+                            Expanded(
+                              child: FutureBuilder<List<Report>>(
+                                future: _kendalaFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(child: Text('Error: ${snapshot.error}'));
+                                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                    return const Center(child: Text('Tidak data laporan kendala'));
+                                  } else {
+                                    List<Report> bookings = _filterReports(snapshot.data!)
+                                        .where((booking) => booking.status == _selectedStatus)
+                                        .toList();
+                                    return ListView.builder(
+                                      itemCount: bookings.length,
+                                      itemBuilder: (context, index) {
+                                        Report booking = bookings[index];
+                                        return ReportCard(
+                                          studentName: booking.studentName,
+                                          studentNim: booking.studentNim,
+                                          inputDate: booking.inputDate,
+                                          ruangan: booking.ruangan,
+                                          jenis: booking.jenis,
+                                          bentuk: booking.bentuk,
+                                          deskripsi: booking.deskripsi,
+                                          status: booking.status,
+                                          keteranganPenyelesaian: booking.keteranganPenyelesaian,
+                                        );
+                                      },
                                     );
-                                  },
-                                );
-                              }
-                            },
-                          ),
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  if (_isLoading)
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
                 ],
               ),
             ),

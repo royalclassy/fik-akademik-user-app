@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
+import 'package:class_leap/src/screens/peminjaman/semua_pinjam_screen.dart';
 
-class DetailpeminjamanPage extends StatelessWidget {
+class DetailpeminjamanPage extends StatefulWidget {
   final String idPeminjaman;
   final String studentName;
   final String ruangan;
@@ -27,11 +28,36 @@ class DetailpeminjamanPage extends StatelessWidget {
     required this.alasan_penolakan,
   });
 
+  @override
+  _DetailpeminjamanPageState createState() => _DetailpeminjamanPageState();
+}
+
+class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
+  late BuildContext _context;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _context = context;
+  }
+
+  @override
+  void dispose() {
+    // Use _context safely here if needed
+    super.dispose();
+  }
+
   Future<void> _cancelPeminjaman(BuildContext context, String idPeminjaman) async {
     try {
       var response = await batalPeminjaman(idPeminjaman);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Peminjaman berhasil dibatalkan: ${response['message']}')),
+      );
+      Navigator.of(context).pop(); // Close the dialog
+      Navigator.of(context).pop(); // Navigate back to the previous page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SemuadaftarPage(room: widget.ruangan)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -50,14 +76,14 @@ class DetailpeminjamanPage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Tidak'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                _cancelPeminjaman(context, idPeminjaman);
+                Navigator.of(context).pop(); // Close the dialog
+                _cancelPeminjaman(context, widget.idPeminjaman);
               },
               child: Text('Ya'),
             ),
@@ -89,15 +115,15 @@ class DetailpeminjamanPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildRowWithDivider('Status', status),
-            buildRowWithDivider('Nama', studentName),
-            buildRowWithDivider('Ruangan', ruangan),
-            buildRowWithDivider('Tgl Pinjam', bookDate),
-            buildRowWithDivider('Jam Mulai', jamMulai),
-            buildRowWithDivider('Jam Selesai', jamSelesai),
-            buildRowWithDivider('Jml Pengguna', jumlahPengguna),
-            buildRowWithDivider('Keterangan', keterangan),
-            if (status == 'ditolak') ...[
+            buildRowWithDivider('Status', widget.status),
+            buildRowWithDivider('Nama', widget.studentName),
+            buildRowWithDivider('Ruangan', widget.ruangan),
+            buildRowWithDivider('Tgl Pinjam', widget.bookDate),
+            buildRowWithDivider('Jam Mulai', widget.jamMulai),
+            buildRowWithDivider('Jam Selesai', widget.jamSelesai),
+            buildRowWithDivider('Jml Pengguna', widget.jumlahPengguna),
+            buildRowWithDivider('Keterangan', widget.keterangan),
+            if (widget.status == 'ditolak') ...[
               const SizedBox(height: 8),
               const Text(
                 'Alasan Ditolak:',
@@ -105,14 +131,14 @@ class DetailpeminjamanPage extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                alasan_penolakan,
+                widget.alasan_penolakan,
                 style: const TextStyle(fontSize: 14),
               ),
             ],
           ],
         ),
       ),
-      bottomNavigationBar: status == 'menunggu'
+      bottomNavigationBar: widget.status == 'menunggu'
           ? Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(

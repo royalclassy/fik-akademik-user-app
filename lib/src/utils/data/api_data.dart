@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://7ac2-180-252-80-71.ngrok-free.app/api/';
+const String base_url = 'https://bb02-140-213-250-7.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -59,6 +59,9 @@ Map<String, String> formatTime(String jamMulai, String jamSelesai) {
 }
 
 Future<int> login(String identifier, String password) async {
+  print('login');
+  print(identifier);
+  print(password);
   endpoint = 'login';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
@@ -148,6 +151,14 @@ Future<Map<String, dynamic>> getAvailablity(String tanggal, String jamMulai, Str
   var formattedTimes = formatTime(jamMulai, jamSelesai);
 
   var url = Uri.parse(base_url + endpoint);
+  print({
+    'tgl_pinjam': tanggal,
+    'jam_mulai': formattedTimes['formattedStartTime']??'',
+    'jam_selesai': formattedTimes['formattedEndTime'],
+    'id_ruang': idRuang,
+    'jumlah_orang': jumlahOrang,
+  });
+
   var response = await http.post(url, body: {
     'tgl_pinjam': tanggal,
     'jam_mulai': formattedTimes['formattedStartTime']!,
@@ -155,6 +166,7 @@ Future<Map<String, dynamic>> getAvailablity(String tanggal, String jamMulai, Str
     'id_ruang': idRuang,
     'jumlah_orang': jumlahOrang,
   }, headers: await _getHeaders());
+  print(response.body);
 
   if (response.statusCode == 200) {
     var responseBody = json.decode(response.body);
@@ -172,6 +184,7 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
 
   var formattedTimes = formatTime(jamMulai, jamSelesai);
 
+  print("bisa");
   print({
     'id_ruang': idRuang,
     'tgl_pinjam': tanggal,
@@ -257,6 +270,7 @@ Future<List<Map<String, dynamic>>> getKendala(String room) async {
     );
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
+    print(data);
     return data.cast<Map<String, dynamic>>();
   } else {
     throw Exception('Failed to get data');

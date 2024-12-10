@@ -94,7 +94,15 @@ Future<void> _pickImage() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profil', style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: Color(0xFFFFFFFF),
+        )),
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
