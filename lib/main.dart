@@ -1,5 +1,7 @@
 import 'package:class_leap/src/screens/welcome/signup_screen.dart';
 import 'package:class_leap/src/screens/welcome/signin_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/screens/profile/profile_page.dart';
 import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
@@ -10,6 +12,7 @@ import 'package:class_leap/src/screens/kalender/kalender_akademik_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:class_leap/src/utils/data/firebase_options.dart';
 
 Future<bool> _onWillPop() async {
   // Exit the app when back button is pressed
@@ -34,15 +37,25 @@ Future<void> removeUserToken() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    name: 'admin-fik-app',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('firebase initialized');
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  print('firebase messaging initialized');
   String? userToken = await getUserToken();
-  //runApp(const MyApp());
-
   runApp(MyApp(isLoggedIn: userToken != null));
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message: ${message.messageId}');
+  await Firebase.initializeApp();
+  print('Handling a background message: ${message.messageId}');
 }
 
 class MyApp extends StatefulWidget {
   final bool isLoggedIn;
- // const MyApp({super.key});
   const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
 
   @override
@@ -51,6 +64,45 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0; // Menyimpan indeks halaman yang dipilih
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.instance.getToken().then((token) {
+      print('FCM Token: $token');
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+        // Show a dialog or a snackbar
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(message.notification!.title ?? 'Notification'),
+            content: Text(message.notification!.body ?? 'No body'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      // Handle the notification tap
+      setState(() {
+        _selectedIndex = 1; // Navigate to the Peminjaman page
+      });
+    });
+  }
 
   // Daftar halaman yang ditampilkan berdasarkan indeks
   final List<Widget> _pages = [

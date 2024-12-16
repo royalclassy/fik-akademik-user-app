@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "478482507446",
-    "project_id": "claeapthesis",
-    "storage_bucket": "claeapthesis.appspot.com"
+    "project_number": "195335063252",
+    "project_id": "fik-akademik-user-app",
+    "storage_bucket": "fik-akademik-user-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:478482507446:android:cc76596a3ba5c5d05aa817",
+        "mobilesdk_app_id": "1:195335063252:android:7e2e1d3eb0f6eb84f5dd41",
         "android_client_info": {
           "package_name": "com.example.class_leap"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB_n1_uHwaWw8Qk5KLB_cppwjOWAgMJgRE"
+          "current_key": "AIzaSyBLNfvUzwRy1EUKw0x-V34eSLCZQvSTvDU"
         }
       ],
       "services": {
