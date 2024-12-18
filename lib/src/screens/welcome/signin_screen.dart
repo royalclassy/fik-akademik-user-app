@@ -56,6 +56,12 @@ class _SignInScreenState extends State<SignInScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login success')),
         );
+        String? fcmToken = prefs.getString('fcm_token');
+        print('FCM Token: $fcmToken');
+        if (fcmToken != null) {
+          print('FCM Token: $fcmToken');
+          await saveTokenToServer(fcmToken);
+        }
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

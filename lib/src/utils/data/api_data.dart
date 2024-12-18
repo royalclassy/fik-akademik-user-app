@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://9e19-103-147-92-254.ngrok-free.app/api/';
+const String base_url = 'https://b9fe-103-147-92-253.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -437,5 +437,42 @@ Future<void> updateProfile(String name, String nim, String email, String idProdi
   } catch (e) {
     print('Error updating profile: $e');
     throw Exception('Error updating profile');
+  }
+}
+
+Future<void> saveTokenToServer(String? token) async {
+  if (token == null) return;
+  endpoint = 'save-fcm-token';
+  var url = Uri.parse(base_url + endpoint);
+
+  print('Saving FCM token to server');
+  print('FCM Token: $token');
+
+  final response = await http.post(url, body: {
+    'fcm_token' : token,
+  }, headers: await _getHeaders());
+
+  if (response.statusCode == 200) {
+    print('FCM token saved successfully');
+  } else if (response.statusCode == 302 || response.statusCode == 301) {
+    // Handle redirect
+    final redirectUrl = response.headers['location'];
+    if (redirectUrl != null) {
+      final redirectResponse = await http.post(
+        Uri.parse(redirectUrl),
+        headers: await _getHeaders(),
+        body: jsonEncode({'fcm_token': token}),
+      );
+
+      if (redirectResponse.statusCode == 200) {
+        print('FCM token saved successfully after redirect');
+      } else {
+        print('Failed to save FCM token after redirect');
+      }
+    } else {
+      print('Redirect URL is null');
+    }
+  } else {
+    print('Failed to save FCM token');
   }
 }

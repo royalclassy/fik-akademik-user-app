@@ -13,6 +13,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:class_leap/src/utils/data/firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:io';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<bool> _onWillPop() async {
   // Exit the app when back button is pressed
@@ -37,23 +41,74 @@ Future<void> removeUserToken() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    name: 'admin-fik-app',
-    options: DefaultFirebaseOptions.currentPlatform,
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      name: 'class_leap',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+  // Request notification permissions
+  await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false
   );
-  print('firebase initialized');
+  print('Notification permissions granted');
+
+  // Create notification channel
+  if (Platform.isAndroid) {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.createNotificationChannel(channel);
+        print('Notification channel created');
+  }
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  print('firebase messaging initialized');
+  print('Background message handler registered');
   String? userToken = await getUserToken();
   runApp(MyApp(isLoggedIn: userToken != null));
 }
 
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message: ${message.messageId}');
-  await Firebase.initializeApp();
-  print('Handling a background message: ${message.messageId}');
-}
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      name: 'class_leap',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase app initialized');
+  }
 
+  print('Background service initialized');
+  print('Handling a background message: ${message.messageId}');
+  print('Message data: ${message.data}');
+  print('Message notification: ${message.notification?.title}');
+
+  await flutterLocalNotificationsPlugin.show(
+    message.hashCode,
+    message.notification?.title,
+    message.notification?.body,
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        'high_importance_channel',
+        'High Importance Notifications',
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    ),
+  );
+}
 class MyApp extends StatefulWidget {
   final bool isLoggedIn;
   const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
@@ -68,40 +123,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.instance.getToken().then((token) {
-      print('FCM Token: $token');
-    });
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-        // Show a dialog or a snackbar
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(message.notification!.title ?? 'Notification'),
-            content: Text(message.notification!.body ?? 'No body'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      // Handle the notification tap
-      setState(() {
-        _selectedIndex = 1; // Navigate to the Peminjaman page
-      });
-    });
+    _initNotifications();
+    _setupFCM();
   }
 
   // Daftar halaman yang ditampilkan berdasarkan indeks
@@ -112,6 +135,86 @@ class _MyAppState extends State<MyApp> {
     const PelaporanPage(),
     const ProfilePage(),
   ];
+
+  Future<void> _initNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    print('Local notifications initialized');
+  }
+
+  void _setupFCM() {
+    print('Setting up FCM');
+    print( "default options"+ DefaultFirebaseOptions.currentPlatform.toString());
+    try {
+      FirebaseMessaging.instance.getToken().then((token) async {
+        if (token != null) {
+          print('FCM Token: $token');
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('fcm_token', token);
+        } else {
+          print('Failed to get FCM token: Token is null');
+        }
+      }).catchError((error) {
+        print('Error getting FCM token: $error');
+      });
+    }
+    catch (e) {
+      print('Unexpected error in FCM setup: $e');
+    }
+    print('Setting up FCM');
+    try {
+      FirebaseMessaging.instance.getToken().then((token) async {
+        print('FCM Token: $token');
+        print('Saving FCM Token');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('fcm_token', token!);
+      });
+    }
+    catch (e) {
+      print('Error getting FCM token: $e');
+    }
+
+    // Listen for token refresh
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+      print('FCM Token Refreshed: $token');
+    });
+
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+      print('Message notification: ${message.notification}');
+
+      if (message.notification != null) {
+        flutterLocalNotificationsPlugin.show(
+          message.hashCode,
+          message.notification!.title,
+          message.notification!.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'High Importance Notifications',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+        );
+      }
+    });
+
+    // Handle notification open
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      setState(() {
+        _selectedIndex = 1; // Navigate to Peminjaman page
+      });
+    });
+  }
 
   // Fungsi untuk mengganti halaman saat tombol BottomNavigationBar diklik
   void _onItemTapped(int index) {
