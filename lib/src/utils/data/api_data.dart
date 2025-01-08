@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://b9fe-103-147-92-253.ngrok-free.app/api/';
+const String base_url = 'https://ccb5-140-213-128-240.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -226,11 +226,14 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
 }
 
 Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
+  print(room);
   endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
+  print(url);
   var response = await http.get(url, 
     headers: await _getHeaders()
     );
+  print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();

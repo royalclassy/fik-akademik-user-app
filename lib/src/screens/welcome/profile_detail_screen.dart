@@ -32,12 +32,12 @@ class ProfiledetailPage extends StatelessWidget {
     required this.scopus,
   });
 
-  void _launchURL(String url) async {
+  Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      throw 'Could not launch $url';
+      throw 'Tidak dapat launch $url';
     }
   }
 
@@ -177,12 +177,12 @@ class ProfiledetailPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: googlescholar.contains('-')
-                          ? Text(googlescholar, style: const TextStyle(fontSize: 14))
+                      child: (googlescholar == null || googlescholar.contains('-') || googlescholar == 'null')
+                          ? Text(googlescholar ?? 'Unknown', style: const TextStyle(fontSize: 14))
                           : InkWell(
-                              onTap: () => _launchURL('https://scholar.google.com/citations?user=$googlescholar'),
-                              child: Text(googlescholar, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
-                            ),
+                        onTap: () => _launchURL('https://scholar.google.com/citations?user=$googlescholar'),
+                        child: Text(googlescholar, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
+                      ),
                     ),
                   ],
                 ),
@@ -194,12 +194,12 @@ class ProfiledetailPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: sinta.contains('-')
-                          ? Text(sinta, style: const TextStyle(fontSize: 14))
+                      child: (sinta == null || sinta.contains('-') || sinta == 'null')
+                          ? Text(sinta ?? 'Unknown', style: const TextStyle(fontSize: 14))
                           : InkWell(
-                              onTap: () => _launchURL('https://sinta.kemdikbud.go.id/authors/profile/$sinta'),
-                              child: Text(sinta, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
-                            ),
+                        onTap: () => _launchURL('https://sinta.kemdikbud.go.id/authors/profile/$sinta'),
+                        child: Text(sinta, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
+                      ),
                     ),
                   ],
                 ),
@@ -211,12 +211,12 @@ class ProfiledetailPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: scopus.contains('-')
-                          ? Text(scopus, style: const TextStyle(fontSize: 14))
+                      child: (scopus == null || scopus.contains('-') || scopus == 'null')
+                          ? Text(scopus ?? 'Unknown', style: const TextStyle(fontSize: 14))
                           : InkWell(
-                              onTap: () => _launchURL('https://www.scopus.com/authid/detail.uri?authorId=$scopus'),
-                              child: Text(scopus, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
-                            ),
+                        onTap: () => _launchURL('https://www.scopus.com/authid/detail.uri?authorId=$scopus'),
+                        child: Text(scopus, style: const TextStyle(fontSize: 14, color: Colors.blue, decoration: TextDecoration.underline)),
+                      ),
                     ),
                   ],
                 ),

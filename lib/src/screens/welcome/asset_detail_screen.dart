@@ -26,7 +26,7 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Asset Details',
+          'Detail Aset',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
             fontSize: 18,

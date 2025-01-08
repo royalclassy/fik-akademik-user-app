@@ -19,7 +19,6 @@ import 'dart:io';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<bool> _onWillPop() async {
-  // Exit the app when back button is pressed
   SystemNavigator.pop();
   return false;
 }
@@ -41,22 +40,19 @@ Future<void> removeUserToken() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      name: 'class_leap',
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
-  // Request notification permissions
-  await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      provisional: false
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  print('Notification permissions granted');
+  print("Firebase initialized");
+  print(Firebase.apps);
 
-  // Create notification channel
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+    provisional: false,
+  );
+
   if (Platform.isAndroid) {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel',
@@ -68,14 +64,12 @@ void main() async {
     );
 
     await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.createNotificationChannel(channel);
-        print('Notification channel created');
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
   }
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  print('Background message handler registered');
+
   String? userToken = await getUserToken();
   runApp(MyApp(isLoggedIn: userToken != null));
 }
@@ -84,16 +78,9 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
-      name: 'class_leap',
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase app initialized');
   }
-
-  print('Background service initialized');
-  print('Handling a background message: ${message.messageId}');
-  print('Message data: ${message.data}');
-  print('Message notification: ${message.notification?.title}');
 
   await flutterLocalNotificationsPlugin.show(
     message.hashCode,
@@ -109,6 +96,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     ),
   );
 }
+
 class MyApp extends StatefulWidget {
   final bool isLoggedIn;
   const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
@@ -118,7 +106,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 0; // Menyimpan indeks halaman yang dipilih
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -127,7 +115,6 @@ class _MyAppState extends State<MyApp> {
     _setupFCM();
   }
 
-  // Daftar halaman yang ditampilkan berdasarkan indeks
   final List<Widget> _pages = [
     const JadwalPage(),
     const PeminjamanPage(),
@@ -138,58 +125,32 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-    print('Local notifications initialized');
   }
 
   void _setupFCM() {
-    print('Setting up FCM');
-    print( "default options"+ DefaultFirebaseOptions.currentPlatform.toString());
-    try {
-      FirebaseMessaging.instance.getToken().then((token) async {
-        if (token != null) {
-          print('FCM Token: $token');
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('fcm_token', token);
-        } else {
-          print('Failed to get FCM token: Token is null');
-        }
-      }).catchError((error) {
-        print('Error getting FCM token: $error');
-      });
-    }
-    catch (e) {
-      print('Unexpected error in FCM setup: $e');
-    }
-    print('Setting up FCM');
-    try {
-      FirebaseMessaging.instance.getToken().then((token) async {
-        print('FCM Token: $token');
-        print('Saving FCM Token');
+    print("Firebase Messaging Options "+FirebaseMessaging.instance.app.options.toString());
+    FirebaseMessaging.instance.getToken().then((token) async {
+      if (token != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('fcm_token', token!);
-      });
-    }
-    catch (e) {
-      print('Error getting FCM token: $e');
-    }
-
-    // Listen for token refresh
-    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-      print('FCM Token Refreshed: $token');
+        await prefs.setString('fcm_token', token);
+      }
+      print('FCM Token: $token');
+    }).catchError((error) {
+      print('Error getting FCM token: $error');
     });
 
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      print('Message notification: ${message.notification}');
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcm_token', token);
+    });
 
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         flutterLocalNotificationsPlugin.show(
           message.hashCode,
@@ -207,16 +168,13 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    // Handle notification open
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
       setState(() {
-        _selectedIndex = 1; // Navigate to Peminjaman page
+        _selectedIndex = 1;
       });
     });
   }
 
-  // Fungsi untuk mengganti halaman saat tombol BottomNavigationBar diklik
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -231,58 +189,48 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: const Color(0xFFFF5833), // Primary color
-          secondary: const Color(0xFFFFBE33), // Secondary color
-          tertiary: const Color(0xFFFF3374), // Tertiary color
+          primary: const Color(0xFFFF5833),
+          secondary: const Color(0xFFFFBE33),
+          tertiary: const Color(0xFFFF3374),
         ),
       ),
       home: const WelcomeScreen(),
       routes: {
         '/signin': (context) => const SignInScreen(),
-        '/signup': (context) => const SignUpScreen(), // Ensure this route is defined
+        '/signup': (context) => const SignUpScreen(),
         '/home': (context) => WillPopScope(
           onWillPop: _onWillPop,
           child: Scaffold(
-            body: _pages[_selectedIndex], // Menampilkan halaman berdasarkan indeks
-            bottomNavigationBar: Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Color(0xFFFF5833), // Color of the top border
-                    width: 2.0, // Width of the top border
-                  ),
+            body: _pages[_selectedIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: const Color(0xFFFFFFFF),
+              selectedItemColor: const Color(0xFFFF5833),
+              unselectedItemColor: const Color(0x66FF5833),
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Beranda',
                 ),
-              ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: const Color(0xFFFFFFFF),
-                selectedItemColor: const Color(0xFFFF5833), // Warna icon dan text yang dipilih
-                unselectedItemColor: const Color(0x66FF5833), // Warna icon dan text yang tidak dipilih
-                currentIndex: _selectedIndex, // Indeks yang aktif
-                onTap: _onItemTapped, // Mengubah indeks saat diklik
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    label: 'Beranda',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.bookmarks_outlined),
-                    label: 'Pinjam',
-                  ),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.calendar_today_rounded),
-                      label: 'Kalender',
-                    ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.warning_amber_rounded),
-                    label: 'Lapor',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.account_circle_rounded),
-                    label: 'Profil',
-                  ),
-                ],
-              ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.bookmarks_outlined),
+                  label: 'Pinjam',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_today_rounded),
+                  label: 'Kalender',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.warning_amber_rounded),
+                  label: 'Lapor',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle_rounded),
+                  label: 'Profil',
+                ),
+              ],
             ),
           ),
         ),

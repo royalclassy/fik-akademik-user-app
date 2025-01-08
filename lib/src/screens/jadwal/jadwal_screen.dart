@@ -43,7 +43,7 @@ class _JadwallabPageState extends State<JadwalPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
-          'Home',
+          'Beranda',
           style: TextStyle(
             color: Color(0xFFFFFFFF),
             fontSize: 18,
@@ -176,13 +176,13 @@ class _JadwallabPageState extends State<JadwalPage> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No profiles found.'));
+                      return const Center(child: Text('Tidak ada profil dosen'));
                     } else {
                       final profiles = snapshot.data!;
                       return SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: profiles.take(4).map((profile) {
+                          children: profiles.take(10).map((profile) {
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -191,7 +191,7 @@ class _JadwallabPageState extends State<JadwalPage> {
                                     builder: (context) => ProfiledetailPage(
                                       id_prodi: profile['id_prodi'] ?? 'Unknown',
                                       name: profile['nama'] ?? 'Unknown',
-                                      imageUrl: profile['imageurl'] ?? "",
+                                      imageUrl: profile['imageUrl'] ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                                       NIP: profile['NIP'] ?? 'Unknown',
                                       NIDN: profile['NIDN'] ?? 'Unknown',
                                       email: profile['email'] ?? 'Unknown',

@@ -70,15 +70,42 @@ Future<void> _fetchPeranData() async {
     super.dispose();
   }
 
+  // Future<void> _handleSignUp() async {
+  //   if (_formSignUpKey.currentState!.validate()) {
+  //     if (!agreePersonalData) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
+  //       );
+  //       return;
+  //     }
+  //
+  //     String message = await signUp(
+  //       _displayNameController.text,
+  //       _nimController.text,
+  //       _emailController.text,
+  //       _phoneController.text,
+  //       _passwordController.text,
+  //       _selectedPeran!,
+  //       _selectedProdi,
+  //     );
+  //
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(message)),
+  //     );
+  //
+  //     Navigator.pushReplacementNamed(context, '/home');
+  //   }
+  // }
   Future<void> _handleSignUp() async {
-    if (_formSignUpKey.currentState!.validate()) {
-      if (!agreePersonalData) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
-        );
-        return;
-      }
+  if (_formSignUpKey.currentState!.validate()) {
+    if (!agreePersonalData) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Anda harus menyetujui kebijakan privasi untuk mendaftar.')),
+      );
+      return;
+    }
 
+    try {
       String message = await signUp(
         _displayNameController.text,
         _nimController.text,
@@ -94,8 +121,13 @@ Future<void> _fetchPeranData() async {
       );
 
       Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
+}
   final _formSignUpKey = GlobalKey<FormState>();
 
   @override
@@ -172,7 +204,7 @@ Future<void> _fetchPeranData() async {
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Masukkan email2 anda';
+                            return 'Masukkan email anda';
                           }
                           return null;
                         },

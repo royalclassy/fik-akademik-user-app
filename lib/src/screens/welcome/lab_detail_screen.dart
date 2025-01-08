@@ -52,7 +52,7 @@ class _LabDetailPageState extends State<LabDetailPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No lab data found.'));
+            return const Center(child: Text('Tidak ada data lab.'));
           } else {
             final labData = snapshot.data!;
             return ListView.builder(

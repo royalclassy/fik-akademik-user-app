@@ -84,7 +84,7 @@ class _ListDosenScreenState extends State<ListDosenScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No profiles found.'));
+            return const Center(child: Text('Tidak ada data dosen.'));
           } else {
             final profiles = filteredProfiles;
             return Column(

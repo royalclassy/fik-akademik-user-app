@@ -49,12 +49,13 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _handleLogin() async {
-    if (_formSignInKey.currentState!.validate()) {
-       int statusCode = await login(_identifierController.text, _passwordController.text);
+  if (_formSignInKey.currentState!.validate()) {
+    try {
+      int statusCode = await login(_identifierController.text, _passwordController.text);
       if (statusCode == 200) {
         await _saveUserCredentials();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login success')),
+          const SnackBar(content: Text('Login berhasil')),
         );
         String? fcmToken = prefs.getString('fcm_token');
         print('FCM Token: $fcmToken');
@@ -65,11 +66,17 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login failed')),
+          const SnackBar(content: Text('Login gagal')),
         );
       }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login gagal')),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
