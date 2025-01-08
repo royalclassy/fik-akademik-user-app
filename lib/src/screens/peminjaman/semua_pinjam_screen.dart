@@ -23,6 +23,7 @@ class Booking {
   final String keterangan;
   final String status;
   final String alasanPenolakan;
+  final String tipeRuang;
 
   Booking({
     required this.id,
@@ -35,6 +36,7 @@ class Booking {
     required this.keterangan,
     required this.status,
     required this.alasanPenolakan,
+    required this.tipeRuang,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class Booking {
       jamMulai: json['jam_mulai'],
       jamSelesai: json['jam_selesai'],
       ruangan: json['ruangan'],
+      tipeRuang: json['tipe_ruang'] ?? '',
       jumlahPengguna: json['jumlah_orang'].toString(),
       keterangan: json['keterangan'],
       status: json['status'],
@@ -211,6 +214,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                 timeEnd: booking.jamSelesai,
                                 description: booking.keterangan,
                                 ruangan: booking.ruangan,
+                                tipeRuang: booking.tipeRuang,
                                 groupSize: "${booking.jumlahPengguna} orang",
                                 onAccept: () {},
                                 onReject: () {},
@@ -281,6 +285,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                       timeEnd: booking.jamSelesai,
                                       description: booking.keterangan,
                                       ruangan: booking.ruangan,
+                                      tipeRuang: booking.tipeRuang,
                                       groupSize: "${booking
                                           .jumlahPengguna} orang",
                                       onAccept: () {},

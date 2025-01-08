@@ -33,6 +33,7 @@ class CardConfirmed extends StatelessWidget {
     required this.time, // Initialize the time parameter
     required this.groupSize, // Initialize the groupSize parameter
     required this.alasanPenolakan
+    
   });
 
   @override
@@ -48,6 +49,7 @@ class CardConfirmed extends StatelessWidget {
               // studentNim: studentNim,
               // inputDate: inputDate,
               ruangan: ruangan,
+              tipeRuang: 'kelas',
               bookDate: bookDate,
               jamMulai: jamMulai,
               jamSelesai: jamSelesai,

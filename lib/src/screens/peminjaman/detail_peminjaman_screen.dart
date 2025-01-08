@@ -212,6 +212,7 @@ class DetailpeminjamanPage extends StatefulWidget {
   final String keterangan;
   final String status;
   final String alasan_penolakan;
+  final String tipeRuang;
 
   const DetailpeminjamanPage({
     super.key,
@@ -225,6 +226,7 @@ class DetailpeminjamanPage extends StatefulWidget {
     required this.keterangan,
     required this.status,
     required this.alasan_penolakan,
+    required this.tipeRuang,
   });
 
   @override
@@ -259,7 +261,7 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
       Navigator.of(_context).pop(); // Navigate back to the previous page
       Navigator.pushReplacement(
         _context,
-        MaterialPageRoute(builder: (context) => SemuadaftarPage(room: widget.ruangan)),
+        MaterialPageRoute(builder: (context) => SemuadaftarPage(room: widget.tipeRuang,)),
       );
     } catch (e) {
       ScaffoldMessenger.of(_context).showSnackBar(
@@ -320,6 +322,7 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
             buildRowWithDivider('Status', widget.status),
             buildRowWithDivider('Nama', widget.studentName),
             buildRowWithDivider('Ruangan', widget.ruangan),
+            buildRowWithDivider('Tipe Ruangan', widget.tipeRuang),
             buildRowWithDivider('Tgl Pinjam', widget.bookDate),
             buildRowWithDivider('Jam Mulai', widget.jamMulai),
             buildRowWithDivider('Jam Selesai', widget.jamSelesai),
