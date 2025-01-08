@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:class_leap/src/utils/data/api_data.dart';
 
-class DetailkendalaPage extends StatelessWidget {
+class DetailkendalaPage extends StatefulWidget {
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -21,29 +22,44 @@ class DetailkendalaPage extends StatelessWidget {
     required this.bentuk,
     required this.deskripsi,
     required this.status,
-    required this.keteranganPenyelesaian,
-  });
+    required this.keteranganPenyelesaian,});
 
+  @override
+  State<DetailkendalaPage> createState() => _DetailkendalaPageState();
+}
+
+class _DetailkendalaPageState extends State<DetailkendalaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detail Kendala'),
+        title: const Text(
+          "Detail Kendala",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color(0xFFFF5833),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set all icons to white
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nama: $studentName'),
-            Text('NIM: $studentNim'),
-            Text('Tanggal: $inputDate'),
-            Text('Ruangan: $ruangan'),
-            Text('Jenis: $jenis'),
-            Text('Bentuk: $bentuk'),
-            Text('Deskripsi: $deskripsi'),
-            Text('Status: $status'),
-            if (status == 'Selesai') ...[
+            buildRowWithDivider('Nama', widget.studentName),
+            buildRowWithDivider('NIM:', widget.studentNim),
+            buildRowWithDivider('Tanggal', widget.inputDate),
+            buildRowWithDivider('Ruangan', widget.ruangan),
+            buildRowWithDivider('Jenis',widget.jenis),
+            buildRowWithDivider('Bentuk', widget.bentuk),
+            buildRowWithDivider('Deskripsi', widget.deskripsi),
+            buildRowWithDivider('Status', widget.status),
+            if (widget.status == 'Selesai') ...[
               const SizedBox(height: 8),
               const Text(
                 'Keterangan Penyelesaian:',
@@ -51,13 +67,44 @@ class DetailkendalaPage extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                keteranganPenyelesaian,
+                widget.keteranganPenyelesaian,
                 style: const TextStyle(fontSize: 14),
               ),
             ],
           ],
         ),
       ),
+    );
+  }
+  Widget buildRowWithDivider(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 140,
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const Divider(color: Color(0xffede9d0)),
+      ],
     );
   }
 }

@@ -96,7 +96,7 @@ Future<void> _fetchPeranData() async {
   //     Navigator.pushReplacementNamed(context, '/home');
   //   }
   // }
-  Future<void> _handleSignUp() async {
+Future<void> _handleSignUp() async {
   if (_formSignUpKey.currentState!.validate()) {
     if (!agreePersonalData) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,13 +117,14 @@ Future<void> _fetchPeranData() async {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Text('Pendaftaran berhasil')),
       );
 
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
+      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('Pendaftaran gagal')),
       );
     }
   }
