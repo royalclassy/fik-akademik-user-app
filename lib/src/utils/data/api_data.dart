@@ -407,7 +407,7 @@ Future<List<Map<String, dynamic>>> getAllProfildosen() async {
   }
 }
 
-Future<void> updateProfile(String name, String nim, String email, String idProdi, File image) async {
+Future<void> updateProfile(String name, String nim, String no_tlp, String email, String idProdi, File image) async {
   const String endpoint = 'user/update';
   final String url = base_url + endpoint;
   final headers = await _getHeaders();
@@ -418,6 +418,7 @@ Future<void> updateProfile(String name, String nim, String email, String idProdi
       ..fields['nama'] = name
       ..fields['nim'] = nim
       ..fields['email'] = email
+      ..fields['no_tlp'] = no_tlp
       ..fields['id_prodi'] = idProdi;
 
     if (image.path.isNotEmpty) {

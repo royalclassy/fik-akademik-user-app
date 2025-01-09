@@ -105,12 +105,17 @@ Future<void> _handleSignUp() async {
       return;
     }
 
+    String phoneNumber = _phoneController.text;
+    if (!phoneNumber.startsWith('62')) {
+      phoneNumber = '62' + phoneNumber.replaceFirst('0', '');
+    }
+
     try {
       String message = await signUp(
         _displayNameController.text,
         _nimController.text,
         _emailController.text,
-        _phoneController.text,
+        phoneNumber,
         _passwordController.text,
         _selectedPeran!,
         _selectedProdi,
@@ -263,33 +268,88 @@ Future<void> _handleSignUp() async {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextFormField(
-                        controller: _phoneController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Masukkan nomor telepon anda';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('Nomor Telepon'),
-                          hintText: 'Masukkan nomor telepon anda',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12,
+                      // TextFormField(
+                      //   controller: _phoneController,
+                      //   validator: (value) {
+                      //     if (value == null || value.isEmpty) {
+                      //       return 'Masukkan nomor telepon anda';
+                      //     }
+                      //     return null;
+                      //   },
+                      //   decoration: InputDecoration(
+                      //     label: const Text('Nomor Telepon'),
+                      //     hintText: 'Masukkan nomor telepon anda',
+                      //     hintStyle: const TextStyle(
+                      //       color: Colors.black26,
+                      //     ),
+                      //     border: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Colors.black12,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Colors.black12,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //   ),
+                      // ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12,
+                            child: const Text(
+                              '+62',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(10),
                           ),
-                        ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Masukkan nomor telepon anda';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Masukkan nomor telepon anda',
+                                hintStyle: const TextStyle(
+                                  color: Colors.black26,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.black12,
+                                  ),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.black12,
+                                  ),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 20,

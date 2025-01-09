@@ -6,6 +6,7 @@ import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 class EditProfilePage extends StatefulWidget {
   final String name;
   final String nim;
+  final String no_tlp;
   final String email;
   final String idProdi;
   final String profile;
@@ -14,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
     super.key,
     required this.name,
     required this.nim,
+    required this.no_tlp,
     required this.email,
     required this.idProdi,
     required this.profile,
@@ -27,6 +29,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
   late String _nim;
+  late String _no_tlp;
   late String _email;
   late String _idProdi;
   late String _profile;
@@ -38,6 +41,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     _name = widget.name;
     _nim = widget.nim;
+    _no_tlp = widget.no_tlp;
     _email = widget.email;
     _idProdi = widget.idProdi;
     _profile = widget.profile;
@@ -63,9 +67,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _formKey.currentState!.save();
       try {
         if (_image != null) {
-          await api_data.updateProfile(_name, _nim, _email, _idProdi, _image!);
+          await api_data.updateProfile(_name, _nim, _no_tlp, _email, _idProdi, _image!);
         } else {
-          await api_data.updateProfile(_name, _nim, _email, _idProdi, File(''));
+          await api_data.updateProfile(_name, _nim, _no_tlp, _email, _idProdi, File(''));
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile updated successfully')),
@@ -148,6 +152,17 @@ Future<void> _pickImage() async {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your NIM';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                initialValue: _no_tlp,
+                decoration: InputDecoration(labelText: 'No. Telepon'),
+                onSaved: (value) => _no_tlp = value!,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Nomor Telepon';
                   }
                   return null;
                 },
