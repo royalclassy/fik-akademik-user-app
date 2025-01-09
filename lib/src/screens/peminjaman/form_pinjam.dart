@@ -90,13 +90,9 @@ Future<void> _testAvailability() async {
     String message = availabilityResponse['message'];
 
     if (availability) {
-      print("BISA");
       final Map<int, String> response = await _submitForm();
-      print("BISA");
       bool success = response.containsKey(200);
-      print("BISA");
       _showResultDialog(true, message);
-      print("BISA");
     } else {
       _showResultDialog(false, message);
     }
