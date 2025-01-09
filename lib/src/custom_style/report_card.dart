@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
-import 'package:class_leap/src/custom_style/status_accept.dart';
-import 'package:class_leap/src/custom_style/status_pending.dart';
-import 'package:class_leap/src/custom_style/status_reject.dart';
+// import 'package:class_leap/src/custom_style/status_accept.dart';
 
 class ReportCard extends StatelessWidget {
   final String studentName;
@@ -109,36 +107,36 @@ class ReportCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (status == 'Selesai')
-                    ButtonAccept(
-                      label: 'Selesai',
-                      onPressed: () {},
-                    ),
-                  if (status == 'Dibatalkan')
-                    ButtonReject(
-                      label: 'Dibatalkan',
-                      onPressed: () {},
-                    ),
-                  if (status == 'Diproses')
-                    ButtonPending(
-                      label: 'Diproses',
-                      onPressed: () {},
-                    ),
-                ],
-              ),
-              if (status == 'Selesai') ...[
-                const SizedBox(height: 8),
-                const Text(
-                  'Keterangan Penyelesaian:',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  keteranganPenyelesaian,
-                  style: const TextStyle(fontSize: 14),
-                ),
+            //       if (status == 'Selesai')
+            //         ButtonAccept(
+            //           label: 'Selesai',
+            //           onPressed: () {},
+            //         ),
+            //       if (status == 'Dibatalkan')
+            //         ButtonReject(
+            //           label: 'Dibatalkan',
+            //           onPressed: () {},
+            //         ),
+            //       if (status == 'Diproses')
+            //         ButtonPending(
+            //           label: 'Diproses',
+            //           onPressed: () {},
+            //         ),
+            //     ],
+            //   ),
+            //   if (status == 'Selesai') ...[
+            //     const SizedBox(height: 8),
+            //     const Text(
+            //       'Keterangan Penyelesaian:',
+            //       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            //     ),
+            //     const SizedBox(height: 4),
+            //     Text(
+            //       keteranganPenyelesaian,
+            //       style: const TextStyle(fontSize: 14),
+            //     ),
               ],
-            ],
+              ) ],
           ),
         ),
       ),

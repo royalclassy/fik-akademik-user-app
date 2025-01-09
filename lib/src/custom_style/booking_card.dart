@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/status_accept.dart';
-import 'package:class_leap/src/custom_style/status_reject.dart';
-import 'package:class_leap/src/custom_style/status_pending.dart';
+// import 'package:class_leap/src/custom_style/status_accept.dart';
+// import 'package:class_leap/src/custom_style/status_reject.dart';
+// import 'package:class_leap/src/custom_style/status_pending.dart';
 import 'package:class_leap/src/screens/peminjaman/detail_peminjaman_screen.dart';
 
 class BookingCard extends StatelessWidget {
@@ -124,22 +124,22 @@ class BookingCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (status == 'Diterima')
-                    ButtonAccept(
-                      label: 'Diterima',
-                      onPressed: () => onAccept(),
-                    ),
-                  if (status == 'Ditolak')
-                    ButtonReject(
-                      label: 'Ditolak',
-                      onPressed: () => onReject(),
-                    ),
-                  if (status == 'Menunggu')
-                    ButtonPending(
-                      label: 'Menunggu',
-                      onPressed: () {},
-                    ),
-                ],
+                //   if (status == 'Diterima')
+                //     ButtonAccept(
+                //       label: 'Diterima',
+                //       onPressed: () => onAccept(),
+                //     ),
+                //   if (status == 'Ditolak')
+                //     ButtonReject(
+                //       label: 'Ditolak',
+                //       onPressed: () => onReject(),
+                //     ),
+                //   if (status == 'Menunggu')
+                //     ButtonPending(
+                //       label: 'Menunggu',
+                //       onPressed: () {},
+                 //    ),
+                 ],
               ),
             ],
           ),
