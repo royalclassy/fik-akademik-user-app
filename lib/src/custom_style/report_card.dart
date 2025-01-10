@@ -3,6 +3,7 @@ import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
 // import 'package:class_leap/src/custom_style/status_accept.dart';
 
 class ReportCard extends StatelessWidget {
+  final String id;
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -15,6 +16,7 @@ class ReportCard extends StatelessWidget {
 
   const ReportCard({
     super.key,
+    required this.id,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -34,6 +36,7 @@ class ReportCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => DetailkendalaPage(
+              idKendala: id,
               studentName: studentName,
               studentNim: studentNim,
               inputDate: inputDate,

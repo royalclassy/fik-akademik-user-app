@@ -100,6 +100,7 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
   }
 }
 
+
 Future<List<Map<String, dynamic>>> getProdi() async {
   endpoint = 'prodi';
   var url = Uri.parse(base_url + endpoint);
@@ -179,20 +180,34 @@ Future<Map<String, dynamic>> getAvailablity(String tanggal, String jamMulai, Str
   }
 }
 
-Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
+Future<List<Map<String, dynamic>>> getRuangTersedia(String jamMulai, String jamSelesai, String tglPinjam, String tipeRuang) async {
+  endpoint = 'ruangan/tersedia';
+  var url = Uri.parse(base_url + endpoint);
+  print('data $jamMulai $jamSelesai $tglPinjam $tipeRuang');
+
+  var response = await http.post(url,
+      body: {
+        'jam_mulai': jamMulai,
+        'jam_selesai': jamSelesai,
+        'tgl_pinjam': tglPinjam,
+        'tipe_ruang': tipeRuang
+      },
+      headers: await _getHeaders()
+  );
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    var responseBody = json.decode(response.body);
+    return responseBody.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang, String grupPengguna) async {
   endpoint = 'peminjaman';
-
+  print("data : $idRuang, $tanggal, $jamMulai, $jamSelesai, $keterangan, $jumlahOrang, $grupPengguna");
   var formattedTimes = formatTime(jamMulai, jamSelesai);
-
-  print("bisa");
-  print({
-    'id_ruang': idRuang,
-    'tgl_pinjam': tanggal,
-    'jam_mulai': formattedTimes['formattedStartTime']!,
-    'jam_selesai': formattedTimes['formattedEndTime']!,
-    'keterangan': keterangan,
-    'jumlah_orang': jumlahOrang,
-  });
 
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
@@ -202,6 +217,7 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
     'jam_selesai': formattedTimes['formattedEndTime']!,
     'keterangan': keterangan,
     'jumlah_orang': jumlahOrang,
+    'id_grup': grupPengguna,
   }, headers: await _getHeaders());
 
   // Log the full response body
@@ -223,6 +239,19 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   } else {
     throw Exception('Failed to add peminjaman');
   }
+}
+
+Future<List> fetchStatus(int idStatus, String status) async {
+  endpoint = 'status';
+  print(idStatus);
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(url, body: {
+    'id_status': idStatus,
+    'status': status,
+  }, headers: await _getHeaders());
+  print(response.body);
+  var responseBody = json.decode(response.body);
+  return responseBody;
 }
 
 Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
@@ -249,6 +278,15 @@ Future<List> getRuang(String room) async {
   var response = await http.post(url, body: {
     'tipe_ruang':room,
   }, headers: await _getHeaders());
+  print(response.body);
+  var responseBody = json.decode(response.body);
+  return responseBody;
+}
+
+Future<List> fetchGrupPengguna() async {
+  endpoint = 'grup_pengguna';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
   print(response.body);
   var responseBody = json.decode(response.body);
   return responseBody;
@@ -480,3 +518,4 @@ Future<void> saveTokenToServer(String? token) async {
     print('Failed to save FCM token');
   }
 }
+

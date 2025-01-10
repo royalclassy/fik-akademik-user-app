@@ -437,6 +437,7 @@ import 'package:class_leap/src/utils/data/api_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'semua_pinjam_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PinjamRuang extends StatefulWidget {
   final String room;
@@ -460,7 +461,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
   List<Map<String, String>> ruanganList = [];
   List<Map<String, String>> groupUserList = [];
   String? _selectedRoom;
-  Map<String, String>? _selectedGroupUser;
+  String? _selectedGroupUser;
   DateTime? _selectedDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
@@ -473,6 +474,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
   @override
   void dispose() {
     _roomController.dispose();
+    _groupUser.dispose();
     _userController.dispose();
     _dateController.dispose();
     _startTimeController.dispose();
@@ -486,7 +488,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
   void initState() {
     super.initState();
     getRuangan();
-    getGroupUserOptions();
+    getGrupPengguna();
   }
 
   Future<void> getRuangan() async {
@@ -499,19 +501,20 @@ class _PinjamRuangState extends State<PinjamRuang> {
     });
   }
 
-  Future<void> getGroupUserOptions() async {
-    // Simulate fetching data from an API
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      groupUserList = [
-        {'id_group_user': '1', 'nama_group_user': 'Individu'},
-        {'id_group_user': '2', 'nama_group_user': 'BEM'},
-        {'id_group_user': '3', 'nama_group_user': 'KSM'},
-        {'id_group_user': '4', 'nama_group_user': 'HIMA'},
-        {'id_group_user': '5', 'nama_group_user': 'Lainnya'},
-      ];
-    });
+  Future<void> getGrupPengguna() async {
+    try {
+      var data = await fetchGrupPengguna();
+      setState(() {
+        groupUserList = List<Map<String, String>>.from(data.map((item) => {
+          'id_grup': item['id_grup'].toString(),
+          'nama_grup': item['nama_grup'].toString(),
+        }));
+      });
+    } catch (e) {
+      print('Failed to load group user options: $e');
+    }
   }
+
 
   Future<Map<int, String>> _submitForm() async {
     final Map<int, String> response = await addPeminjaman(
@@ -521,6 +524,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
       _endTimeController.text,
       _purposeController.text,
       _participantsController.text,
+      _selectedGroupUser!,
     );
     print(response);
     return response;
@@ -605,6 +609,15 @@ class _PinjamRuangState extends State<PinjamRuang> {
     );
   }
 
+  void _launchWhatsApp(String phoneNumber) async {
+  final url = 'https://wa.me/$phoneNumber';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -660,16 +673,16 @@ class _PinjamRuangState extends State<PinjamRuang> {
                           ),
                           const SizedBox(height: 20),
                           const Text('Grup Pengguna', style: TextStyle(fontWeight: FontWeight.bold)),
-                          DropdownButtonFormField<Map<String, String>>(
+                          DropdownButtonFormField<String>(
                             decoration: const InputDecoration(
-                              hintText: 'Pilih grup pengguna',
+                              hintText: 'Pilih grup',
                               hintStyle: TextStyle(fontSize: 14),
                             ),
                             value: _selectedGroupUser,
                             items: groupUserList.map((group) {
                               return DropdownMenuItem(
-                                value: group,
-                                child: Text(group['nama_group_user']!),
+                                value: group['id_grup'],
+                                child: Text(group['nama_grup']!),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -820,7 +833,35 @@ class _PinjamRuangState extends State<PinjamRuang> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            onTap: () => _launchWhatsApp('62891111111'),
+                            child: RichText(
+                              text: const TextSpan(
+                                text: 'Anda dapat menghubungi admin di nomor ',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 14,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: '62891111111',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' jika ditemukan kendala',
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -841,9 +882,9 @@ class _PinjamRuangState extends State<PinjamRuang> {
                                 child: _isLoading
                                     ? CircularProgressIndicator(color: Colors.white)
                                     : const Text(
-                                        'Kirim',
-                                        style: TextStyle(fontWeight: FontWeight.w600),
-                                      ),
+                                  'Kirim',
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
                               ),
                             ],
                           ),

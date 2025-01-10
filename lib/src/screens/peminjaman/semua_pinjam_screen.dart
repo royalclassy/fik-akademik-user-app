@@ -21,9 +21,11 @@ class Booking {
   final String ruangan;
   final String jumlahPengguna;
   final String keterangan;
-  final String status;
+  final String idStatus;
   final String alasanPenolakan;
   final String tipeRuang;
+  final String grupPengguna;
+  final String catatanKejadian;
 
   Booking({
     required this.id,
@@ -34,15 +36,18 @@ class Booking {
     required this.ruangan,
     required this.jumlahPengguna,
     required this.keterangan,
-    required this.status,
+    required this.idStatus,
     required this.alasanPenolakan,
     required this.tipeRuang,
+    required this.grupPengguna,
+    required this.catatanKejadian,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
       id: json['id'].toString(),
       studentName: json['nama_peminjam'],
+      grupPengguna: json['grup_pengguna'] ?? '',
       bookDate: json['tanggal'],
       jamMulai: json['jam_mulai'],
       jamSelesai: json['jam_selesai'],
@@ -50,15 +55,16 @@ class Booking {
       tipeRuang: json['tipe_ruang'] ?? '',
       jumlahPengguna: json['jumlah_orang'].toString(),
       keterangan: json['keterangan'],
-      status: json['status'],
+      idStatus: json['id_status'],
       alasanPenolakan: json['alasan_penolakan'] ?? '',
+      catatanKejadian: json['catatan_kejadian'] ?? '',
     );
   }
 }
 
 class _SemuadaftarPageState extends State<SemuadaftarPage> {
   late Future<List<Booking>> _peminjamanFuture;
-  String _selectedStatus = 'disetujui';
+  String _selectedStatus = 6.toString();
   DateTimeRange? _selectedDateRange;
 
   @override
@@ -199,7 +205,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                           List<Booking> bookings = _filterBookings(
                               snapshot.data!);
                           bookings = bookings.where((booking) =>
-                          booking.status == 'menunggu').toList();
+                          booking.idStatus == 1).toList();
                           return ListView.builder(
                             itemCount: bookings.length,
                             itemBuilder: (context, index) {
@@ -207,6 +213,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                               return BookingCard(
                                 id: booking.id,
                                 studentName: booking.studentName,
+                                grupPengguna: booking.grupPengguna,
                                 inputDate: booking.bookDate,
                                 time: "${booking.jamMulai} - ${booking
                                     .jamSelesai}",
@@ -218,8 +225,9 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                 groupSize: "${booking.jumlahPengguna} orang",
                                 onAccept: () {},
                                 onReject: () {},
-                                status: booking.status,
+                                idStatus: booking.idStatus,
                                 alasanPenolakan: booking.alasanPenolakan,
+                                catatanKejadian: booking.catatanKejadian,
                               );
                             },
                           );
@@ -270,7 +278,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                 List<Booking> bookings = _filterBookings(
                                     snapshot.data!);
                                 bookings = bookings.where((booking) => booking
-                                    .status == _selectedStatus).toList();
+                                    .id  == _selectedStatus).toList();
                                 return ListView.builder(
                                   itemCount: bookings.length,
                                   itemBuilder: (context, index) {
@@ -278,6 +286,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                     return BookingCard(
                                       id: booking.id,
                                       studentName: booking.studentName,
+                                      grupPengguna: booking.grupPengguna,
                                       inputDate: booking.bookDate,
                                       time: "${booking.jamMulai} - ${booking
                                           .jamSelesai}",
@@ -290,8 +299,9 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                                           .jumlahPengguna} orang",
                                       onAccept: () {},
                                       onReject: () {},
-                                      status: booking.status,
+                                      idStatus: booking.idStatus,
                                       alasanPenolakan: booking.alasanPenolakan,
+                                      catatanKejadian: booking.catatanKejadian,
                                     );
                                   },
                                 );

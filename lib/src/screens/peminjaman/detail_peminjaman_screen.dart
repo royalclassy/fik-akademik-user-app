@@ -11,9 +11,11 @@ class DetailpeminjamanPage extends StatefulWidget {
   final String jamSelesai;
   final String jumlahPengguna;
   final String keterangan;
-  final String status;
+  final String idStatus;
   final String alasan_penolakan;
   final String tipeRuang;
+  final String grupPengguna;
+  final String catatanKejadian;
 
   const DetailpeminjamanPage({
     super.key,
@@ -25,9 +27,11 @@ class DetailpeminjamanPage extends StatefulWidget {
     required this.jamSelesai,
     required this.jumlahPengguna,
     required this.keterangan,
-    required this.status,
+    required this.idStatus,
     required this.alasan_penolakan,
     required this.tipeRuang,
+    required this.grupPengguna,
+    required this.catatanKejadian,
   });
 
   @override
@@ -70,6 +74,19 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
   //     );
   //   }
   // }
+  Future<void> _confirmPeminjaman(String idPeminjaman) async {
+    try {
+      // Add your confirmation logic here
+      ScaffoldMessenger.of(_context).showSnackBar(
+        SnackBar(content: Text('Peminjaman berhasil dikonfirmasi')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(_context).showSnackBar(
+        SnackBar(content: Text('Gagal mengkonfirmasi peminjaman')),
+      );
+    }
+  }
+
 
   Future<void> _cancelPeminjaman(String idPeminjaman) async {
   try {
@@ -88,6 +105,8 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
     );
   }
 }
+
+
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -137,16 +156,19 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildRowWithDivider('Status', widget.status),
+            buildRowWithDivider('ID Transaksi', widget.idPeminjaman),
+            buildRowWithDivider('Status', widget.idStatus),
             buildRowWithDivider('Nama', widget.studentName),
             buildRowWithDivider('Ruangan', widget.ruangan),
             buildRowWithDivider('Tipe Ruangan', widget.tipeRuang),
+            buildRowWithDivider('Grup Pengguna', widget.grupPengguna),
             buildRowWithDivider('Tgl Pinjam', widget.bookDate),
             buildRowWithDivider('Jam Mulai', widget.jamMulai),
             buildRowWithDivider('Jam Selesai', widget.jamSelesai),
             buildRowWithDivider('Jml Pengguna', widget.jumlahPengguna),
             buildRowWithDivider('Keterangan', widget.keterangan),
-            if (widget.status == 'ditolak') ...[
+            buildRowWithDivider('Catatan Kejadian', widget.catatanKejadian),
+            if (widget.idStatus == 5) ...[
               const SizedBox(height: 8),
               const Text(
                 'Alasan Ditolak:',
@@ -158,10 +180,22 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
                 style: const TextStyle(fontSize: 14),
               ),
             ],
+            if (widget.idStatus == 6) ...[
+              const SizedBox(height: 8),
+              ElevatedButton(
+                  onPressed: (){
+                    _confirmPeminjaman(widget.idPeminjaman);
+                  }, child: const Text('Konfirmasi Peminjaman')),
+              const SizedBox(height: 8),
+              Text(
+                widget.alasan_penolakan,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
           ],
         ),
       ),
-      bottomNavigationBar: widget.status == 'menunggu'
+      bottomNavigationBar: widget.idStatus == 1
           ? Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(

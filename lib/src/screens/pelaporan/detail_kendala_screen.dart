@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
 
 class DetailkendalaPage extends StatefulWidget {
+  final String idKendala;
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -14,6 +15,7 @@ class DetailkendalaPage extends StatefulWidget {
 
   const DetailkendalaPage({
     super.key,
+    required this.idKendala,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -51,8 +53,9 @@ class _DetailkendalaPageState extends State<DetailkendalaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            buildRowWithDivider('ID Transaksi', widget.idKendala),
             buildRowWithDivider('Nama', widget.studentName),
-            buildRowWithDivider('NIM:', widget.studentNim),
+            buildRowWithDivider('NIM', widget.studentNim),
             buildRowWithDivider('Tanggal', widget.inputDate),
             buildRowWithDivider('Ruangan', widget.ruangan),
             buildRowWithDivider('Jenis',widget.jenis),

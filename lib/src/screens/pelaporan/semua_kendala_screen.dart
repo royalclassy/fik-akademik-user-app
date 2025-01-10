@@ -13,6 +13,7 @@ class SemuakendalaPage extends StatefulWidget {
 }
 
 class Report {
+  final String id;
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -25,6 +26,7 @@ class Report {
   final String keteranganPenyelesaian;
 
   Report({
+    required this.id,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -39,6 +41,7 @@ class Report {
 
   factory Report.fromJson(Map<String, dynamic> json) {
     return Report(
+      id: json['id'].toString(),
       studentName: json['nama_pelapor'],
       studentNim: json['nim_nrp'],
       inputDate: json['tanggal'],
@@ -211,6 +214,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                                 itemBuilder: (context, index) {
                                   Report booking = bookings[index];
                                   return ReportCard(
+                                    id: booking.id,
                                     studentName: booking.studentName,
                                     studentNim: booking.studentNim,
                                     inputDate: booking.inputDate,
@@ -274,6 +278,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> {
                                       itemBuilder: (context, index) {
                                         Report booking = bookings[index];
                                         return ReportCard(
+                                          id: booking.id,
                                           studentName: booking.studentName,
                                           studentNim: booking.studentNim,
                                           inputDate: booking.inputDate,
