@@ -241,20 +241,23 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   }
 }
 
-Future<List> fetchStatus(int idStatus, String status) async {
+Future<List<Map<String, dynamic>>> getStatus({bool isActive = true, required String fungsi}) async {
   endpoint = 'status';
-  print(idStatus);
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.post(url, body: {
-    'id_status': idStatus,
-    'status': status,
-  }, headers: await _getHeaders());
-  print(response.body);
-  var responseBody = json.decode(response.body);
-  return responseBody;
+  var response = await http.get(url, headers: await _getHeaders());
+  print("fetch status");
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.where((status) =>
+    status['fungsi'] == fungsi &&
+        status['is_active'] == isActive
+    ).cast<Map<String, dynamic>>().toList();
+  } else {
+    throw Exception('Failed to get status data');
+  }
 }
 
-Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
+Future<List<Map<String, dynamic>>> getPeminjaman(String room, {required bool isActive}) async {
   print(room);
   endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
@@ -303,7 +306,7 @@ Future<Map<String, dynamic>> getAssetDetails(String idRuangan) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> getKendala(String room) async {
+Future<List<Map<String, dynamic>>> getKendala(String room, {required bool isActive}) async {
   endpoint = 'kendala/$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, 
