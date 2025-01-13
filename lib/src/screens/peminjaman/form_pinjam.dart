@@ -835,7 +835,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
                           ),
                           const SizedBox(height: 10),
                           GestureDetector(
-                            onTap: () => _launchWhatsApp('62891111111'),
+                            onTap: () => _launchWhatsApp('6287876619932'),
                             child: RichText(
                               text: const TextSpan(
                                 text: 'Anda dapat menghubungi admin di nomor ',
@@ -845,7 +845,7 @@ class _PinjamRuangState extends State<PinjamRuang> {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: '62891111111',
+                                    text: '6287876619932',
                                     style: TextStyle(
                                       color: Colors.blue,
                                       decoration: TextDecoration.underline,

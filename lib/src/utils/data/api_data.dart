@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://5405-103-147-92-253.ngrok-free.app/api/';
+const String base_url = 'https://76de-140-213-30-94.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -519,6 +519,25 @@ Future<void> saveTokenToServer(String? token) async {
     }
   } else {
     print('Failed to save FCM token');
+  }
+}
+
+Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
+  endpoint = 'konfirmasi/peminjaman';
+  print('idPinjam: $idPinjam');
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(
+    url,
+    body: {
+      'id_pinjam': idPinjam,
+    },
+    headers: await _getHeaders(),
+  );
+
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception('Failed to update peminjaman status');
   }
 }
 

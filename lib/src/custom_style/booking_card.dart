@@ -68,7 +68,16 @@ class BookingCard extends StatelessWidget {
               // alasan: DummyData.alasan,
             ),
           ),
-        );
+        ).then((result){
+          if(result != null){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        });
       },
       child: Card(
         elevation: 4,

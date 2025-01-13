@@ -9,9 +9,9 @@ import '../../utils/data/api_data.dart';
 
 class SemuadaftarPage extends StatefulWidget {
   final String room;
+  final VoidCallback? onRefresh;
 
-
-  const SemuadaftarPage({super.key, required this.room});
+  const SemuadaftarPage({super.key, required this.room, this.onRefresh});
 
 
   @override
@@ -109,7 +109,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
 
   Widget _buildStatusDropdown(bool isActive) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<Map<String, dynamic>>>(
         future: getStatus(isActive: isActive, fungsi: 'peminjaman'),
         builder: (context, snapshot) {
@@ -221,6 +221,8 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
             bookingDate.isBefore(_selectedDateRange!.end);
       }).toList();
     }
+
+
     return filtered;
   }
 
@@ -244,6 +246,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),
+          automaticallyImplyLeading: true,
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.white,
@@ -324,23 +327,27 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
                                 itemCount: filteredBookings.length,
                                 itemBuilder: (context, index) {
                                   final booking = filteredBookings[index];
-                                  return BookingCard(
-                                    id: booking.id,
-                                    studentName: booking.studentName,
-                                    grupPengguna: booking.grupPengguna,
-                                    inputDate: booking.bookDate,
-                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
-                                    timeStart: booking.jamMulai,
-                                    timeEnd: booking.jamSelesai,
-                                    description: booking.keterangan,
-                                    ruangan: booking.ruangan,
-                                    tipeRuang: booking.tipeRuang,
-                                    groupSize: "${booking.jumlahPengguna} orang",
-                                    onAccept: () {},
-                                    onReject: () {},
-                                    idStatus: booking.idStatus.toString(),
-                                    alasanPenolakan: booking.alasanPenolakan,
-                                    catatanKejadian: booking.catatanKejadian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      BookingCard(
+                                        id: booking.id,
+                                        studentName: booking.studentName,
+                                        grupPengguna: booking.grupPengguna,
+                                        inputDate: booking.bookDate,
+                                        time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                        timeStart: booking.jamMulai,
+                                        timeEnd: booking.jamSelesai,
+                                        description: booking.keterangan,
+                                        ruangan: booking.ruangan,
+                                        tipeRuang: booking.tipeRuang,
+                                        groupSize: "${booking.jumlahPengguna} orang",
+                                        onAccept: () {},
+                                        onReject: () {},
+                                        idStatus: booking.idStatus.toString(),
+                                        alasanPenolakan: booking.alasanPenolakan,
+                                        catatanKejadian: booking.catatanKejadian,
+                                      ),
                                   );
                                 },
                               );
@@ -374,23 +381,27 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
                                 itemCount: filteredBookings.length,
                                 itemBuilder: (context, index) {
                                   final booking = filteredBookings[index];
-                                  return BookingCard(
-                                    id: booking.id,
-                                    studentName: booking.studentName,
-                                    grupPengguna: booking.grupPengguna,
-                                    inputDate: booking.bookDate,
-                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
-                                    timeStart: booking.jamMulai,
-                                    timeEnd: booking.jamSelesai,
-                                    description: booking.keterangan,
-                                    ruangan: booking.ruangan,
-                                    tipeRuang: booking.tipeRuang,
-                                    groupSize: "${booking.jumlahPengguna} orang",
-                                    onAccept: () {},
-                                    onReject: () {},
-                                    idStatus: booking.idStatus.toString(),
-                                    alasanPenolakan: booking.alasanPenolakan,
-                                    catatanKejadian: booking.catatanKejadian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      BookingCard(
+                                        id: booking.id,
+                                        studentName: booking.studentName,
+                                        grupPengguna: booking.grupPengguna,
+                                        inputDate: booking.bookDate,
+                                        time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                        timeStart: booking.jamMulai,
+                                        timeEnd: booking.jamSelesai,
+                                        description: booking.keterangan,
+                                        ruangan: booking.ruangan,
+                                        tipeRuang: booking.tipeRuang,
+                                        groupSize: "${booking.jumlahPengguna} orang",
+                                        onAccept: () {},
+                                        onReject: () {},
+                                        idStatus: booking.idStatus.toString(),
+                                        alasanPenolakan: booking.alasanPenolakan,
+                                        catatanKejadian: booking.catatanKejadian,
+                                      ),
                                   );
                                 },
                               );

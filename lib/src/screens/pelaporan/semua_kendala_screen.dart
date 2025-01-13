@@ -93,7 +93,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> with SingleTickerPr
 
   Widget _buildStatusDropdown(bool isActive){
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<Map<String, dynamic>>>(
         future: getStatus(isActive: isActive, fungsi: 'kendala'),
         builder: (context, snapshot) {
@@ -295,17 +295,21 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> with SingleTickerPr
                                 itemCount: filteredReports.length,
                                 itemBuilder: (context, index) {
                                   final report = filteredReports[index];
-                                  return ReportCard(
-                                    id: report.id,
-                                    studentName: report.studentName,
-                                    studentNim: report.studentNim,
-                                    inputDate: report.inputDate,
-                                    ruangan: report.ruangan,
-                                    jenis: report.jenis,
-                                    bentuk: report.bentuk,
-                                    deskripsi: report.deskripsi,
-                                    idStatus: report.idStatus.toString(),
-                                    keteranganPenyelesaian: report.keteranganPenyelesaian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      ReportCard(
+                                        id: report.id,
+                                        studentName: report.studentName,
+                                        studentNim: report.studentNim,
+                                        inputDate: report.inputDate,
+                                        ruangan: report.ruangan,
+                                        jenis: report.jenis,
+                                        bentuk: report.bentuk,
+                                        deskripsi: report.deskripsi,
+                                        idStatus: report.idStatus.toString(),
+                                        keteranganPenyelesaian: report.keteranganPenyelesaian,
+                                      ),
                                   );
                                 },
                               );
@@ -339,17 +343,21 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> with SingleTickerPr
                                 itemCount: filteredReports.length,
                                 itemBuilder: (context, index) {
                                   final report = filteredReports[index];
-                                  return ReportCard(
-                                    id: report.id,
-                                    studentName: report.studentName,
-                                    studentNim: report.studentNim,
-                                    inputDate: report.inputDate,
-                                    ruangan: report.ruangan,
-                                    jenis: report.jenis,
-                                    bentuk: report.bentuk,
-                                    deskripsi: report.deskripsi,
-                                    idStatus: report.idStatus.toString(),
-                                    keteranganPenyelesaian: report.keteranganPenyelesaian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      ReportCard(
+                                        id: report.id,
+                                        studentName: report.studentName,
+                                        studentNim: report.studentNim,
+                                        inputDate: report.inputDate,
+                                        ruangan: report.ruangan,
+                                        jenis: report.jenis,
+                                        bentuk: report.bentuk,
+                                        deskripsi: report.deskripsi,
+                                        idStatus: report.idStatus.toString(),
+                                        keteranganPenyelesaian: report.keteranganPenyelesaian,
+                                      ),
                                   );
                                 },
                               );
