@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/jam_card.dart';
 import 'package:class_leap/src/custom_style/room_card.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';

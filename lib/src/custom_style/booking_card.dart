@@ -21,6 +21,7 @@ class BookingCard extends StatelessWidget {
   final String tipeRuang;
   final String grupPengguna;
   final String catatanKejadian;
+  final VoidCallback onRefresh;
 
   const BookingCard({
     super.key,
@@ -40,6 +41,7 @@ class BookingCard extends StatelessWidget {
     required this.tipeRuang,
     required this.grupPengguna,
     required this.catatanKejadian,
+    required this.onRefresh,
   });
 
   @override
@@ -70,6 +72,7 @@ class BookingCard extends StatelessWidget {
           ),
         ).then((result){
           if(result != null){
+            onRefresh();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(result),

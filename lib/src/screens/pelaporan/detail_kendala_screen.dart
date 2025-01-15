@@ -62,10 +62,10 @@ class _DetailkendalaPageState extends State<DetailkendalaPage> {
             buildRowWithDivider('Bentuk', widget.bentuk),
             buildRowWithDivider('Deskripsi', widget.deskripsi),
             buildRowWithDivider('Status', widget.idStatus),
-            if (widget.idStatus == 'Selesai') ...[
+            if (widget.idStatus == '2') ...[
               const SizedBox(height: 8),
               const Text(
-                'Keterangan Penyelesaian:',
+                'Keterangan:',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),

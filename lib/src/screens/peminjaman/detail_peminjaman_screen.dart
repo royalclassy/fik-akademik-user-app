@@ -72,23 +72,20 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
 }
 
 
-  Future<void> _cancelPeminjaman(String idPeminjaman) async {
+Future<void> _cancelPeminjaman(String idPeminjaman) async {
   try {
     var response = await batalPeminjaman(idPeminjaman);
     ScaffoldMessenger.of(_context).showSnackBar(
       SnackBar(content: Text('Peminjaman berhasil dibatalkan')),
     );
-    Navigator.of(context).pop(true);
-    // Navigator.pushReplacement(
-    //   _context,
-    //   MaterialPageRoute(builder: (context) => SemuadaftarPage(room: widget.tipeRuang)),
-    // );
+    Navigator.of(context).pop(true); // Pass true to indicate success
   } catch (e) {
     ScaffoldMessenger.of(_context).showSnackBar(
       SnackBar(content: Text('Gagal membatalkan peminjaman')),
     );
   }
 }
+
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -72,7 +72,7 @@ class _SemuakendalaPageState extends State<SemuakendalaPage> with SingleTickerPr
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
+      if (!_tabController.indexIsChanging && _tabController.index == _tabController.animation!.value) {
         setState(() {
           _selectedStatus = null;
           _selectedDateRange = null;

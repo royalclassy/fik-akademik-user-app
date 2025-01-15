@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/booking_card.dart';
-import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
-
-
 import '../../utils/data/api_data.dart';
 
 
@@ -88,7 +85,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
+      if (!_tabController.indexIsChanging && _tabController.index == _tabController.animation!.value) {
         setState(() {
           _selectedStatus = null;
           _selectedDateRange = null;
@@ -99,6 +96,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
     _peminjamanActiveFuture = fetchPeminjaman(true);
     _peminjamanHistoryFuture = fetchPeminjaman(false);
     _statusFuture = getStatus(isActive: true, fungsi: 'peminjaman');
+    print('status future: $_statusFuture');
   }
 
   @override
@@ -118,6 +116,10 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
             status['fungsi'] == 'peminjaman' &&
                 status['is_active'] == isActive
             ).toList();
+
+            if (_selectedStatus != null && !statuses.any((status) => status['id_status'].toString() == _selectedStatus)) {
+              _selectedStatus = null;
+            }
 
             return DropdownButtonFormField<String>(
               value: _selectedStatus,
@@ -347,6 +349,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
                                         idStatus: booking.idStatus.toString(),
                                         alasanPenolakan: booking.alasanPenolakan,
                                         catatanKejadian: booking.catatanKejadian,
+                                        onRefresh: refreshPeminjaman,
                                       ),
                                   );
                                 },
@@ -401,6 +404,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
                                         idStatus: booking.idStatus.toString(),
                                         alasanPenolakan: booking.alasanPenolakan,
                                         catatanKejadian: booking.catatanKejadian,
+                                        onRefresh: refreshPeminjaman,
                                       ),
                                   );
                                 },
