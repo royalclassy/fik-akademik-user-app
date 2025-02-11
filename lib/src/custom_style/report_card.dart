@@ -11,7 +11,7 @@ class ReportCard extends StatelessWidget {
   final String jenis;
   final String bentuk;
   final String deskripsi;
-  final String status;
+  final String idStatus;
   final String keteranganPenyelesaian;
 
   const ReportCard({
@@ -24,7 +24,7 @@ class ReportCard extends StatelessWidget {
     required this.jenis,
     required this.bentuk,
     required this.deskripsi,
-    required this.status,
+    required this.idStatus,
     required this.keteranganPenyelesaian,
   });
 
@@ -44,7 +44,7 @@ class ReportCard extends StatelessWidget {
               jenis: jenis,
               bentuk: bentuk,
               deskripsi: deskripsi,
-              status: status,
+              idStatus: idStatus,
               keteranganPenyelesaian: keteranganPenyelesaian,
             ),
           ),

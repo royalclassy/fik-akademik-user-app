@@ -241,23 +241,24 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   }
 }
 
-Future<List<Map<String, dynamic>>> getStatus({bool isActive = true}) async {
+Future<List<Map<String, dynamic>>> getStatus({bool isActive = true, required String fungsi}) async {
   endpoint = 'status';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, headers: await _getHeaders());
   print("fetch status");
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
-    return data.where((status) => 
-      status['fungsi'] == 'peminjaman' && 
-      status['is_active'] == isActive
+    return data.where((status) =>
+    status['fungsi'] == fungsi &&
+        status['is_active'] == isActive
     ).cast<Map<String, dynamic>>().toList();
   } else {
     throw Exception('Failed to get status data');
   }
 }
 
-Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
+Future<List<Map<String, dynamic>>> getPeminjaman(String room, {required bool isActive}) async {
+  print(room);
   endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url,
@@ -303,7 +304,7 @@ Future<Map<String, dynamic>> getAssetDetails(String idRuangan) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> getKendala(String room) async {
+Future<List<Map<String, dynamic>>> getKendala(String room, {required bool isActive}) async {
   endpoint = 'kendala/$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, 
@@ -516,6 +517,25 @@ Future<void> saveTokenToServer(String? token) async {
     }
   } else {
     print('Failed to save FCM token');
+  }
+}
+
+Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
+  endpoint = 'konfirmasi/peminjaman';
+  print('idPinjam: $idPinjam');
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(
+    url,
+    body: {
+      'id_pinjam': idPinjam,
+    },
+    headers: await _getHeaders(),
+  );
+
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception('Failed to update peminjaman status');
   }
 }
 

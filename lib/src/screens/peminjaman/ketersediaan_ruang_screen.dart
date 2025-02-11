@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:class_leap/src/custom_style/jam_card.dart';
 import 'package:class_leap/src/custom_style/room_card.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
@@ -113,33 +112,45 @@ class _KetersediaanRuangPageState extends State<KetersediaanRuangPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Pilih Tanggal: ',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          Text(
+                            'Pilih Tanggal: ',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                            onPressed: () => _selectDate(context),
+                            child: Text(
+                              DateFormat('yyyy-MM-dd').format(selectedDate),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text(
-                          DateFormat('yyyy-MM-dd').format(selectedDate),
-                          style: TextStyle(fontSize: 16),
+                      ElevatedButton(
+                        onPressed: updateRuangantersedia,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          backgroundColor: const Color(0xFF2F4858),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
+                        child: Text('Cari'),
                       ),
                     ],
                   ),
                   SizedBox(height: 20),
                   buildTimePickerRow('Jam Mulai', jamMulaiController),
                   buildTimePickerRow('Jam Selesai', jamSelesaiController),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: updateRuangantersedia,
-                    child: Text('Cari'),
-                  ),
-                  Container(
-                    height: 1,
-                    width: double.infinity,
-                    color: Color(0xFFFF5833),
-                  ),
+                  // Container(
+                  //   height: 1,
+                  //   width: double.infinity,
+                  //   color: Color(0xFFFF5833),
+                  // ),
                 ],
               ),
             ),

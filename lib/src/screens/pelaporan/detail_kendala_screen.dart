@@ -10,7 +10,7 @@ class DetailkendalaPage extends StatefulWidget {
   final String jenis;
   final String bentuk;
   final String deskripsi;
-  final String status;
+  final String idStatus;
   final String keteranganPenyelesaian;
 
   const DetailkendalaPage({
@@ -23,7 +23,7 @@ class DetailkendalaPage extends StatefulWidget {
     required this.jenis,
     required this.bentuk,
     required this.deskripsi,
-    required this.status,
+    required this.idStatus,
     required this.keteranganPenyelesaian,});
 
   @override
@@ -61,11 +61,11 @@ class _DetailkendalaPageState extends State<DetailkendalaPage> {
             buildRowWithDivider('Jenis',widget.jenis),
             buildRowWithDivider('Bentuk', widget.bentuk),
             buildRowWithDivider('Deskripsi', widget.deskripsi),
-            buildRowWithDivider('Status', widget.status),
-            if (widget.status == 'Selesai') ...[
+            buildRowWithDivider('Status', widget.idStatus),
+            if (widget.idStatus == '2') ...[
               const SizedBox(height: 8),
               const Text(
-                'Keterangan Penyelesaian:',
+                'Keterangan:',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),

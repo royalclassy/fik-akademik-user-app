@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/booking_card.dart';
-import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
+import '../../utils/data/api_data.dart';
+
 
 import '../../utils/data/api_data.dart';
 
 class SemuadaftarPage extends StatefulWidget {
   final String room;
+  final VoidCallback? onRefresh;
 
-  const SemuadaftarPage({super.key, required this.room});
+  const SemuadaftarPage({super.key, required this.room, this.onRefresh});
+
 
   @override
   _SemuadaftarPageState createState() => _SemuadaftarPageState();
 }
+
 
 class Booking {
   final String id;
@@ -23,11 +27,13 @@ class Booking {
   final String ruangan;
   final String jumlahPengguna;
   final String keterangan;
-  final String idStatus;
+  final int idStatus;
   final String alasanPenolakan;
   final String tipeRuang;
   final String grupPengguna;
   final String catatanKejadian;
+  final bool isActive;
+
 
   Booking({
     required this.id,
@@ -43,7 +49,9 @@ class Booking {
     required this.tipeRuang,
     required this.grupPengguna,
     required this.catatanKejadian,
+    required this.isActive,
   });
+
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
@@ -57,40 +65,65 @@ class Booking {
       tipeRuang: json['tipe_ruang'] ?? '',
       jumlahPengguna: json['jumlah_orang'].toString(),
       keterangan: json['keterangan'],
-      idStatus: json['id_status'].toString(),
+      idStatus: json["id_status"],
       alasanPenolakan: json['alasan_penolakan'] ?? '',
       catatanKejadian: json['catatan_kejadian'] ?? '',
+      isActive: json['is_active'] ?? false,
     );
   }
 }
 
-class _SemuadaftarPageState extends State<SemuadaftarPage> {
-  late Future<List<Booking>> _peminjamanFuture;
+class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProviderStateMixin {
+  late Future<List<Booking>> _peminjamanActiveFuture;
+  late Future<List<Booking>> _peminjamanHistoryFuture;
   late Future<List<Map<String, dynamic>>> _statusFuture;
   String? _selectedStatus;
   DateTimeRange? _selectedDateRange;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _peminjamanFuture = fetchPeminjaman();
-    _statusFuture = getStatus(isActive: true);
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging && _tabController.index == _tabController.animation!.value) {
+        setState(() {
+          _selectedStatus = null;
+          _selectedDateRange = null;
+        });
+        refreshPeminjaman();
+      }
+    });
+    _peminjamanActiveFuture = fetchPeminjaman(true);
+    _peminjamanHistoryFuture = fetchPeminjaman(false);
+    _statusFuture = getStatus(isActive: true, fungsi: 'peminjaman');
+    print('status future: $_statusFuture');
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Widget _buildStatusDropdown(bool isActive) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getStatus(isActive: isActive),
+        future: getStatus(isActive: isActive, fungsi: 'peminjaman'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            var statuses = snapshot.data!.where((status) => 
-              status['fungsi'] == 'peminjaman' && 
-              status['is_active'] == isActive
+            var statuses = snapshot.data!.where((status) =>
+            status['fungsi'] == 'peminjaman' &&
+                status['is_active'] == isActive
             ).toList();
-            
+
+            if (_selectedStatus != null && !statuses.any((status) => status['id_status'].toString() == _selectedStatus)) {
+              _selectedStatus = null;
+            }
+
             return DropdownButtonFormField<String>(
-              value: null,
+              value: _selectedStatus,
               decoration: const InputDecoration(
                 labelText: 'Filter Status',
                 border: OutlineInputBorder(),
@@ -105,7 +138,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                 setState(() {
                   _selectedStatus = value;
                 });
-                 refreshPeminjaman(); 
+                refreshPeminjaman();
               },
             );
           }
@@ -115,15 +148,39 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
     );
   }
 
+
   void refreshPeminjaman() {
-  setState(() {
-    _peminjamanFuture = fetchPeminjaman();
+    setState(() {
+      _peminjamanActiveFuture = fetchPeminjaman(true);
+      _peminjamanHistoryFuture = fetchPeminjaman(false);
     });
   }
 
-  Future<List<Booking>> fetchPeminjaman() async {
-    List<Map<String, dynamic>> peminjaman = await getPeminjaman(widget.room);
-    return peminjaman.map((data) => Booking.fromJson(data)).toList();
+
+  Future<List<Booking>> fetchPeminjaman(bool isActive) async {
+    List<Map<String, dynamic>> peminjaman = await getPeminjaman(widget.room, isActive: isActive);
+    var bookings = peminjaman.map((data) => Booking.fromJson(data)).where((booking) {
+      if (isActive) {
+        return booking.idStatus == 4 || booking.idStatus == 6 || booking.idStatus == 7;
+      } else {
+        return booking.idStatus == 5 || booking.idStatus == 8;
+      }
+    }).toList();
+
+    // Apply status filter
+    if (_selectedStatus != null) {
+      bookings = bookings.where((booking) => booking.idStatus.toString() == _selectedStatus).toList();
+    }
+
+    // Apply date range filter
+    if (_selectedDateRange != null) {
+      bookings = bookings.where((booking) {
+        final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
+        return bookingDate.isAfter(_selectedDateRange!.start) && bookingDate.isBefore(_selectedDateRange!.end);
+      }).toList();
+    }
+
+    return bookings;
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -140,6 +197,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
     }
   }
 
+
   void _clearDateRange() {
     setState(() {
       _selectedDateRange = null;
@@ -148,11 +206,11 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
 
   List<Booking> _filterBookings(List<Booking> bookings, bool isActive) {
     var filtered = bookings;
-    
+
     // Filter by selected status if one is selected
     if (_selectedStatus != null) {
-      filtered = filtered.where((booking) => 
-        booking.idStatus.toString() == _selectedStatus
+      filtered = filtered.where((booking) =>
+      booking.idStatus.toString() == _selectedStatus
       ).toList();
     }
 
@@ -160,10 +218,11 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
     if (_selectedDateRange != null) {
       filtered = filtered.where((booking) {
         final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
-        return bookingDate.isAfter(_selectedDateRange!.start) && 
-               bookingDate.isBefore(_selectedDateRange!.end);
+        return bookingDate.isAfter(_selectedDateRange!.start) &&
+            bookingDate.isBefore(_selectedDateRange!.end);
       }).toList();
     }
+
 
     return filtered;
   }
@@ -187,7 +246,9 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),
-          bottom: const TabBar(
+          automaticallyImplyLeading: true,
+          bottom: TabBar(
+            controller: _tabController,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             labelStyle: TextStyle(
@@ -241,6 +302,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
             ),
             Expanded(
               child: TabBarView(
+                controller: _tabController,
                 children: [
                   // Sedang Berjalan tab
                   Column(
@@ -248,39 +310,50 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                       _buildStatusDropdown(true),
                       Expanded(
                         child: FutureBuilder<List<Booking>>(
-                          future: _peminjamanFuture,
+                          future: _peminjamanActiveFuture,
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Center(child: Text('Error: ${snapshot.error}'));
                             }
-                            if (snapshot.hasData) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                              }
+                            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                               var filteredBookings = _filterBookings(snapshot.data!, true);
+                              if (filteredBookings.isEmpty) {
+                                return const Center(child: Text('Tidak ada data'));
+                              }
                               return ListView.builder(
                                 itemCount: filteredBookings.length,
                                 itemBuilder: (context, index) {
                                   final booking = filteredBookings[index];
-                                  return BookingCard(
-                                    id: booking.id,
-                                    studentName: booking.studentName,
-                                    grupPengguna: booking.grupPengguna,
-                                    inputDate: booking.bookDate,
-                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
-                                    timeStart: booking.jamMulai,
-                                    timeEnd: booking.jamSelesai,
-                                    description: booking.keterangan,
-                                    ruangan: booking.ruangan,
-                                    tipeRuang: booking.tipeRuang,
-                                    groupSize: "${booking.jumlahPengguna} orang",
-                                    onAccept: () {},
-                                    onReject: () {},
-                                    idStatus: booking.idStatus,
-                                    alasanPenolakan: booking.alasanPenolakan,
-                                    catatanKejadian: booking.catatanKejadian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      BookingCard(
+                                        id: booking.id,
+                                        studentName: booking.studentName,
+                                        grupPengguna: booking.grupPengguna,
+                                        inputDate: booking.bookDate,
+                                        time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                        timeStart: booking.jamMulai,
+                                        timeEnd: booking.jamSelesai,
+                                        description: booking.keterangan,
+                                        ruangan: booking.ruangan,
+                                        tipeRuang: booking.tipeRuang,
+                                        groupSize: "${booking.jumlahPengguna} orang",
+                                        onAccept: () {},
+                                        onReject: () {},
+                                        idStatus: booking.idStatus.toString(),
+                                        alasanPenolakan: booking.alasanPenolakan,
+                                        catatanKejadian: booking.catatanKejadian,
+                                        onRefresh: refreshPeminjaman,
+                                      ),
                                   );
                                 },
                               );
                             }
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(child: Text('Tidak ada data'));
                           },
                         ),
                       ),
@@ -292,39 +365,50 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
                       _buildStatusDropdown(false),
                       Expanded(
                         child: FutureBuilder<List<Booking>>(
-                          future: _peminjamanFuture,
+                          future: _peminjamanHistoryFuture,
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Center(child: Text('Error: ${snapshot.error}'));
                             }
-                            if (snapshot.hasData) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                               var filteredBookings = _filterBookings(snapshot.data!, false);
+                              if (filteredBookings.isEmpty) {
+                                return const Center(child: Text('Tidak ada data'));
+                              }
                               return ListView.builder(
                                 itemCount: filteredBookings.length,
                                 itemBuilder: (context, index) {
                                   final booking = filteredBookings[index];
-                                  return BookingCard(
-                                    id: booking.id,
-                                    studentName: booking.studentName,
-                                    grupPengguna: booking.grupPengguna,
-                                    inputDate: booking.bookDate,
-                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
-                                    timeStart: booking.jamMulai,
-                                    timeEnd: booking.jamSelesai,
-                                    description: booking.keterangan,
-                                    ruangan: booking.ruangan,
-                                    tipeRuang: booking.tipeRuang,
-                                    groupSize: "${booking.jumlahPengguna} orang",
-                                    onAccept: () {},
-                                    onReject: () {},
-                                    idStatus: booking.idStatus,
-                                    alasanPenolakan: booking.alasanPenolakan,
-                                    catatanKejadian: booking.catatanKejadian,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child:
+                                      BookingCard(
+                                        id: booking.id,
+                                        studentName: booking.studentName,
+                                        grupPengguna: booking.grupPengguna,
+                                        inputDate: booking.bookDate,
+                                        time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                        timeStart: booking.jamMulai,
+                                        timeEnd: booking.jamSelesai,
+                                        description: booking.keterangan,
+                                        ruangan: booking.ruangan,
+                                        tipeRuang: booking.tipeRuang,
+                                        groupSize: "${booking.jumlahPengguna} orang",
+                                        onAccept: () {},
+                                        onReject: () {},
+                                        idStatus: booking.idStatus.toString(),
+                                        alasanPenolakan: booking.alasanPenolakan,
+                                        catatanKejadian: booking.catatanKejadian,
+                                        onRefresh: refreshPeminjaman,
+                                      ),
                                   );
                                 },
                               );
                             }
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(child: Text('Tidak ada data'));
                           },
                         ),
                       ),
