@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:intl/intl.dart';
 
-const String base_url = 'https://5405-103-147-92-253.ngrok-free.app/api/';
+const String base_url = 'https://766f-112-215-225-19.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -241,28 +241,28 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   }
 }
 
-Future<List> fetchStatus(int idStatus, String status) async {
+Future<List<Map<String, dynamic>>> getStatus({bool isActive = true}) async {
   endpoint = 'status';
-  print(idStatus);
   var url = Uri.parse(base_url + endpoint);
-  var response = await http.post(url, body: {
-    'id_status': idStatus,
-    'status': status,
-  }, headers: await _getHeaders());
-  print(response.body);
-  var responseBody = json.decode(response.body);
-  return responseBody;
+  var response = await http.get(url, headers: await _getHeaders());
+  print("fetch status");
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.where((status) => 
+      status['fungsi'] == 'peminjaman' && 
+      status['is_active'] == isActive
+    ).cast<Map<String, dynamic>>().toList();
+  } else {
+    throw Exception('Failed to get status data');
+  }
 }
 
 Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
-  print(room);
   endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
-  print(url);
-  var response = await http.get(url, 
+  var response = await http.get(url,
     headers: await _getHeaders()
     );
-  print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();
@@ -273,7 +273,7 @@ Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
 
 Future<List> getRuang(String room) async {
   endpoint = 'ruangan';
-  print(room);
+  print("room : $room");
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'tipe_ruang':room,

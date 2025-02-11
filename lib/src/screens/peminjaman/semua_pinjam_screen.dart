@@ -3,6 +3,8 @@ import 'package:class_leap/src/custom_style/booking_card.dart';
 import 'package:class_leap/src/utils/data/api_data.dart' as api_data;
 import 'package:intl/intl.dart';
 
+import '../../utils/data/api_data.dart';
+
 class SemuadaftarPage extends StatefulWidget {
   final String room;
 
@@ -55,7 +57,7 @@ class Booking {
       tipeRuang: json['tipe_ruang'] ?? '',
       jumlahPengguna: json['jumlah_orang'].toString(),
       keterangan: json['keterangan'],
-      idStatus: json['id_status'],
+      idStatus: json['id_status'].toString(),
       alasanPenolakan: json['alasan_penolakan'] ?? '',
       catatanKejadian: json['catatan_kejadian'] ?? '',
     );
@@ -64,19 +66,63 @@ class Booking {
 
 class _SemuadaftarPageState extends State<SemuadaftarPage> {
   late Future<List<Booking>> _peminjamanFuture;
-  String _selectedStatus = 6.toString();
+  late Future<List<Map<String, dynamic>>> _statusFuture;
+  String? _selectedStatus;
   DateTimeRange? _selectedDateRange;
 
   @override
   void initState() {
     super.initState();
     _peminjamanFuture = fetchPeminjaman();
+    _statusFuture = getStatus(isActive: true);
+  }
+
+  Widget _buildStatusDropdown(bool isActive) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: FutureBuilder<List<Map<String, dynamic>>>(
+        future: getStatus(isActive: isActive),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var statuses = snapshot.data!.where((status) => 
+              status['fungsi'] == 'peminjaman' && 
+              status['is_active'] == isActive
+            ).toList();
+            
+            return DropdownButtonFormField<String>(
+              value: null,
+              decoration: const InputDecoration(
+                labelText: 'Filter Status',
+                border: OutlineInputBorder(),
+              ),
+              items: statuses.map((status) {
+                return DropdownMenuItem<String>(
+                  value: status['id_status'].toString(),
+                  child: Text(status['status']),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedStatus = value;
+                });
+                 refreshPeminjaman(); 
+              },
+            );
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+    );
+  }
+
+  void refreshPeminjaman() {
+  setState(() {
+    _peminjamanFuture = fetchPeminjaman();
+    });
   }
 
   Future<List<Booking>> fetchPeminjaman() async {
-    List<Map<String, dynamic>> peminjaman;
-    peminjaman = await api_data.getPeminjaman(widget.room);
-    print("Peminjaman: $peminjaman");
+    List<Map<String, dynamic>> peminjaman = await getPeminjaman(widget.room);
     return peminjaman.map((data) => Booking.fromJson(data)).toList();
   }
 
@@ -100,17 +146,27 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> {
     });
   }
 
-List<Booking> _filterBookings(List<Booking> bookings) {
-  if (_selectedDateRange == null) return bookings;
-  return bookings.where((booking) {
-    final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
-    print('Booking Date: $bookingDate');
-    print('Start Date: ${_selectedDateRange!.start}');
-    print('End Date: ${_selectedDateRange!.end}');
-    return (bookingDate.isAfter(_selectedDateRange!.start) || bookingDate.isAtSameMomentAs(_selectedDateRange!.start)) &&
-           (bookingDate.isBefore(_selectedDateRange!.end) || bookingDate.isAtSameMomentAs(_selectedDateRange!.end));
-  }).toList();
-}
+  List<Booking> _filterBookings(List<Booking> bookings, bool isActive) {
+    var filtered = bookings;
+    
+    // Filter by selected status if one is selected
+    if (_selectedStatus != null) {
+      filtered = filtered.where((booking) => 
+        booking.idStatus.toString() == _selectedStatus
+      ).toList();
+    }
+
+    // Filter by date range if selected
+    if (_selectedDateRange != null) {
+      filtered = filtered.where((booking) {
+        final bookingDate = DateFormat('dd/MM/yyyy').parse(booking.bookDate);
+        return bookingDate.isAfter(_selectedDateRange!.start) && 
+               bookingDate.isBefore(_selectedDateRange!.end);
+      }).toList();
+    }
+
+    return filtered;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +185,7 @@ List<Booking> _filterBookings(List<Booking> bookings) {
           ),
           backgroundColor: const Color(0xFFFF5833),
           iconTheme: const IconThemeData(
-            color: Colors.white, // Set all icons to white
+            color: Colors.white,
           ),
           bottom: const TabBar(
             labelColor: Colors.white,
@@ -156,26 +212,29 @@ List<Booking> _filterBookings(List<Booking> bookings) {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    width: 30, // Adjust the width
-                    height: 30, // Adjust the height
+                    width: 30,
+                    height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.grey[100], // Background color
+                      color: Colors.grey[100],
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: _clearDateRange,
-                        iconSize: 20.0, // Adjust the size
-                        color: Colors.red, // Adjust the color
-                        padding: EdgeInsets.zero, // Remove padding
+                        iconSize: 20.0,
+                        color: Colors.red,
+                        padding: EdgeInsets.zero,
                       ),
                     ),
                   ),
                   if (_selectedDateRange != null)
-                    Text(
-                      '${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
-                      style: const TextStyle(fontSize: 16),
+                    Expanded(
+                      child: Text(
+                        '${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end)}',
+                        style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                 ],
               ),
@@ -183,134 +242,93 @@ List<Booking> _filterBookings(List<Booking> bookings) {
             Expanded(
               child: TabBarView(
                 children: [
-                  // Tab for "Sedang Berjalan"
-                  Container(
-                    color: Colors.grey[200],
-                    padding: const EdgeInsets.all(16),
-                    child: FutureBuilder<List<Booking>>(
-                      future: _peminjamanFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else
-                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(
-                              child: Text('Tidak ada data peminjaman'));
-                        } else {
-                          List<Booking> bookings = _filterBookings(
-                              snapshot.data!);
-                          bookings = bookings.where((booking) =>
-                          booking.idStatus == 1).toList();
-                          return ListView.builder(
-                            itemCount: bookings.length,
-                            itemBuilder: (context, index) {
-                              Booking booking = bookings[index];
-                              return BookingCard(
-                                id: booking.id,
-                                studentName: booking.studentName,
-                                grupPengguna: booking.grupPengguna,
-                                inputDate: booking.bookDate,
-                                time: "${booking.jamMulai} - ${booking
-                                    .jamSelesai}",
-                                timeStart: booking.jamMulai,
-                                timeEnd: booking.jamSelesai,
-                                description: booking.keterangan,
-                                ruangan: booking.ruangan,
-                                tipeRuang: booking.tipeRuang,
-                                groupSize: "${booking.jumlahPengguna} orang",
-                                onAccept: () {},
-                                onReject: () {},
-                                idStatus: booking.idStatus,
-                                alasanPenolakan: booking.alasanPenolakan,
-                                catatanKejadian: booking.catatanKejadian,
+                  // Sedang Berjalan tab
+                  Column(
+                    children: [
+                      _buildStatusDropdown(true),
+                      Expanded(
+                        child: FutureBuilder<List<Booking>>(
+                          future: _peminjamanFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            }
+                            if (snapshot.hasData) {
+                              var filteredBookings = _filterBookings(snapshot.data!, true);
+                              return ListView.builder(
+                                itemCount: filteredBookings.length,
+                                itemBuilder: (context, index) {
+                                  final booking = filteredBookings[index];
+                                  return BookingCard(
+                                    id: booking.id,
+                                    studentName: booking.studentName,
+                                    grupPengguna: booking.grupPengguna,
+                                    inputDate: booking.bookDate,
+                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                    timeStart: booking.jamMulai,
+                                    timeEnd: booking.jamSelesai,
+                                    description: booking.keterangan,
+                                    ruangan: booking.ruangan,
+                                    tipeRuang: booking.tipeRuang,
+                                    groupSize: "${booking.jumlahPengguna} orang",
+                                    onAccept: () {},
+                                    onReject: () {},
+                                    idStatus: booking.idStatus,
+                                    alasanPenolakan: booking.alasanPenolakan,
+                                    catatanKejadian: booking.catatanKejadian,
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  // Tab for "Riwayat"
-                  Container(
-                    color: Colors.grey[200],
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        DropdownButton<String>(
-                          value: _selectedStatus,
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'disetujui',
-                              child: Text('Disetujui'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'ditolak',
-                              child: Text('Ditolak'),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedStatus = value!;
-                            });
+                            }
+                            return const Center(child: CircularProgressIndicator());
                           },
                         ),
-                        Expanded(
-                          child: FutureBuilder<List<Booking>>(
-                            future: _peminjamanFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                    child: Text('Error: ${snapshot.error}'));
-                              } else
-                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return const Center(
-                                    child: Text('Tidak ada data peminjaman'));
-                              } else {
-                                List<Booking> bookings = _filterBookings(
-                                    snapshot.data!);
-                                bookings = bookings.where((booking) => booking
-                                    .id  == _selectedStatus).toList();
-                                return ListView.builder(
-                                  itemCount: bookings.length,
-                                  itemBuilder: (context, index) {
-                                    Booking booking = bookings[index];
-                                    return BookingCard(
-                                      id: booking.id,
-                                      studentName: booking.studentName,
-                                      grupPengguna: booking.grupPengguna,
-                                      inputDate: booking.bookDate,
-                                      time: "${booking.jamMulai} - ${booking
-                                          .jamSelesai}",
-                                      timeStart: booking.jamMulai,
-                                      timeEnd: booking.jamSelesai,
-                                      description: booking.keterangan,
-                                      ruangan: booking.ruangan,
-                                      tipeRuang: booking.tipeRuang,
-                                      groupSize: "${booking
-                                          .jumlahPengguna} orang",
-                                      onAccept: () {},
-                                      onReject: () {},
-                                      idStatus: booking.idStatus,
-                                      alasanPenolakan: booking.alasanPenolakan,
-                                      catatanKejadian: booking.catatanKejadian,
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                          ),
+                      ),
+                    ],
+                  ),
+                  // Riwayat tab
+                  Column(
+                    children: [
+                      _buildStatusDropdown(false),
+                      Expanded(
+                        child: FutureBuilder<List<Booking>>(
+                          future: _peminjamanFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            }
+                            if (snapshot.hasData) {
+                              var filteredBookings = _filterBookings(snapshot.data!, false);
+                              return ListView.builder(
+                                itemCount: filteredBookings.length,
+                                itemBuilder: (context, index) {
+                                  final booking = filteredBookings[index];
+                                  return BookingCard(
+                                    id: booking.id,
+                                    studentName: booking.studentName,
+                                    grupPengguna: booking.grupPengguna,
+                                    inputDate: booking.bookDate,
+                                    time: "${booking.jamMulai} - ${booking.jamSelesai}",
+                                    timeStart: booking.jamMulai,
+                                    timeEnd: booking.jamSelesai,
+                                    description: booking.keterangan,
+                                    ruangan: booking.ruangan,
+                                    tipeRuang: booking.tipeRuang,
+                                    groupSize: "${booking.jumlahPengguna} orang",
+                                    onAccept: () {},
+                                    onReject: () {},
+                                    idStatus: booking.idStatus,
+                                    alasanPenolakan: booking.alasanPenolakan,
+                                    catatanKejadian: booking.catatanKejadian,
+                                  );
+                                },
+                              );
+                            }
+                            return const Center(child: CircularProgressIndicator());
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -319,4 +337,5 @@ List<Booking> _filterBookings(List<Booking> bookings) {
         ),
       ),
     );
-  }}
+  }
+}

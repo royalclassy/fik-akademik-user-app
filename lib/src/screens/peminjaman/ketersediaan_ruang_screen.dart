@@ -161,9 +161,21 @@ class _KetersediaanRuangPageState extends State<KetersediaanRuangPage> {
                         var ruangantersedia = ruangantersediaList[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: RoomCard(
-                            idRuang: ruangantersedia['id_ruang'] ?? 'Unknown',
-                            namaRuang: ruangantersedia['nama_ruang'] ?? 'Unknown',
+                          child: Card(
+                            child: ExpansionTile(
+                              title: Text(ruangantersedia['nama_ruang'] ?? 'Unknown'),
+                              subtitle: Text(ruangantersedia['id_ruang'] ?? 'Unknown'),
+                              children: [
+                                if (ruangantersedia['available_slots'] != null)
+                                  ...(ruangantersedia['available_slots'] as List).map((slot) => 
+                                    ListTile(
+                                      leading: const Icon(Icons.access_time),
+                                      title: Text('${slot['start']} - ${slot['end']}'),
+                                      dense: true,
+                                    ),
+                                  ).toList(),
+                              ],
+                            ),
                           ),
                         );
                       },
