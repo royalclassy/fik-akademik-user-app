@@ -8,7 +8,6 @@ import 'package:class_leap/src/screens/welcome/welcome_screen.dart';
 import 'package:class_leap/src/screens/jadwal/jadwal_screen.dart';
 import 'package:class_leap/src/screens/peminjaman/peminjaman_screen.dart';
 import 'package:class_leap/src/screens/pelaporan/pelaporan_screen.dart';
-import 'package:class_leap/src/screens/kalender/kalender_akademik_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,7 +117,6 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _pages = [
     const JadwalPage(),
     const PeminjamanPage(),
-    const AcademicCalendarPage(),
     const PelaporanPage(),
     const ProfilePage(),
   ];
@@ -218,14 +216,14 @@ class _MyAppState extends State<MyApp> {
                   icon: Icon(Icons.bookmarks_outlined),
                   label: 'Pinjam',
                 ),
+                // BottomNavigationBarItem(
+                //   icon: Icon(Icons.calendar_today_rounded),
+                //   label: 'Kalender',
+                // ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today_rounded),
-                  label: 'Kalender',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.warning_amber_rounded),
-                  label: 'Lapor',
-                ),
+                   icon: Icon(Icons.warning_amber_rounded),
+                   label: 'Lapor',
+                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle_rounded),
                   label: 'Profil',

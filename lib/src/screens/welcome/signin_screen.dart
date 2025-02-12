@@ -4,6 +4,7 @@ import 'package:class_leap/src/utils/theme/theme.dart';
 import 'package:class_leap/src/utils/widgets/custom_scaffold.dart';
 import 'package:class_leap/src/screens/welcome/signup_screen.dart';
 import 'package:class_leap/src/utils/data/api_data.dart';
+import 'package:class_leap/src/screens/password/forget_password.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -274,6 +275,20 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgetPasswordScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Color(0xFFFF5833)),
+                        ),
                       ),
                     ],
                   ),

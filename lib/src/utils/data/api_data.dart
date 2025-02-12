@@ -539,3 +539,59 @@ Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
   }
 }
 
+// Password reset request
+Future<void> requestPasswordReset(String email) async {
+  try {
+    final endpoint = 'password/forgot-password';
+    print('email: $email');
+    final url = Uri.parse(base_url + endpoint);
+    final response = await http.post(
+      url,
+      body: {'email': email},
+      headers: await _getHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    }
+
+    final error = jsonDecode(response.body);
+    print('Error: $error');
+    throw Exception(error['message'] ?? 'Failed to request password reset');
+  } catch (e) {
+    print('Error: $e');
+    throw Exception('Failed to request password reset: ${e.toString()}');
+  }
+}
+
+Future<void> resetPassword({
+  required String email,
+  required String password,
+  required String passwordConfirmation,
+  required String token,
+}) async {
+  try {
+    final endpoint = 'password/reset-password';
+    final url = Uri.parse(base_url + endpoint);
+    
+    final response = await http.post(
+      url,
+      body: {
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        'token': token,
+      },
+      headers: await _getHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    }
+
+    final error = jsonDecode(response.body);
+    throw Exception(error['message'] ?? 'Failed to reset password');
+  } catch (e) {
+    throw Exception('Failed to reset password: ${e.toString()}');
+  }
+}
