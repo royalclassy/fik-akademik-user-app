@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:class_leap/src/utils/data/firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io';
+import 'package:class_leap/src/screens/calendar/calendar_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -39,9 +40,11 @@ Future<void> removeUserToken() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   print("Firebase initialized");
   print(Firebase.apps);
 
@@ -117,6 +120,7 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _pages = [
     const JadwalPage(),
     const PeminjamanPage(),
+    const CalendarPage(),
     const PelaporanPage(),
     const ProfilePage(),
   ];
@@ -216,10 +220,10 @@ class _MyAppState extends State<MyApp> {
                   icon: Icon(Icons.bookmarks_outlined),
                   label: 'Pinjam',
                 ),
-                // BottomNavigationBarItem(
-                //   icon: Icon(Icons.calendar_today_rounded),
-                //   label: 'Kalender',
-                // ),
+                 BottomNavigationBarItem(
+                   icon: Icon(Icons.calendar_today_rounded),
+                   label: 'Kalender',
+                 ),
                 BottomNavigationBarItem(
                    icon: Icon(Icons.warning_amber_rounded),
                    label: 'Lapor',

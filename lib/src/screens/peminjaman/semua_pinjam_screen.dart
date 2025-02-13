@@ -159,6 +159,7 @@ class _SemuadaftarPageState extends State<SemuadaftarPage> with SingleTickerProv
 
   Future<List<Booking>> fetchPeminjaman(bool isActive) async {
     List<Map<String, dynamic>> peminjaman = await getPeminjaman(widget.room, isActive: isActive);
+    print('API Response for ${widget.room}: $peminjaman'); 
     var bookings = peminjaman.map((data) => Booking.fromJson(data)).where((booking) {
       if (isActive) {
         return booking.idStatus == 4 || booking.idStatus == 6 || booking.idStatus == 7;

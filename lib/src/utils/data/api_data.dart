@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
-
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 
-const String base_url = 'https://766f-112-215-225-19.ngrok-free.app/api/';
+const String base_url = 'https://e2c5-140-213-128-188.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -75,6 +75,7 @@ Future<int> login(String identifier, String password) async {
     String token = responseBody['token'];
 
     await saveTokenToPreferences(token);
+    print('token: $token');
 
     return response.statusCode;
   } else {
@@ -402,6 +403,7 @@ Future<Map<String, dynamic>?> fetchUserData() async {
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
+        print(userData);
         return userData;
       } else {
         print('Failed to load user data');
@@ -521,8 +523,7 @@ Future<void> saveTokenToServer(String? token) async {
 }
 
 Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
-  endpoint = 'konfirmasi/peminjaman';
-  print('idPinjam: $idPinjam');
+  endpoint = 'peminjaman/konfirmasi';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(
     url,
@@ -535,63 +536,104 @@ Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {
+    print('error : ${response.body}');
     throw Exception('Failed to update peminjaman status');
   }
 }
 
-// Password reset request
-Future<void> requestPasswordReset(String email) async {
-  try {
-    final endpoint = 'password/forgot-password';
-    print('email: $email');
-    final url = Uri.parse(base_url + endpoint);
-    final response = await http.post(
-      url,
-      body: {'email': email},
-      headers: await _getHeaders(),
-    );
-
-    if (response.statusCode == 200) {
-      return;
-    }
-
-    final error = jsonDecode(response.body);
-    print('Error: $error');
-    throw Exception(error['message'] ?? 'Failed to request password reset');
-  } catch (e) {
-    print('Error: $e');
-    throw Exception('Failed to request password reset: ${e.toString()}');
-  }
-}
-
-Future<void> resetPassword({
-  required String email,
-  required String password,
-  required String passwordConfirmation,
-  required String token,
-}) async {
-  try {
-    final endpoint = 'password/reset-password';
-    final url = Uri.parse(base_url + endpoint);
+  Future<void> requestPasswordReset(String email) async {
+    try {
+      final endpoint = 'password/forgot';
+      final url = Uri.parse(base_url + endpoint);
+      final response = await http.post(
+        url,
+        body: {'email': email},
+        headers: await _getHeaders(),
+      );
+  
+       final responseData = jsonDecode(response.body);
     
-    final response = await http.post(
+      if (response.statusCode != 200) {
+        if (responseData['error'] != null) {
+          throw responseData['error'];
+        } else {
+          throw responseData['message'] ?? 'Failed to request password reset';
+        }
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+    
+  Future<void> verifyResetToken(String email, String token) async {
+    try {
+      final endpoint = 'password/verify-token';
+      final url = Uri.parse(base_url + endpoint);
+      final response = await http.post(
+        url,
+        body: {
+          'email': email,
+          'token': token,
+        },
+        headers: await _getHeaders(),
+      );
+  
+      if (response.statusCode != 200) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Invalid token');
+      }
+    } catch (e) {
+      throw Exception('Token verification failed: ${e.toString()}');
+    }
+  }
+  
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final endpoint = 'password/reset';
+      final url = Uri.parse(base_url + endpoint);
+      final response = await http.post(
+        url,
+        body: {
+          'email': email,
+          'token': token,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        },
+        headers: await _getHeaders(),
+      );
+  
+      if (response.statusCode != 200) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to reset password');
+      }
+    } catch (e) {
+      throw Exception('Password reset failed: ${e.toString()}');
+    }
+  }
+
+ Future<String> getCalendarPDF(String type) async {
+  try {
+    endpoint = 'calendar/$type';
+    final url = Uri.parse(base_url + endpoint);
+    final response = await http.get(
       url,
-      body: {
-        'email': email,
-        'password': password,
-        'password_confirmation': passwordConfirmation,
-        'token': token,
-      },
       headers: await _getHeaders(),
     );
 
     if (response.statusCode == 200) {
-      return;
+      final responseData = jsonDecode(response.body);
+      print('url : ${responseData['url']}');
+      return responseData['url']; 
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to load calendar');
     }
-
-    final error = jsonDecode(response.body);
-    throw Exception(error['message'] ?? 'Failed to reset password');
   } catch (e) {
-    throw Exception('Failed to reset password: ${e.toString()}');
+    throw Exception('Error loading calendar: ${e.toString()}');
   }
 }

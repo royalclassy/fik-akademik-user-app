@@ -68,6 +68,7 @@ class _DetailpeminjamanPageState extends State<DetailpeminjamanPage> {
     ScaffoldMessenger.of(_context).showSnackBar(
       SnackBar(content: Text('Gagal mengkonfirmasi peminjaman')),
     );
+    print(e);
   }
 }
 
