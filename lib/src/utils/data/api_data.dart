@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
-
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 
-const String base_url = 'https://5405-103-147-92-253.ngrok-free.app/api/';
+const String base_url = 'https://8d98-140-213-5-132.ngrok-free.app/api/';
 late String endpoint;
 late SharedPreferences prefs;
 
@@ -75,6 +75,7 @@ Future<int> login(String identifier, String password) async {
     String token = responseBody['token'];
 
     await saveTokenToPreferences(token);
+    print('token: $token');
 
     return response.statusCode;
   } else {
@@ -99,6 +100,7 @@ Future<List<Map<String, dynamic>>> getAllJadwal() async {
     throw Exception('Gagal mengambil data jadwal');
   }
 }
+
 
 Future<List<Map<String, dynamic>>> getProdi() async {
   endpoint = 'prodi';
@@ -179,20 +181,34 @@ Future<Map<String, dynamic>> getAvailablity(String tanggal, String jamMulai, Str
   }
 }
 
-Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang) async {
+Future<List<Map<String, dynamic>>> getRuangTersedia(String jamMulai, String jamSelesai, String tglPinjam, String tipeRuang) async {
+  endpoint = 'ruangan/tersedia';
+  var url = Uri.parse(base_url + endpoint);
+  print('data $jamMulai $jamSelesai $tglPinjam $tipeRuang');
+
+  var response = await http.post(url,
+      body: {
+        'jam_mulai': jamMulai,
+        'jam_selesai': jamSelesai,
+        'tgl_pinjam': tglPinjam,
+        'tipe_ruang': tipeRuang
+      },
+      headers: await _getHeaders()
+  );
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    var responseBody = json.decode(response.body);
+    return responseBody.cast<Map<String, dynamic>>();
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String jamMulai, String jamSelesai, String keterangan, String jumlahOrang, String grupPengguna) async {
   endpoint = 'peminjaman';
-
+  print("data : $idRuang, $tanggal, $jamMulai, $jamSelesai, $keterangan, $jumlahOrang, $grupPengguna");
   var formattedTimes = formatTime(jamMulai, jamSelesai);
-
-  print("bisa");
-  print({
-    'id_ruang': idRuang,
-    'tgl_pinjam': tanggal,
-    'jam_mulai': formattedTimes['formattedStartTime']!,
-    'jam_selesai': formattedTimes['formattedEndTime']!,
-    'keterangan': keterangan,
-    'jumlah_orang': jumlahOrang,
-  });
 
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
@@ -202,6 +218,7 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
     'jam_selesai': formattedTimes['formattedEndTime']!,
     'keterangan': keterangan,
     'jumlah_orang': jumlahOrang,
+    'id_grup': grupPengguna,
   }, headers: await _getHeaders());
 
   // Log the full response body
@@ -225,15 +242,29 @@ Future<Map<int, String>> addPeminjaman(String idRuang, String tanggal, String ja
   }
 }
 
-Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
+Future<List<Map<String, dynamic>>> getStatus({bool isActive = true, required String fungsi}) async {
+  endpoint = 'status';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
+  print("fetch status");
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.where((status) =>
+    status['fungsi'] == fungsi &&
+        status['is_active'] == isActive
+    ).cast<Map<String, dynamic>>().toList();
+  } else {
+    throw Exception('Failed to get status data');
+  }
+}
+
+Future<List<Map<String, dynamic>>> getPeminjaman(String room, {required bool isActive}) async {
   print(room);
   endpoint = 'peminjaman/$room';
   var url = Uri.parse(base_url + endpoint);
-  print(url);
-  var response = await http.get(url, 
+  var response = await http.get(url,
     headers: await _getHeaders()
     );
-  print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
     return data.cast<Map<String, dynamic>>();
@@ -244,11 +275,20 @@ Future<List<Map<String, dynamic>>> getPeminjaman(String room) async {
 
 Future<List> getRuang(String room) async {
   endpoint = 'ruangan';
-  print(room);
+  print("room : $room");
   var url = Uri.parse(base_url + endpoint);
   var response = await http.post(url, body: {
     'tipe_ruang':room,
   }, headers: await _getHeaders());
+  print(response.body);
+  var responseBody = json.decode(response.body);
+  return responseBody;
+}
+
+Future<List> fetchGrupPengguna() async {
+  endpoint = 'grup_pengguna';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.get(url, headers: await _getHeaders());
   print(response.body);
   var responseBody = json.decode(response.body);
   return responseBody;
@@ -265,7 +305,7 @@ Future<Map<String, dynamic>> getAssetDetails(String idRuangan) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> getKendala(String room) async {
+Future<List<Map<String, dynamic>>> getKendala(String room, {required bool isActive}) async {
   endpoint = 'kendala/$room';
   var url = Uri.parse(base_url + endpoint);
   var response = await http.get(url, 
@@ -363,6 +403,7 @@ Future<Map<String, dynamic>?> fetchUserData() async {
 
       if (response.statusCode == 200) {
         final userData = jsonDecode(response.body);
+        print(userData);
         return userData;
       } else {
         print('Failed to load user data');
@@ -407,7 +448,7 @@ Future<List<Map<String, dynamic>>> getAllProfildosen() async {
   }
 }
 
-Future<void> updateProfile(String name, String nim, String email, String idProdi, File image) async {
+Future<void> updateProfile(String name, String nim, String no_tlp, String email, String idProdi, File image) async {
   const String endpoint = 'user/update';
   final String url = base_url + endpoint;
   final headers = await _getHeaders();
@@ -418,6 +459,7 @@ Future<void> updateProfile(String name, String nim, String email, String idProdi
       ..fields['nama'] = name
       ..fields['nim'] = nim
       ..fields['email'] = email
+      ..fields['no_tlp'] = no_tlp
       ..fields['id_prodi'] = idProdi;
 
     if (image.path.isNotEmpty) {
@@ -477,5 +519,124 @@ Future<void> saveTokenToServer(String? token) async {
     }
   } else {
     print('Failed to save FCM token');
+  }
+}
+
+Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
+  endpoint = 'peminjaman/konfirmasi';
+  var url = Uri.parse(base_url + endpoint);
+  var response = await http.post(
+    url,
+    body: {
+      'id_pinjam': idPinjam,
+    },
+    headers: await _getHeaders(),
+  );
+
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    print('error : ${response.body}');
+    throw Exception('Failed to update peminjaman status');
+  }
+}
+
+  Future<void> requestPasswordReset(String email) async {
+    try {
+      final endpoint = 'password/forgot';
+      final url = Uri.parse(base_url + endpoint);
+      final response = await http.post(
+        url,
+        body: {'email': email},
+        headers: await _getHeaders(),
+      );
+  
+       final responseData = jsonDecode(response.body);
+    
+      if (response.statusCode != 200) {
+        if (responseData['error'] != null) {
+          throw responseData['error'];
+        } else {
+          throw responseData['message'] ?? 'Failed to request password reset';
+        }
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+    
+  Future<void> verifyResetToken(String email, String token) async {
+    try {
+      final endpoint = 'password/verify-token';
+      final url = Uri.parse(base_url + endpoint);
+      print(email);
+      print(token);
+      final response = await http.post(
+        url,
+        body: {
+          'email': email,
+          'token': token,
+        },
+        headers: await _getHeaders(),
+      );
+      print(response.body);
+  
+      if (response.statusCode != 200) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Invalid token');
+      }
+    } catch (e) {
+      throw Exception('Token verification failed: ${e.toString()}');
+    }
+  }
+  
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final endpoint = 'password/reset';
+      final url = Uri.parse(base_url + endpoint);
+      final response = await http.post(
+        url,
+        body: {
+          'email': email,
+          'token': token,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        },
+        headers: await _getHeaders(),
+      );
+  
+      if (response.statusCode != 200) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to reset password');
+      }
+    } catch (e) {
+      throw Exception('Password reset failed: ${e.toString()}');
+    }
+  }
+
+ Future<String> getCalendarPDF(String type) async {
+  try {
+    endpoint = 'calendar/$type';
+    final url = Uri.parse(base_url + endpoint);
+    final response = await http.get(
+      url,
+      headers: await _getHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      print('url : ${responseData['url']}');
+      return responseData['url']; 
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to load calendar');
+    }
+  } catch (e) {
+    throw Exception('Error loading calendar: ${e.toString()}');
   }
 }

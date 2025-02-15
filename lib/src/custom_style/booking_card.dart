@@ -16,9 +16,12 @@ class BookingCard extends StatelessWidget {
   final String groupSize;
   final Function onAccept;
   final Function onReject;
-  final String status;
+  final String idStatus;
   final String alasanPenolakan;
   final String tipeRuang;
+  final String grupPengguna;
+  final String catatanKejadian;
+  final VoidCallback onRefresh;
 
   const BookingCard({
     super.key,
@@ -33,9 +36,12 @@ class BookingCard extends StatelessWidget {
     required this.groupSize,
     required this.onAccept,
     required this.onReject,
-    required this.status,
+    required this.idStatus,
     required this.alasanPenolakan,
     required this.tipeRuang,
+    required this.grupPengguna,
+    required this.catatanKejadian,
+    required this.onRefresh,
   });
 
   @override
@@ -56,13 +62,25 @@ class BookingCard extends StatelessWidget {
               jamSelesai: timeEnd,
               jumlahPengguna: groupSize,
               keterangan: description,
-              status: status,
+              idStatus: idStatus,
               alasan_penolakan: alasanPenolakan,
               tipeRuang: tipeRuang,
+              grupPengguna: grupPengguna,
+              catatanKejadian: catatanKejadian,
               // alasan: DummyData.alasan,
             ),
           ),
-        );
+        ).then((result){
+          if(result != null){
+            onRefresh();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        });
       },
       child: Card(
         elevation: 4,

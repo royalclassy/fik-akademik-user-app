@@ -15,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String nim = '';
+  String no_tlp = '';
   String email = '';
   String profile = '';
   String prodi = '';
@@ -34,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         name = userData['nama']!;
         nim = userData['nim_nrp']!;
+        no_tlp = userData['no_tlp']!;
         email = userData['email']!;
         profile = userData['profil'] ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
 
@@ -93,6 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => EditProfilePage(
         name: name,
         nim: nim,
+        no_tlp: no_tlp,
         email: email,
         idProdi: prodi,
         profile: profile,
@@ -133,6 +136,8 @@ Widget build(BuildContext context) {
             _buildProfileField(label: 'Nama', value: name),
             const SizedBox(height: 10),
             _buildProfileField(label: 'NIM', value: nim),
+            const SizedBox(height: 10),
+            _buildProfileField(label: 'No Telepon', value: no_tlp),
             const SizedBox(height: 10),
             _buildProfileField(label: 'Email', value: email),
             const SizedBox(height: 10),

@@ -3,6 +3,7 @@ import 'package:class_leap/src/screens/pelaporan/detail_kendala_screen.dart';
 // import 'package:class_leap/src/custom_style/status_accept.dart';
 
 class ReportCard extends StatelessWidget {
+  final String id;
   final String studentName;
   final String studentNim;
   final String inputDate;
@@ -10,11 +11,12 @@ class ReportCard extends StatelessWidget {
   final String jenis;
   final String bentuk;
   final String deskripsi;
-  final String status;
+  final String idStatus;
   final String keteranganPenyelesaian;
 
   const ReportCard({
     super.key,
+    required this.id,
     required this.studentName,
     required this.studentNim,
     required this.inputDate,
@@ -22,7 +24,7 @@ class ReportCard extends StatelessWidget {
     required this.jenis,
     required this.bentuk,
     required this.deskripsi,
-    required this.status,
+    required this.idStatus,
     required this.keteranganPenyelesaian,
   });
 
@@ -34,6 +36,7 @@ class ReportCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => DetailkendalaPage(
+              idKendala: id,
               studentName: studentName,
               studentNim: studentNim,
               inputDate: inputDate,
@@ -41,7 +44,7 @@ class ReportCard extends StatelessWidget {
               jenis: jenis,
               bentuk: bentuk,
               deskripsi: deskripsi,
-              status: status,
+              idStatus: idStatus,
               keteranganPenyelesaian: keteranganPenyelesaian,
             ),
           ),

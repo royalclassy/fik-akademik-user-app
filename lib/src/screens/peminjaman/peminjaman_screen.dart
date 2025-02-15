@@ -1,5 +1,7 @@
 import 'package:class_leap/src/custom_style/bar_chart.dart';
+import 'package:class_leap/src/custom_style/custom_button_two.dart';
 import 'package:class_leap/src/screens/peminjaman/form_pinjam.dart';
+import 'package:class_leap/src/screens/peminjaman/ketersediaan_ruang_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:class_leap/src/custom_style/custom_button.dart';
 import 'package:class_leap/src/screens/peminjaman/semua_pinjam_screen.dart';
@@ -89,6 +91,16 @@ class PeminjamanPage extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 10),
+                    CustomButtonTwo(
+                        label: 'Lihat Ketersediaan Ruang',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => KetersediaanRuangPage(room: 'lab',)),
+                          );
+                        },
+                      ),
                     const SizedBox(height: 30),
                     const Text(
                       'Kepadatan Peminjaman Ruang Lab FIK',
@@ -180,6 +192,16 @@ class PeminjamanPage extends StatelessWidget {
                     //     },
                     //   ),
                     // ),
+                    const SizedBox(height: 10),
+                    CustomButtonTwo(
+                      label: 'Lihat Ketersediaan Ruang',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => KetersediaanRuangPage(room: 'kelas',)),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 30),
                     const Text(
                       'Kepadatan Peminjaman Ruang Kelas FIK',
