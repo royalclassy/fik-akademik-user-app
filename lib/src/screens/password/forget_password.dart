@@ -31,7 +31,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       final now = DateTime.now();
       final difference = now.difference(resetTime);
 
-      if (difference.inMinutes < 60) {
+      if (difference.inMinutes < 2) {
         if (!mounted) return;
         Navigator.pushReplacement(
           context,

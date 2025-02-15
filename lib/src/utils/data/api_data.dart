@@ -569,6 +569,8 @@ Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
     try {
       final endpoint = 'password/verify-token';
       final url = Uri.parse(base_url + endpoint);
+      print(email);
+      print(token);
       final response = await http.post(
         url,
         body: {
@@ -577,6 +579,7 @@ Future<Map<String, dynamic>> confirmPeminjamanStatus(String idPinjam) async {
         },
         headers: await _getHeaders(),
       );
+      print(response.body);
   
       if (response.statusCode != 200) {
         final error = jsonDecode(response.body);
